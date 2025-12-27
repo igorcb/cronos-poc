@@ -44,7 +44,7 @@ development_status:
   epic-1: in-progress
   1-1-inicializar-projeto-rails-com-starter-template: review
   1-2-configurar-docker-e-docker-compose: backlog
-  1-3-configurar-rspec-e-factories: backlog
+  1-3-configurar-rspec-e-factories: done
   1-4-configurar-code-quality-tools: backlog
   1-5-implementar-autenticacao-single-user-com-rails-8-generator: backlog
   1-6-desabilitar-signup-publico-e-criar-seed-de-usuario-admin: backlog
