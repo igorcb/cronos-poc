@@ -45,7 +45,7 @@ development_status:
   1-1-inicializar-projeto-rails-com-starter-template: done
   1-2-configurar-docker-e-docker-compose: done  # Implementado em Story 1.1 (scope creep)
   1-3-configurar-rspec-e-factories: done  # Implementado em Story 1.1 (scope creep)
-  1-4-configurar-code-quality-tools: review
+  1-4-configurar-code-quality-tools: done
   1-5-implementar-autenticacao-single-user-com-rails-8-generator: ready-for-dev
   1-6-desabilitar-signup-publico-e-criar-seed-de-usuario-admin: ready-for-dev
   1-7-configurar-rails-credentials-para-secrets: ready-for-dev
