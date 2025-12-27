@@ -20,7 +20,7 @@ gem "cssbundling-rails"
 gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -72,4 +72,11 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Code Quality Tools
+  gem "rubocop", "~> 1.60", require: false
+  gem "rubocop-rails", "~> 2.23", require: false
+  gem "rubocop-rspec", "~> 2.26", require: false
+  # gem "bullet", "~> 7.1"  # Disabled: Bullet 7.2.0 does not support Rails 8.1.1 yet
+  gem "annotate"  # Sem constraint de versão para pegar a mais recente compatível
 end
