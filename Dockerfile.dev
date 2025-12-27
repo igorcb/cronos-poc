@@ -1,0 +1,35 @@
+# Development Dockerfile - Ruby 3.4.8 + Rails 8.1.1
+FROM ruby:3.4.8-slim
+
+# Install system dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      build-essential \
+      libpq-dev \
+      libyaml-dev \
+      nodejs \
+      npm \
+      git \
+      curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create user with same UID as host user to avoid permission issues
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+RUN groupadd -g ${GROUP_ID} appuser && \
+    useradd -m -u ${USER_ID} -g appuser appuser
+
+# Set working directory
+WORKDIR /app
+
+# Install Rails globally
+RUN gem install rails -v 8.1.1
+
+# Change ownership
+RUN chown -R appuser:appuser /app /usr/local/bundle
+
+# Switch to app user
+USER appuser
+
+# Default command
+CMD ["/bin/bash"]
