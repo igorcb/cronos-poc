@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ['nodejs', 'yarn']
+nixPkgs = ['nodejs']
 
 [phases.install]
-cmds = ['bundle install', 'npm install']
+cmds = ['bundle install', 'npm install --legacy-peer-deps']
 
 [phases.build]
 cmds = ['bundle exec rails assets:precompile']
