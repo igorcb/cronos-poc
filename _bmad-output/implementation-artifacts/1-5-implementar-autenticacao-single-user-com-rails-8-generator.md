@@ -1,6 +1,6 @@
 # Story 1.5: Implementar Autenticação Single-User com Rails 8 Generator
 
-Status: review
+Status: done
 
 ## Story
 
@@ -46,17 +46,15 @@ Status: review
 
 ## Dev Notes
 
-### Rails 8 Authentication Generator
+### Rails 8 Authentication Generator - Implementação REAL
 
-O Rails 8 inclui um generator de autenticação que cria:
-- Model `User` com `has_secure_password`
-- Model `Session` para gerenciar sessões
-- `SessionsController` para login/logout
-- Concern `Authentication` para controllers
-- Views de login
-- Routes
+O Rails 8 generator (`rails generate authentication`) criou uma autenticação moderna baseada em:
+- **Cookies signed** ao invés de session storage
+- **Current.session** pattern para thread-safe session management
+- **Rate limiting** built-in
+- **authenticate_by** para timing-safe authentication
 
-### Migration CreateUsers (Ajustada)
+### Migration CreateUsers (REAL - com ARQ18)
 
 ```ruby
 class CreateUsers < ActiveRecord::Migration[8.1]
@@ -73,193 +71,208 @@ class CreateUsers < ActiveRecord::Migration[8.1]
 end
 ```
 
-### Migration CreateSessions
+### Migration CreateSessions (REAL - sem token, usa ID)
 
 ```ruby
 class CreateSessions < ActiveRecord::Migration[8.1]
   def change
     create_table :sessions, if_not_exists: true do |t|
       t.references :user, null: false, foreign_key: true, if_not_exists: true
-      t.string :token, null: false
       t.string :ip_address
       t.string :user_agent
 
       t.timestamps
     end
-
-    add_index :sessions, :token, unique: true, if_not_exists: true
   end
 end
 ```
 
-### app/models/user.rb
+**Nota**: Rails 8 usa o `id` da session como identificador ao invés de um token separado.
+
+### app/models/user.rb (REAL)
 
 ```ruby
 class User < ApplicationRecord
   has_secure_password
-
   has_many :sessions, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+
+  # Rails 8 adiciona normalização automática
+  normalizes :email, with: ->(e) { e.strip.downcase }
 end
 ```
 
-### app/models/session.rb
+### app/models/session.rb (REAL - sem token generation)
 
 ```ruby
 class Session < ApplicationRecord
   belongs_to :user
-
-  before_create :generate_token
-
-  private
-
-  def generate_token
-    self.token = SecureRandom.urlsafe_base64
-  end
 end
 ```
 
-### app/controllers/concerns/authentication.rb
+**Nota**: Não precisa de `generate_token` porque usa o `id` da session.
+
+### app/models/current.rb (REAL - Thread-safe current session)
+
+```ruby
+class Current < ActiveSupport::CurrentAttributes
+  attribute :session
+  delegate :user, to: :session, allow_nil: true
+end
+```
+
+### app/controllers/concerns/authentication.rb (REAL)
 
 ```ruby
 module Authentication
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_current_user
-    helper_method :current_user, :user_signed_in?
+    before_action :require_authentication
+    helper_method :authenticated?
+  end
+
+  class_methods do
+    def allow_unauthenticated_access(**options)
+      skip_before_action :require_authentication, **options
+    end
   end
 
   private
-
-  def set_current_user
-    if session[:session_token]
-      @current_session = Session.find_by(token: session[:session_token])
-      @current_user = @current_session&.user
+    def authenticated?
+      resume_session
     end
-  end
 
-  def current_user
-    @current_user
-  end
-
-  def user_signed_in?
-    current_user.present?
-  end
-
-  def require_authentication
-    unless user_signed_in?
-      redirect_to login_path, alert: "Você precisa fazer login para acessar esta página"
+    def require_authentication
+      resume_session || request_authentication
     end
-  end
+
+    def resume_session
+      Current.session ||= find_session_by_cookie
+    end
+
+    def find_session_by_cookie
+      Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+    end
+
+    def request_authentication
+      session[:return_to_after_authenticating] = request.url
+      redirect_to new_session_path
+    end
+
+    def after_authentication_url
+      session.delete(:return_to_after_authenticating) || root_url
+    end
+
+    def start_new_session_for(user)
+      user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip).tap do |session|
+        Current.session = session
+        cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
+      end
+    end
+
+    def terminate_session
+      Current.session.destroy
+      cookies.delete(:session_id)
+    end
 end
 ```
 
-### app/controllers/sessions_controller.rb
+**Diferenças chave do Rails 8**:
+- Usa `Current.session` (thread-safe)
+- Cookies assinados (`cookies.signed[:session_id]`)
+- Helper `allow_unauthenticated_access` ao invés de `skip_before_action`
+- Helper `start_new_session_for(user)` para criar sessão
+
+### app/controllers/sessions_controller.rb (REAL)
 
 ```ruby
 class SessionsController < ApplicationController
-  skip_before_action :require_authentication, only: [:new, :create]
+  allow_unauthenticated_access only: %i[ new create ]
+  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_path, alert: "Try again later." }
 
   def new
   end
 
   def create
-    user = User.find_by(email: params[:email])
-
-    if user&.authenticate(params[:password])
-      @session = user.sessions.create!(
-        ip_address: request.remote_ip,
-        user_agent: request.user_agent
-      )
-      session[:session_token] = @session.token
-
-      redirect_to root_path, notice: "Login realizado com sucesso"
+    if user = User.authenticate_by(params.permit(:email, :password))
+      start_new_session_for user
+      redirect_to after_authentication_url
     else
-      flash.now[:alert] = "Email ou senha inválidos"
-      render :new, status: :unprocessable_entity
+      redirect_to new_session_path, alert: "Email ou senha inválidos."
     end
   end
 
   def destroy
-    if @current_session
-      @current_session.destroy
-      session.delete(:session_token)
-    end
-
-    redirect_to login_path, notice: "Logout realizado com sucesso"
+    terminate_session
+    redirect_to new_session_path, status: :see_other
   end
 end
 ```
 
-### app/views/sessions/new.html.erb
+**Rails 8 features**:
+- `User.authenticate_by` (timing-safe)
+- `rate_limit` built-in
+- `allow_unauthenticated_access` ao invés de `skip_before_action`
+- Helpers do concern (`start_new_session_for`, `terminate_session`)
+
+### app/views/sessions/new.html.erb (REAL - SEM estilização)
 
 ```erb
-<div class="max-w-md mx-auto mt-8">
-  <h1 class="text-2xl font-bold mb-4">Login</h1>
+<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
+<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
 
-  <% if flash[:alert] %>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      <%= flash[:alert] %>
-    </div>
-  <% end %>
-
-  <%= form_with url: login_path, method: :post, class: "space-y-4" do |f| %>
-    <div>
-      <%= label_tag :email, "Email", class: "block font-medium mb-1" %>
-      <%= email_field_tag :email, nil, required: true, class: "w-full px-3 py-2 border rounded" %>
-    </div>
-
-    <div>
-      <%= label_tag :password, "Senha", class: "block font-medium mb-1" %>
-      <%= password_field_tag :password, nil, required: true, class: "w-full px-3 py-2 border rounded" %>
-    </div>
-
-    <div>
-      <%= submit_tag "Entrar", class: "w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700" %>
-    </div>
-  <% end %>
-</div>
+<%= form_with url: session_path do |form| %>
+  <%= form.email_field :email, required: true, autofocus: true, autocomplete: "username", placeholder: "Digite seu email", value: params[:email] %><br>
+  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Digite sua senha", maxlength: 72 %><br>
+  <%= form.submit "Entrar" %>
+<% end %>
 ```
 
-### config/routes.rb
+**Nota**: Generator cria form **sem CSS/Tailwind** - estilização virá em Epic de UX.
+
+### config/routes.rb (REAL - resourceful routing)
 
 ```ruby
 Rails.application.routes.draw do
-  # Authentication
-  get  'login',  to: 'sessions#new'
-  post 'login',  to: 'sessions#create'
-  delete 'logout', to: 'sessions#destroy'
+  resource :session
+  resources :passwords, param: :token
 
-  # Root
-  root 'dashboard#index'
+  # Disabled public signup (single-user system)
+  get  "signup", to: "registrations#new"
+  post "signup", to: "registrations#create"
+
+  get "up" => "rails/health#show", as: :rails_health_check
+  root "dashboard#index"
 end
 ```
 
-### app/controllers/application_controller.rb
+**Nota**: Rails 8 generator usa `resource :session` (singular) ao invés de rotas individuais.
+
+### app/controllers/application_controller.rb (REAL)
 
 ```ruby
 class ApplicationController < ActionController::Base
   include Authentication
-
-  before_action :require_authentication
+  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
+  allow_browser versions: :modern
 end
 ```
+
+**Nota**: `before_action :require_authentication` já está no concern, não precisa repetir aqui.
 
 ### IMPORTANTE: Padrão ARQ18
 
 **SEMPRE usar `if_not_exists: true` nas migrations!**
 
-Todas as migrations devem seguir o padrão:
 ```ruby
 create_table :users, if_not_exists: true do |t|
   # ...
 end
 
 add_index :users, :email, if_not_exists: true
-add_reference :sessions, :user, foreign_key: true, if_not_exists: true
 ```
 
 ### References

@@ -1,2 +1,80 @@
-<h1>Dashboard</h1>
-<p>Bem-vindo ao sistema!</p>
+<div class="space-y-6">
+  <!-- Welcome Section -->
+  <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+    <h1 class="text-3xl font-bold text-white mb-2">
+      Bem-vindo ao Cronos POC
+    </h1>
+    <p class="text-gray-300">
+      Sistema de controle de horas trabalhadas - MVP Single-User
+    </p>
+  </div>
+
+  <!-- Quick Stats (Placeholder) -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Total Horas Hoje -->
+    <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 bg-blue-900 rounded-md p-3">
+          <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-400">Horas Hoje</p>
+          <p class="text-2xl font-semibold text-white">0.0h</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Horas Mês -->
+    <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 bg-green-900 rounded-md p-3">
+          <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-400">Horas Mês</p>
+          <p class="text-2xl font-semibold text-white">0.0h</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Valor Mês -->
+    <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 bg-yellow-900 rounded-md p-3">
+          <svg class="h-6 w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-400">Valor Mês</p>
+          <p class="text-2xl font-semibold text-white">R$ 0,00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions (Placeholder) -->
+  <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+    <h2 class="text-lg font-semibold text-white mb-4">Ações Rápidas</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer">
+        <h3 class="font-medium text-white mb-2">⏱️ Nova Entrada</h3>
+        <p class="text-sm text-gray-400">Registrar horas trabalhadas</p>
+      </div>
+
+      <div class="border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer">
+        <h3 class="font-medium text-white mb-2">🏢 Empresas</h3>
+        <p class="text-sm text-gray-400">Gerenciar empresas</p>
+      </div>
+
+      <div class="border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer">
+        <h3 class="font-medium text-white mb-2">📁 Projetos</h3>
+        <p class="text-sm text-gray-400">Gerenciar projetos</p>
+      </div>
+    </div>
+  </div>
+</div>

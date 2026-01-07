@@ -1,0 +1,23 @@
+<% if flash.any? %>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <% flash.each do |type, message| %>
+      <%
+        bg_color = case type.to_sym
+                   when :notice then "bg-green-100 border-green-400 text-green-700"
+                   when :alert then "bg-red-100 border-red-400 text-red-700"
+                   when :warning then "bg-yellow-100 border-yellow-400 text-yellow-800"
+                   else "bg-blue-100 border-blue-400 text-blue-700"
+                   end
+      %>
+      <div class="<%= bg_color %> border px-4 py-3 rounded mb-4 flex justify-between items-center"
+           data-controller="flash"
+           data-flash-target="message">
+        <span><%= message %></span>
+        <button data-action="click->flash#close"
+                class="text-lg font-bold leading-none hover:opacity-75">
+          &times;
+        </button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

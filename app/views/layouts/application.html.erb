@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "App" %></title>
+    <title><%= content_for(:title) || "Cronos POC" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="App">
+    <meta name="application-name" content="Cronos POC">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -23,7 +23,53 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-900 min-h-screen flex flex-col">
+    <% if authenticated? %>
+      <!-- Navbar -->
+      <nav class="bg-gray-800 shadow-sm border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <!-- Logo/Title -->
+            <div class="flex items-center">
+              <%= link_to root_path, class: "text-2xl font-bold text-blue-400" do %>
+                Cronos POC
+              <% end %>
+            </div>
+
+            <!-- Nav Links -->
+            <div class="hidden md:flex items-center space-x-4">
+              <%= link_to "Dashboard", root_path, class: "text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium" %>
+              <!-- Futuras links: Empresas, Projetos, Time Entries -->
+            </div>
+
+            <!-- User Menu -->
+            <div class="flex items-center space-x-4">
+              <span class="text-sm text-gray-300">
+                <%= Current.user.email %>
+              </span>
+              <%= button_to "Sair", session_path, method: :delete,
+                  class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition" %>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <!-- Flash Messages -->
+    <%= render "shared/flash" if flash.any? %>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <%= yield %>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-4">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-400">
+        © <%= Time.current.year %> Cronos POC - Time Tracking System
+      </div>
+    </footer>
   </body>
 </html>
