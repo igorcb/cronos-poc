@@ -27,7 +27,11 @@ RUN npm install --legacy-peer-deps
 # Copy application code
 COPY . .
 
-# Precompile assets
+# Precompile assets with dummy secret key base
+# Railway will provide the real RAILS_MASTER_KEY at runtime
+ARG RAILS_ENV=production
+ENV RAILS_ENV=${RAILS_ENV}
+ENV SECRET_KEY_BASE=dummy_secret_key_base_for_asset_compilation
 RUN bundle exec rails assets:precompile
 
 # Expose port
