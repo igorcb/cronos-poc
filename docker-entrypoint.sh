@@ -43,6 +43,9 @@ echo "========================================"
 echo "Running database migrations..."
 echo "========================================"
 bin/rails db:migrate
+bin/rails db:migrate:cache
+bin/rails db:migrate:queue
+bin/rails db:migrate:cable
 
 echo "========================================"
 echo "Running database seed..."
