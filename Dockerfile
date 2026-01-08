@@ -38,8 +38,12 @@ ENV RAILS_MASTER_KEY=dummy_master_key_for_asset_compilation_only_do_not_use_in_p
 # Disable database and bootsnap during asset precompilation
 RUN DISABLE_DATABASE=1 bundle exec rails assets:precompile
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /rails/docker-entrypoint.sh
+RUN chmod +x /rails/docker-entrypoint.sh
+
 # Expose port
 EXPOSE 3000
 
-# Start server
-CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+# Start server with migrations and seed
+ENTRYPOINT ["/rails/docker-entrypoint.sh"]
