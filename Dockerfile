@@ -8,6 +8,7 @@ RUN apt-get update -qq && \
     git \
     libpq-dev \
     libvips \
+    libyaml-dev \
     nodejs \
     npm \
     curl && \
