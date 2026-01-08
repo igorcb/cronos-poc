@@ -14,16 +14,19 @@ else
 fi
 
 # Extract database connection details from DATABASE_URL
+DB_USER=$(echo $DATABASE_URL | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+DB_PASS=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p')
 DB_HOST=$(echo $DATABASE_URL | sed -n 's/.*@\([^:]*\):.*/\1/p')
 DB_PORT=$(echo $DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+DB_NAME=$(echo $DATABASE_URL | sed -n 's/.*\/\([^?]*\).*/\1/p')
 
-echo "Checking connection to: $DB_HOST:$DB_PORT"
+echo "Checking connection to: $DB_HOST:$DB_PORT (database: $DB_NAME, user: $DB_USER)"
 
-# Wait for database to be ready (max 60 seconds with pg_isready)
+# Wait for database to be ready (max 60 seconds)
 max_attempts=60
 attempt=1
 
-until PGPASSWORD=dummy psql -h "$DB_HOST" -p "$DB_PORT" -U postgres -d railway -c "SELECT 1" &> /dev/null || [ $attempt -eq $max_attempts ]; do
+until PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1" &> /dev/null || [ $attempt -eq $max_attempts ]; do
   echo "Database not ready yet (attempt $attempt/$max_attempts)... waiting 1 second"
   sleep 1
   attempt=$((attempt + 1))
