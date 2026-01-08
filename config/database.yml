@@ -91,5 +91,18 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy" %>
+  primary:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy" %>
+  cable:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy" %>
+    migrations_paths: db/cable_migrate
+  queue:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy" %>
+    migrations_paths: db/queue_migrate
+  cache:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy" %>
+    migrations_paths: db/cache_migrate
