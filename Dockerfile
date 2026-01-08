@@ -32,7 +32,10 @@ COPY . .
 ARG RAILS_ENV=production
 ENV RAILS_ENV=${RAILS_ENV}
 ENV SECRET_KEY_BASE=dummy_secret_key_base_for_asset_compilation
-RUN bundle exec rails assets:precompile
+ENV RAILS_MASTER_KEY=dummy_master_key_for_asset_compilation_only_do_not_use_in_production
+
+# Disable database and bootsnap during asset precompilation
+RUN DISABLE_DATABASE=1 bundle exec rails assets:precompile
 
 # Expose port
 EXPOSE 3000
