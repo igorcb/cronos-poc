@@ -11,7 +11,8 @@ RUN apt-get update -qq && \
     libyaml-dev \
     nodejs \
     npm \
-    curl && \
+    curl \
+    postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set working directory

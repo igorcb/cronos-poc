@@ -13,11 +13,17 @@ else
   exit 1
 fi
 
-# Wait for database to be ready (max 30 seconds)
-max_attempts=30
+# Extract database connection details from DATABASE_URL
+DB_HOST=$(echo $DATABASE_URL | sed -n 's/.*@\([^:]*\):.*/\1/p')
+DB_PORT=$(echo $DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+
+echo "Checking connection to: $DB_HOST:$DB_PORT"
+
+# Wait for database to be ready (max 60 seconds with pg_isready)
+max_attempts=60
 attempt=1
 
-until bin/rails runner "ActiveRecord::Base.connection.execute('SELECT 1')" &> /dev/null || [ $attempt -eq $max_attempts ]; do
+until PGPASSWORD=dummy psql -h "$DB_HOST" -p "$DB_PORT" -U postgres -d railway -c "SELECT 1" &> /dev/null || [ $attempt -eq $max_attempts ]; do
   echo "Database not ready yet (attempt $attempt/$max_attempts)... waiting 1 second"
   sleep 1
   attempt=$((attempt + 1))
