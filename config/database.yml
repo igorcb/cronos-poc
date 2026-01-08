@@ -92,4 +92,4 @@ test:
 #
 production:
   <<: *default
-  url: <%= ENV.fetch("DATABASE_URL") %>
+  url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy" %>
