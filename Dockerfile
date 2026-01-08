@@ -1,5 +1,5 @@
-# Use Ruby 3.3.0
-FROM ruby:3.3.0-slim
+# Use Ruby 3.4.8 (matches .ruby-version)
+FROM ruby:3.4.8-slim
 
 # Install dependencies
 RUN apt-get update -qq && \
