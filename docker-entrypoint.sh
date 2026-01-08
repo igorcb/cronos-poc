@@ -5,6 +5,14 @@ echo "========================================"
 echo "Waiting for database to be ready..."
 echo "========================================"
 
+# Debug: Show DATABASE_URL (masked password)
+if [ -n "$DATABASE_URL" ]; then
+  echo "DATABASE_URL is set: ${DATABASE_URL%%:*}://***:***@${DATABASE_URL##*@}"
+else
+  echo "ERROR: DATABASE_URL is not set!"
+  exit 1
+fi
+
 # Wait for database to be ready (max 30 seconds)
 max_attempts=30
 attempt=1
