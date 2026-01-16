@@ -8,10 +8,10 @@ puts "Creating admin user..."
 admin_email = ENV.fetch('ADMIN_EMAIL', 'admin@cronos-poc.local')
 admin_password = ENV.fetch('ADMIN_PASSWORD', 'password123')
 
-user = User.find_or_create_by!(email: admin_email) do |u|
-  u.password = admin_password
-  u.password_confirmation = admin_password
-end
+user = User.find_or_initialize_by(email: admin_email)
+user.password = admin_password
+user.password_confirmation = admin_password
+user.save!
 
-puts "Admin user created: #{user.email}"
+puts "Admin user created/updated: #{user.email}"
 puts "Login at: http://localhost:3000/session/new"
