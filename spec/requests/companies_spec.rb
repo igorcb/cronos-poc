@@ -257,4 +257,73 @@ RSpec.describe "Companies", type: :request do
       end
     end
   end
+
+  describe "DELETE /companies/:id" do
+    before { sign_in(user) }
+    let!(:company) { create(:company, name: "Company to Deactivate", hourly_rate: 150.00) }
+
+    context "when deactivating a company" do
+      it "calls deactivate! on the company" do
+        expect_any_instance_of(Company).to receive(:deactivate!).and_call_original
+        delete company_path(company)
+      end
+
+      it "changes the company active status to false" do
+        delete company_path(company)
+        company.reload
+        expect(company.active).to be false
+      end
+
+      it "does not delete the company from database" do
+        expect {
+          delete company_path(company)
+        }.not_to change(Company.unscoped, :count)
+      end
+
+      it "removes company from Company.active scope" do
+        delete company_path(company)
+        expect(Company.active).not_to include(company)
+      end
+
+      it "keeps company in Company.all" do
+        delete company_path(company)
+        company.reload
+        expect(Company.unscoped.find_by(id: company.id)).to eq(company)
+      end
+
+      it "redirects to companies index" do
+        delete company_path(company)
+        expect(response).to redirect_to(companies_path)
+      end
+
+      it "displays success flash message" do
+        delete company_path(company)
+        follow_redirect!
+        expect(response.body).to include("Empresa desativada com sucesso")
+      end
+    end
+
+    context "when deactivation fails" do
+      before do
+        allow_any_instance_of(Company).to receive(:deactivate!).and_raise(ActiveRecord::RecordInvalid.new(company))
+      end
+
+      it "redirects to companies index" do
+        delete company_path(company)
+        expect(response).to redirect_to(companies_path)
+      end
+
+      it "displays error flash message" do
+        delete company_path(company)
+        follow_redirect!
+        expect(response.body).to include("Erro ao desativar empresa")
+      end
+
+      it "does not change company active status" do
+        delete company_path(company)
+        company.reload
+        expect(company.active).to be true
+      end
+    end
+  end
 end
