@@ -115,7 +115,7 @@ RSpec.describe "Companies", type: :request do
 
         it "returns unprocessable entity status" do
           post companies_path, params: invalid_params
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
 
         it "displays validation error" do
@@ -135,7 +135,7 @@ RSpec.describe "Companies", type: :request do
 
         it "returns unprocessable entity status" do
           post companies_path, params: invalid_params
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 
@@ -150,7 +150,7 @@ RSpec.describe "Companies", type: :request do
 
         it "returns unprocessable entity status" do
           post companies_path, params: invalid_params
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 
@@ -161,6 +161,98 @@ RSpec.describe "Companies", type: :request do
           expect {
             post companies_path, params: invalid_params
           }.not_to change(Company, :count)
+        end
+      end
+    end
+  end
+
+  describe "GET /companies/:id/edit" do
+    before { sign_in(user) }
+    let!(:company) { create(:company, name: "Test Company", hourly_rate: 150.00) }
+
+    it "returns success" do
+      get edit_company_path(company)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "displays the edit form with company data" do
+      get edit_company_path(company)
+      expect(response.body).to include("Editar Empresa")
+      expect(response.body).to include("Test Company")
+      expect(response.body).to include("150")
+    end
+
+    it "does not display active field" do
+      get edit_company_path(company)
+      expect(response.body).not_to include('name="company[active]"')
+    end
+  end
+
+  describe "PATCH /companies/:id" do
+    before { sign_in(user) }
+    let!(:company) { create(:company, name: "Old Name", hourly_rate: 100.00) }
+
+    context "with valid parameters" do
+      let(:valid_params) { { company: { name: "Updated Name", hourly_rate: 250.00 } } }
+
+      it "updates the company" do
+        patch company_path(company), params: valid_params
+        company.reload
+        expect(company.name).to eq("Updated Name")
+        expect(company.hourly_rate).to eq(250.00)
+      end
+
+      it "redirects to companies index" do
+        patch company_path(company), params: valid_params
+        expect(response).to redirect_to(companies_path)
+      end
+
+      it "displays success flash message" do
+        patch company_path(company), params: valid_params
+        follow_redirect!
+        expect(response.body).to include("Empresa atualizada com sucesso")
+      end
+
+      it "does not change active status even if sent" do
+        patch company_path(company), params: { company: { name: "Updated", hourly_rate: 200, active: false } }
+        company.reload
+        expect(company.active).to be true
+      end
+    end
+
+    context "with invalid parameters" do
+      context "when name is blank" do
+        let(:invalid_params) { { company: { name: "", hourly_rate: 150.00 } } }
+
+        it "does not update the company" do
+          patch company_path(company), params: invalid_params
+          company.reload
+          expect(company.name).to eq("Old Name")
+        end
+
+        it "returns unprocessable entity status" do
+          patch company_path(company), params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "displays validation errors" do
+          patch company_path(company), params: invalid_params
+          expect(response.body).to include("Nome")
+        end
+      end
+
+      context "when hourly_rate is negative" do
+        let(:invalid_params) { { company: { name: "Test", hourly_rate: -50.00 } } }
+
+        it "does not update the company" do
+          patch company_path(company), params: invalid_params
+          company.reload
+          expect(company.hourly_rate).to eq(100.00)
+        end
+
+        it "returns unprocessable entity status" do
+          patch company_path(company), params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end
