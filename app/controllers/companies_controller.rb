@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [ :edit, :update ]
+  before_action :set_company, only: [ :edit, :update, :destroy ]
 
   def index
     @companies = Company.active.order(created_at: :desc)
@@ -29,6 +29,13 @@ class CompaniesController < ApplicationController
     else
       render :edit, status: :unprocessable_content
     end
+  end
+
+  def destroy
+    @company.deactivate!
+    redirect_to companies_path, notice: "Empresa desativada com sucesso"
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to companies_path, alert: "Erro ao desativar empresa: #{e.message}"
   end
 
   private
