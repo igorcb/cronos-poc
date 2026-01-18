@@ -56,7 +56,7 @@ development_status:
   epic-2: in-progress
   2-1-criar-model-e-migration-de-companies-com-soft-delete: done
   2-2-implementar-crud-de-companies-index-e-new-create: done
-  2-3-implementar-edit-update-de-companies: ready-for-dev
+  2-3-implementar-edit-update-de-companies: done
   2-4-implementar-soft-delete-de-companies: ready-for-dev
   2-5-criar-factory-e-testes-de-model-para-company: ready-for-dev
   epic-2-retrospective: optional

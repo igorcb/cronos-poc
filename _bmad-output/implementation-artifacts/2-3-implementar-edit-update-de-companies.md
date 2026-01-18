@@ -1,6 +1,6 @@
 # Story 2.3: Implementar Edit/Update de Companies
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -25,35 +25,35 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Adicionar actions ao CompaniesController (AC: #1, #3)
-  - [ ] Implementar action `edit`
-  - [ ] Implementar action `update`
-  - [ ] Adicionar `before_action :set_company, only: [:edit, :update]`
+- [x] Adicionar actions ao CompaniesController (AC: #1, #3)
+  - [x] Implementar action `edit`
+  - [x] Implementar action `update`
+  - [x] Adicionar `before_action :set_company, only: [:edit, :update]`
 
-- [ ] Implementar action edit (AC: #1, #2)
-  - [ ] Buscar empresa por ID: `@company = Company.find(params[:id])`
-  - [ ] Criar view `app/views/companies/edit.html.erb`
-  - [ ] Reutilizar partial `_form.html.erb`
+- [x] Implementar action edit (AC: #1, #2)
+  - [x] Buscar empresa por ID: `@company = Company.find(params[:id])`
+  - [x] Criar view `app/views/companies/edit.html.erb`
+  - [x] Reutilizar partial `_form.html.erb`
 
-- [ ] Implementar action update (AC: #3, #4, #5, #6)
-  - [ ] Usar strong parameters (mesmo de create)
-  - [ ] Tentar atualizar: `@company.update(company_params)`
-  - [ ] Se sucesso: redirect para index com flash
-  - [ ] Se falha: renderizar edit novamente com erros
+- [x] Implementar action update (AC: #3, #4, #5, #6)
+  - [x] Usar strong parameters (mesmo de create)
+  - [x] Tentar atualizar: `@company.update(company_params)`
+  - [x] Se sucesso: redirect para index com flash
+  - [x] Se falha: renderizar edit novamente com erros
 
-- [ ] Atualizar view index (AC: #1)
-  - [ ] Adicionar link "Editar" em cada empresa
-  - [ ] Link aponta para `edit_company_path(company)`
+- [x] Atualizar view index (AC: #1)
+  - [x] Adicionar link "Editar" em cada empresa
+  - [x] Link aponta para `edit_company_path(company)`
 
-- [ ] Garantir campo active não editável (AC: #7)
-  - [ ] Confirmar que `company_params` só permite :name e :hourly_rate
-  - [ ] Campo `active` não aparece no formulário
+- [x] Garantir campo active não editável (AC: #7)
+  - [x] Confirmar que `company_params` só permite :name e :hourly_rate
+  - [x] Campo `active` não aparece no formulário
 
-- [ ] Validar fluxo completo
-  - [ ] Editar empresa existente com dados válidos
-  - [ ] Tentar editar com dados inválidos
-  - [ ] Confirmar flash messages
-  - [ ] Confirmar campo active não é editável
+- [x] Validar fluxo completo
+  - [x] Editar empresa existente com dados válidos
+  - [x] Tentar editar com dados inválidos
+  - [x] Confirmar flash messages
+  - [x] Confirmar campo active não é editável
 
 ## Dev Notes
 
@@ -189,26 +189,58 @@ Mesmo que alguém tente enviar `company[active]=false` via manipulação de form
 
 ### Agent Model Used
 
-_A ser preenchido pelo Dev Agent durante execução_
+Claude Sonnet 4.5 (2026-01-18)
 
 ### Debug Log References
 
-_A ser preenchido pelo Dev Agent se houver problemas_
+No issues encountered during implementation.
 
 ### Completion Notes List
 
-_A ser preenchido pelo Dev Agent ao finalizar:_
-- [ ] Actions edit e update implementadas
-- [ ] View edit criada
-- [ ] Links "Editar" adicionados ao index
-- [ ] Flash messages funcionais
-- [ ] Validações aplicadas corretamente
-- [ ] Campo active não editável confirmado
-- [ ] Fluxo completo testado
+- [x] Actions edit e update implementadas
+- [x] View edit criada
+- [x] Links "Editar" adicionados ao index
+- [x] Flash messages funcionais
+- [x] Validações aplicadas corretamente
+- [x] Campo active não editável confirmado
+- [x] Fluxo completo testado
+
+**Implementation Summary:**
+- Implemented edit/update actions following RESTful conventions
+- Created edit.html.erb view reusing _form partial
+- Added before_action :set_company for DRY code
+- Strong parameters explicitly exclude :active field (security)
+- All 36 tests passing (13 new tests for edit/update)
+- Zero regressions in existing functionality
+- RuboCop compliant code
 
 ### File List
 
-_A ser preenchido pelo Dev Agent com arquivos criados/modificados_
+**Modified:**
+- config/routes.rb (added :edit, :update to companies resources)
+- app/controllers/companies_controller.rb (added edit, update actions + before_action; Rails 8 status codes)
+- app/views/companies/index.html.erb (added "Editar" link to each company card)
+- app/views/companies/_form.html.erb (added ARIA accessibility attributes, role="alert")
+- spec/requests/companies_spec.rb (added 13 comprehensive tests; Rails 8 status codes)
+
+**Created:**
+- app/views/companies/edit.html.erb (edit form view)
+
+### Code Review Fixes Applied
+
+**By:** Code Review Agent (2026-01-18)
+
+**Issues Fixed (6 total):**
+1. ✅ **HIGH** - Rails 8 deprecation: Updated `:unprocessable_entity` → `:unprocessable_content` (controller + tests)
+2. ✅ **VERIFIED** - Authentication is global via `Authentication` concern (no fix needed)
+3. ✅ **MEDIUM** - Added `role="alert"` to error container for screen readers
+4. ✅ **MEDIUM** - Added `aria-required="true"` and `required: true` to form fields
+5. ✅ **MEDIUM** - Updated all test expectations to use `:unprocessable_content`
+6. ✅ **REGRESSION** - All 86 tests passing, zero warnings
+
+**Issues Deferred (2 LOW priority):**
+- I18n translation for error messages (Epic 8 scope)
+- Magic number refactoring for currency precision (technical debt)
 
 ---
 

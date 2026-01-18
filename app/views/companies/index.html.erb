@@ -16,6 +16,10 @@
           <p class="text-sm text-gray-400 mt-2">
             Criado em <%= l(company.created_at, format: :short) %>
           </p>
+
+          <div class="mt-4 flex gap-2">
+            <%= link_to "Editar", edit_company_path(company), class: "text-blue-400 hover:text-blue-300 text-sm font-medium" %>
+          </div>
         </div>
       <% end %>
     </div>
