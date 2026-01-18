@@ -1,6 +1,6 @@
 # Story 2.1: Criar Model e Migration de Companies com Soft Delete
 
-Status: ready-for-dev
+Status: completed
 
 ## Story
 
@@ -28,34 +28,34 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Gerar migration CreateCompanies (AC: #1-6)
-  - [ ] `rails generate migration CreateCompanies`
-  - [ ] Editar migration com estrutura completa
-  - [ ] Adicionar colunas: name, hourly_rate, active, timestamps
-  - [ ] Garantir uso de `if_not_exists: true` conforme ARQ18
-  - [ ] Adicionar índice em `active` com `if_not_exists: true`
+- [x] Gerar migration CreateCompanies (AC: #1-6)
+  - [x] `rails generate migration CreateCompanies`
+  - [x] Editar migration com estrutura completa
+  - [x] Adicionar colunas: name, hourly_rate, active, timestamps
+  - [x] Garantir uso de `if_not_exists: true` conforme ARQ18
+  - [x] Adicionar índice em `active` com `if_not_exists: true`
 
-- [ ] Criar Model Company (AC: #7-9)
-  - [ ] Criar `app/models/company.rb`
-  - [ ] Adicionar validações de presence para name e hourly_rate
-  - [ ] Adicionar validação numérica para hourly_rate (> 0)
-  - [ ] Adicionar scope `active`
-  - [ ] Implementar método `deactivate!`
-  - [ ] Implementar método `activate!`
-  - [ ] Adicionar override de `destroy` para prevenir deleção com time_entries
+- [x] Criar Model Company (AC: #7-9)
+  - [x] Criar `app/models/company.rb`
+  - [x] Adicionar validações de presence para name e hourly_rate
+  - [x] Adicionar validação numérica para hourly_rate (> 0)
+  - [x] Adicionar scope `active`
+  - [x] Implementar método `deactivate!`
+  - [x] Implementar método `activate!`
+  - [x] Adicionar override de `destroy` para prevenir deleção com time_entries
 
-- [ ] Executar e validar migration (AC: #10)
-  - [ ] `rails db:migrate`
-  - [ ] Verificar tabela criada no PostgreSQL
-  - [ ] `rails db:rollback` (testar reversibilidade)
-  - [ ] `rails db:migrate` novamente
+- [x] Executar e validar migration (AC: #10)
+  - [x] `rails db:migrate`
+  - [x] Verificar tabela criada no PostgreSQL
+  - [x] `rails db:rollback` (testar reversibilidade)
+  - [x] `rails db:migrate` novamente
 
-- [ ] Validar model no console
-  - [ ] `rails console`
-  - [ ] Criar empresa válida: `Company.create!(name: "Teste", hourly_rate: 100.00)`
-  - [ ] Testar validações: `Company.create(name: nil)` deve falhar
-  - [ ] Testar scope: `Company.active` retorna apenas ativas
-  - [ ] Testar deactivate: `company.deactivate!` muda active para false
+- [x] Validar model no console
+  - [x] `rails console`
+  - [x] Criar empresa válida: `Company.create!(name: "Teste", hourly_rate: 100.00)`
+  - [x] Testar validações: `Company.create(name: nil)` deve falhar
+  - [x] Testar scope: `Company.active` retorna apenas ativas
+  - [x] Testar deactivate: `company.deactivate!` muda active para false
 
 ## Dev Notes
 
@@ -205,25 +205,33 @@ company.active
 
 ### Agent Model Used
 
-_A ser preenchido pelo Dev Agent durante execução_
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
 
-_A ser preenchido pelo Dev Agent se houver problemas_
+Nenhum problema encontrado durante a execução.
 
 ### Completion Notes List
 
-_A ser preenchido pelo Dev Agent ao finalizar:_
-- [ ] Migration criada e executada com sucesso
-- [ ] Tabela companies existe no database
-- [ ] Model Company criado com validações
-- [ ] Scopes active/inactive funcionais
-- [ ] Métodos deactivate!/activate! testados
-- [ ] Validações testadas no console
+- [x] Migration criada e executada com sucesso
+- [x] Tabela companies existe no database
+- [x] Model Company criado com validações
+- [x] Scopes active/inactive funcionais
+- [x] Métodos deactivate!/activate! testados
+- [x] Validações testadas no console
+- [x] Factory criada para testes
+- [x] 20 testes RSpec criados e passando 100%
 
 ### File List
 
-_A ser preenchido pelo Dev Agent com arquivos criados/modificados_
+**Arquivos criados:**
+- `db/migrate/20260117213756_create_companies.rb` - Migration com if_not_exists
+- `app/models/company.rb` - Model com validações e soft delete
+- `spec/models/company_spec.rb` - 20 testes RSpec
+- `spec/factories/companies.rb` - Factory com traits
+
+**Arquivos modificados:**
+- Nenhum arquivo existente foi modificado
 
 ---
 
@@ -232,14 +240,14 @@ _A ser preenchido pelo Dev Agent com arquivos criados/modificados_
 ### ⚠️ VALIDAÇÕES OBRIGATÓRIAS
 
 1. **ANTES de marcar story como concluída, VERIFICAR:**
-   - [ ] Migration usa `create_table :companies, if_not_exists: true`
-   - [ ] Índice usa `if_not_exists: true`
-   - [ ] Campo `hourly_rate` é decimal(10,2), NÃO float
-   - [ ] Campo `active` tem default: true
-   - [ ] Model possui validações de presence
-   - [ ] Scopes active/inactive funcionam
-   - [ ] Métodos deactivate!/activate! funcionam
-   - [ ] `rails db:migrate` executa sem erros
+   - [x] Migration usa `create_table :companies, if_not_exists: true`
+   - [x] Índice usa `if_not_exists: true`
+   - [x] Campo `hourly_rate` é decimal(10,2), NÃO float
+   - [x] Campo `active` tem default: true
+   - [x] Model possui validações de presence
+   - [x] Scopes active/inactive funcionam
+   - [x] Métodos deactivate!/activate! funcionam
+   - [x] `rails db:migrate` executa sem erros
 
 2. **NÃO PROSSEGUIR para Story 2.2 se:**
    - Tabela companies não foi criada
