@@ -91,6 +91,51 @@ docker-compose run --rm web rails db:migrate
 docker-compose run --rm web rails generate migration NomeDaMigration
 ```
 
+## 🔐 Secrets e Credentials
+
+### Desenvolvimento Local
+
+1. Copie `.env.example` para `.env.development`:
+   ```bash
+   cp .env.example .env.development
+   ```
+
+2. Edite `.env.development` com suas credenciais locais
+
+### Produção (Railway)
+
+O projeto usa **Rails Encrypted Credentials** para secrets em produção:
+
+- `config/credentials.yml.enc` - Arquivo criptografado (versionado)
+- `config/master.key` - Chave de descriptografia (NÃO versionado)
+
+**Configuração no Railway:**
+1. Acesse o dashboard do Railway
+2. Adicione a variável de ambiente:
+   - `RAILS_MASTER_KEY` = conteúdo do arquivo `config/master.key`
+
+**Editar credentials localmente:**
+```bash
+EDITOR="code --wait" bin/rails credentials:edit
+```
+
+**Visualizar credentials:**
+```bash
+bin/rails credentials:show
+```
+
+**Acessar no código:**
+```ruby
+Rails.application.credentials.secret_key_base
+Rails.application.credentials.dig(:aws, :access_key_id)
+```
+
+### Backup da Master Key
+
+A `master.key` é crítica - sem ela, não há acesso às credentials. Mantenha backup seguro em:
+- Password Manager (1Password, Bitwarden)
+- Arquivo criptografado separado
+
 ## 🔄 CI/CD
 
 O projeto usa GitHub Actions para CI. A cada push ou pull request, são executados:

@@ -20,20 +20,20 @@ RSpec.describe User, type: :model do
     it "requires an email" do
       user = User.new(password: "password123")
       expect(user).not_to be_valid
-      expect(user.errors[:email]).to include("can't be blank")
+      expect(user.errors[:email]).to include("não pode ficar em branco")
     end
 
     it "requires a unique email" do
       User.create!(email: "test@example.com", password: "password123")
       user = User.new(email: "test@example.com", password: "password456")
       expect(user).not_to be_valid
-      expect(user.errors[:email]).to include("has already been taken")
+      expect(user.errors[:email]).to include("já está em uso")
     end
 
     it "requires a valid email format" do
       user = User.new(email: "invalid-email", password: "password123")
       expect(user).not_to be_valid
-      expect(user.errors[:email]).to include("is invalid")
+      expect(user.errors[:email]).to include("não é válido")
     end
 
     it "normalizes email to lowercase" do

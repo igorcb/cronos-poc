@@ -1,0 +1,37 @@
+<%= form_with(model: company, class: "space-y-6") do |form| %>
+  <% if company.errors.any? %>
+    <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md">
+      <h2 class="font-bold mb-2">
+        <%= pluralize(company.errors.count, "erro encontrado", "erros encontrados") %>:
+      </h2>
+      <ul class="list-disc list-inside space-y-1">
+        <% company.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, "Nome", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.text_field :name,
+        class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
+        placeholder: "Nome da empresa" %>
+  </div>
+
+  <div>
+    <%= form.label :hourly_rate, "Taxa R$/hora", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.number_field :hourly_rate,
+        step: 0.01,
+        min: 0.01,
+        class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
+        placeholder: "150.00" %>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-3 pt-4">
+    <%= form.submit "Salvar",
+        class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] cursor-pointer" %>
+    <%= link_to "Cancelar", companies_path,
+        class: "bg-gray-600 hover:bg-gray-500 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] inline-flex items-center justify-center" %>
+  </div>
+<% end %>

@@ -1,0 +1,48 @@
+pt-BR:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d/%m"
+      long: "%d de %B de %Y"
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d/%m %H:%M"
+      long: "%d de %B de %Y, %H:%M"
+
+  errors:
+    messages:
+      blank: "não pode ficar em branco"
+      taken: "já está em uso"
+      invalid: "não é válido"
+      not_a_number: "não é um número"
+      greater_than: "deve ser maior que %{count}"
+
+  activerecord:
+    models:
+      company: Empresa
+      user: Usuário
+    attributes:
+      company:
+        name: Nome
+        hourly_rate: Taxa por hora
+        active: Ativa
+      user:
+        email: Email
+        password: Senha
+    errors:
+      models:
+        company:
+          attributes:
+            name:
+              blank: "não pode ficar em branco"
+            hourly_rate:
+              blank: "não pode ficar em branco"
+              greater_than: "deve ser maior que %{count}"
+              not_a_number: "não é um número"
+        user:
+          attributes:
+            email:
+              blank: "não pode ficar em branco"
+              taken: "já está em uso"
+              invalid: "não é válido"
