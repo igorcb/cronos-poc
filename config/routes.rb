@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :companies, only: [ :index, :new, :create, :edit, :update, :destroy ]
+  resources :projects
 
   # Disabled public signup (single-user system)
   get  "signup", to: "registrations#new"
