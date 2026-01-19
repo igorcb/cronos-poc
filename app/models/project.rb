@@ -15,8 +15,8 @@
 
 class Project < ApplicationRecord
   belongs_to :company
-  # Note: TimeEntry association will be uncommented in Epic 4
-  # When TimeEntry is implemented, uncomment this line:
+  # TODO (Epic 4): Uncomment has_many :time_entries, dependent: :restrict_with_error
+  # This will enforce referential integrity when TimeEntry model is implemented
   # has_many :time_entries, dependent: :restrict_with_error
 
   validates :name, presence: true
