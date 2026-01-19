@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: companies
+#
+#  id          :integer          not null, primary key
+#  name        :string           not null
+#  hourly_rate :decimal(10, 2)   not null
+#  active      :boolean          default(TRUE), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_companies_on_active  (active)
+#
+
 require 'rails_helper'
 
 RSpec.describe Company, type: :model do
@@ -108,6 +124,16 @@ RSpec.describe Company, type: :model do
       it "allows destruction" do
         company = create(:company)
         expect { company.destroy }.to change(Company, :count).by(-1)
+      end
+    end
+
+    context "when company has projects" do
+      it "prevents destruction due to foreign key constraint" do
+        company = create(:company)
+        create(:project, company: company)
+
+        expect { company.destroy }.not_to change(Company, :count)
+        expect(company.errors[:base]).to be_present
       end
     end
   end
