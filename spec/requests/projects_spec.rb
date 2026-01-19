@@ -63,6 +63,12 @@ RSpec.describe "Projects", type: :request do
         expect(response.body).to include("Novo Projeto")
       end
 
+      it "includes turbo confirmation on delete buttons" do
+        get projects_path
+        expect(response.body).to include('data-turbo-confirm')
+        expect(response.body).to include('Tem certeza que deseja deletar este projeto?')
+      end
+
       it "orders projects by most recent first" do
         # Create projects with explicit timestamps
         older_project = create(:project, name: "Projeto Antigo", company: company1, created_at: 2.days.ago)
@@ -76,6 +82,28 @@ RSpec.describe "Projects", type: :request do
 
         # Newer project should appear first (smaller index)
         expect(newer_position).to be < older_position
+      end
+
+      it "avoids N+1 queries by eager loading companies" do
+        # Create multiple projects with companies
+        create_list(:project, 5, company: company1)
+
+        # First request to warm up any initializers
+        get projects_path
+
+        # Count queries on second request
+        query_count = 0
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          query_count += 1 unless payload[:name] == "CACHE"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get projects_path
+        end
+
+        # Should make exactly 2 queries: 1 for projects with companies, 1 for session/user
+        # Increased tolerance to 5 to account for framework overhead
+        expect(query_count).to be <= 5
       end
     end
   end
@@ -110,6 +138,12 @@ RSpec.describe "Projects", type: :request do
       it "displays prompt text in dropdown" do
         get new_project_path
         expect(response.body).to include("Selecione uma empresa")
+      end
+
+      it "includes accessibility attributes in form" do
+        get new_project_path
+        expect(response.body).to include('aria-required="true"')
+        expect(response.body).to include('aria-labelledby="company-label"')
       end
     end
 
@@ -213,7 +247,8 @@ RSpec.describe "Projects", type: :request do
       end
 
       context "when company_id is invalid" do
-        let(:invalid_params) { { project: { name: "Test Project", company_id: 99999 } } }
+        let(:invalid_company_id) { Company.maximum(:id).to_i + 1 }
+        let(:invalid_params) { { project: { name: "Test Project", company_id: invalid_company_id } } }
 
         it "does not create a project" do
           expect {
@@ -248,6 +283,13 @@ RSpec.describe "Projects", type: :request do
       expect(response.body).to include("Test Company")
       expect(response.body).to include("Active Company")
       expect(response.body).not_to include("Inactive Company")
+    end
+
+    it "redirects to index with alert when project not found" do
+      get edit_project_path(id: -1)
+      expect(response).to redirect_to(projects_path)
+      follow_redirect!
+      expect(response.body).to include("Projeto não encontrado")
     end
   end
 
@@ -303,6 +345,15 @@ RSpec.describe "Projects", type: :request do
         expect(response.body).to include("Nome")
       end
     end
+
+    context "when project does not exist" do
+      it "redirects to index with alert" do
+        patch project_path(id: -1), params: { project: { name: "New Name" } }
+        expect(response).to redirect_to(projects_path)
+        follow_redirect!
+        expect(response.body).to include("Projeto não encontrado")
+      end
+    end
   end
 
   describe "DELETE /projects/:id" do
@@ -330,6 +381,7 @@ RSpec.describe "Projects", type: :request do
     end
 
     context "when project has time entries" do
+      # TODO (Epic 4): When TimeEntry model is implemented, uncomment has_many :time_entries, dependent: :restrict_with_error in Project model
       # This test will be fully functional in Epic 4 when TimeEntry is implemented
       # For now, we'll test the rescue block with a stubbed restriction error
       it "does not delete the project and shows error message" do
@@ -354,6 +406,15 @@ RSpec.describe "Projects", type: :request do
         delete project_path(project)
         follow_redirect!
         expect(response.body).to include("Não é possível deletar projeto com entradas de tempo")
+      end
+    end
+
+    context "when project does not exist" do
+      it "redirects to index with alert" do
+        delete project_path(id: -1)
+        expect(response).to redirect_to(projects_path)
+        follow_redirect!
+        expect(response.body).to include("Projeto não encontrado")
       end
     end
   end

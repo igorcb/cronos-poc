@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
       redirect_to projects_path, notice: "Projeto cadastrado com sucesso"
     else
       @companies = Company.active.order(:name)
-      render :new, status: :unprocessable_content
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -46,6 +46,8 @@ class ProjectsController < ApplicationController
 
   def set_project
     @project = Project.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to projects_path, alert: "Projeto não encontrado"
   end
 
   def project_params
