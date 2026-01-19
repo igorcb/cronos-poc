@@ -126,5 +126,15 @@ RSpec.describe Company, type: :model do
         expect { company.destroy }.to change(Company, :count).by(-1)
       end
     end
+
+    context "when company has projects" do
+      it "prevents destruction due to foreign key constraint" do
+        company = create(:company)
+        create(:project, company: company)
+
+        expect { company.destroy }.not_to change(Company, :count)
+        expect(company.errors[:base]).to be_present
+      end
+    end
   end
 end

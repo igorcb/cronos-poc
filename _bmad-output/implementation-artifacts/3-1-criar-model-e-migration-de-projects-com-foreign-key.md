@@ -22,7 +22,7 @@ Status: review
 5. Índice criado em `company_id` com `if_not_exists: true`
 6. Model Project é criado com: `belongs_to :company`
 7. Model possui: `has_many :time_entries, dependent: :restrict_with_error`
-8. Validações: `validates :name, :company_id, presence: true`
+8. Validações: `validates :name, presence: true` (company_id validation is implicit via belongs_to)
 9. `rails db:migrate` executa sem erros
 
 ## Tasks / Subtasks
@@ -140,7 +140,13 @@ Project.create(name: nil)
 - `app/models/project.rb` (NEW)
 - `app/models/company.rb` (MODIFIED - added has_many :projects)
 - `spec/models/project_spec.rb` (NEW)
+- `spec/models/company_spec.rb` (MODIFIED - added FK constraint test)
 - `spec/factories/projects.rb` (NEW)
+- `spec/migrations/create_projects_spec.rb` (NEW)
+- `db/schema.rb` (AUTO-GENERATED)
+- `.rubocop_todo.yml` (AUTO-MODIFIED)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` (MODIFIED)
+- `_bmad-output/implementation-artifacts/3-1-criar-model-e-migration-de-projects-com-foreign-key.md` (MODIFIED - this file)
 
 ---
 

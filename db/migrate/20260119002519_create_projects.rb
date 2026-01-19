@@ -1,3 +1,5 @@
+# Foreign Keys:
+#  company_id  (company_id => companies.id)
 class CreateProjects < ActiveRecord::Migration[8.1]
   def change
     create_table :projects, if_not_exists: true do |t|

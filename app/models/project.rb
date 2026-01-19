@@ -15,8 +15,8 @@
 
 class Project < ApplicationRecord
   belongs_to :company
-  has_many :time_entries, dependent: :restrict_with_error
+  # Note: TimeEntry association will be uncommented in Epic 4
+  # has_many :time_entries, dependent: :restrict_with_error
 
   validates :name, presence: true
-  validates :company_id, presence: true
 end

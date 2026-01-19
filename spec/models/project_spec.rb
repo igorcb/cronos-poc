@@ -45,6 +45,12 @@ RSpec.describe Project, type: :model do
       expect(project).not_to be_valid
       expect(project.errors[:company]).to be_present
     end
+
+    it "requires a company_id (implicit via belongs_to)" do
+      project = Project.new(name: "Test Project", company_id: nil)
+      expect(project).not_to be_valid
+      expect(project.errors[:company]).to be_present
+    end
   end
 
   describe "database schema" do
@@ -70,4 +76,8 @@ RSpec.describe Project, type: :model do
       expect(company.projects).to include(project)
     end
   end
+
+  # Note: #destroy tests will be added when TimeEntry model is created in Epic 4
+  # The Project model has `has_many :time_entries, dependent: :restrict_with_error`
+  # which will prevent deletion when time entries exist
 end
