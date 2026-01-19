@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: companies
+#
+#  id          :integer          not null, primary key
+#  name        :string           not null
+#  hourly_rate :decimal(10, 2)   not null
+#  active      :boolean          default(TRUE), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_companies_on_active  (active)
+#
+
 FactoryBot.define do
   factory :company do
     sequence(:name) { |n| "Company #{n}" }

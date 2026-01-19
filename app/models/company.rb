@@ -15,6 +15,9 @@
 #
 
 class Company < ApplicationRecord
+  # Associações
+  has_many :projects, dependent: :restrict_with_error
+
   # Validações
   validates :name, presence: true
   validates :hourly_rate, presence: true, numericality: { greater_than: 0 }
