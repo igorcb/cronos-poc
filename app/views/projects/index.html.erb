@@ -16,6 +16,14 @@
           <p class="text-sm text-gray-400 mt-2">
             Criado em <%= l(project.created_at, format: :short) %>
           </p>
+          <div class="flex gap-2 mt-4">
+            <%= link_to "Editar", edit_project_path(project),
+                class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition" %>
+            <%= button_to "Deletar", project_path(project),
+                method: :delete,
+                data: { turbo_confirm: "Tem certeza que deseja deletar este projeto?" },
+                class: "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition" %>
+          </div>
         </div>
       <% end %>
     </div>

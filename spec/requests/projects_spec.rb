@@ -223,4 +223,138 @@ RSpec.describe "Projects", type: :request do
       end
     end
   end
+
+  describe "GET /projects/:id/edit" do
+    before { sign_in(user) }
+    let!(:company) { create(:company, name: "Test Company") }
+    let!(:project) { create(:project, name: "Existing Project", company: company) }
+
+    it "returns success" do
+      get edit_project_path(project)
+      expect(response).to have_http_status(:success)
+    end
+
+    it "displays the edit form with current values" do
+      get edit_project_path(project)
+      expect(response.body).to include("Editar Projeto")
+      expect(response.body).to include("Existing Project")
+    end
+
+    it "displays only active companies in dropdown" do
+      active_company = create(:company, name: "Active Company")
+      inactive_company = create(:company, :inactive, name: "Inactive Company")
+
+      get edit_project_path(project)
+      expect(response.body).to include("Test Company")
+      expect(response.body).to include("Active Company")
+      expect(response.body).not_to include("Inactive Company")
+    end
+  end
+
+  describe "PATCH /projects/:id" do
+    before { sign_in(user) }
+    let!(:company) { create(:company, name: "Original Company") }
+    let!(:new_company) { create(:company, name: "New Company") }
+    let!(:project) { create(:project, name: "Original Name", company: company) }
+
+    context "with valid parameters" do
+      let(:valid_params) { { project: { name: "Updated Name", company_id: new_company.id } } }
+
+      it "updates the project" do
+        patch project_path(project), params: valid_params
+        project.reload
+        expect(project.name).to eq("Updated Name")
+        expect(project.company_id).to eq(new_company.id)
+      end
+
+      it "redirects to projects index" do
+        patch project_path(project), params: valid_params
+        expect(response).to redirect_to(projects_path)
+      end
+
+      it "displays success flash message" do
+        patch project_path(project), params: valid_params
+        follow_redirect!
+        expect(response.body).to include("Projeto atualizado com sucesso")
+      end
+    end
+
+    context "with invalid parameters" do
+      let(:invalid_params) { { project: { name: "", company_id: company.id } } }
+
+      it "does not update the project" do
+        patch project_path(project), params: invalid_params
+        project.reload
+        expect(project.name).to eq("Original Name")
+      end
+
+      it "returns unprocessable entity status" do
+        patch project_path(project), params: invalid_params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "re-renders the edit form" do
+        patch project_path(project), params: invalid_params
+        expect(response.body).to include("Editar Projeto")
+      end
+
+      it "displays validation error" do
+        patch project_path(project), params: invalid_params
+        expect(response.body).to include("Nome")
+      end
+    end
+  end
+
+  describe "DELETE /projects/:id" do
+    before { sign_in(user) }
+    let!(:company) { create(:company, name: "Test Company") }
+    let!(:project) { create(:project, name: "Test Project", company: company) }
+
+    context "when project has no time entries" do
+      it "deletes the project" do
+        expect {
+          delete project_path(project)
+        }.to change(Project, :count).by(-1)
+      end
+
+      it "redirects to projects index" do
+        delete project_path(project)
+        expect(response).to redirect_to(projects_path)
+      end
+
+      it "displays success flash message" do
+        delete project_path(project)
+        follow_redirect!
+        expect(response.body).to include("Projeto deletado com sucesso")
+      end
+    end
+
+    context "when project has time entries" do
+      # This test will be fully functional in Epic 4 when TimeEntry is implemented
+      # For now, we'll test the rescue block with a stubbed restriction error
+      it "does not delete the project and shows error message" do
+        # Stub the destroy method to raise the restriction error
+        allow_any_instance_of(Project).to receive(:destroy).and_raise(ActiveRecord::DeleteRestrictionError.new("Cannot delete"))
+
+        expect {
+          delete project_path(project)
+        }.not_to change(Project, :count)
+      end
+
+      it "redirects to projects index with error message" do
+        allow_any_instance_of(Project).to receive(:destroy).and_raise(ActiveRecord::DeleteRestrictionError.new("Cannot delete"))
+
+        delete project_path(project)
+        expect(response).to redirect_to(projects_path)
+      end
+
+      it "displays restriction error flash message" do
+        allow_any_instance_of(Project).to receive(:destroy).and_raise(ActiveRecord::DeleteRestrictionError.new("Cannot delete"))
+
+        delete project_path(project)
+        follow_redirect!
+        expect(response.body).to include("Não é possível deletar projeto com entradas de tempo")
+      end
+    end
+  end
 end
