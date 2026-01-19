@@ -1,0 +1,226 @@
+require 'rails_helper'
+
+RSpec.describe "Projects", type: :request do
+  let!(:user) { User.create!(email: "test@example.com", password: "password123") }
+
+  # Helper to sign in user
+  def sign_in(user)
+    post session_path, params: { email: user.email, password: "password123" }
+  end
+
+  describe "authentication requirement" do
+    it "redirects to login when accessing index without authentication" do
+      get projects_path
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "redirects to login when accessing new without authentication" do
+      get new_project_path
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "redirects to login when accessing create without authentication" do
+      post projects_path, params: { project: { name: "Test", company_id: 1 } }
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "GET /projects" do
+    before { sign_in(user) }
+
+    context "when there are no projects" do
+      it "returns success" do
+        get projects_path
+        expect(response).to have_http_status(:success)
+      end
+
+      it "displays empty state message" do
+        get projects_path
+        expect(response.body).to include("Nenhum projeto cadastrado")
+      end
+    end
+
+    context "when there are projects" do
+      let!(:company1) { create(:company, name: "Empresa A") }
+      let!(:company2) { create(:company, name: "Empresa B") }
+      let!(:project1) { create(:project, name: "Projeto Alpha", company: company1) }
+      let!(:project2) { create(:project, name: "Projeto Beta", company: company2) }
+
+      it "displays all projects" do
+        get projects_path
+        expect(response.body).to include("Projeto Alpha")
+        expect(response.body).to include("Projeto Beta")
+      end
+
+      it "displays associated company names" do
+        get projects_path
+        expect(response.body).to include("Empresa A")
+        expect(response.body).to include("Empresa B")
+      end
+
+      it "displays link to create new project" do
+        get projects_path
+        expect(response.body).to include("Novo Projeto")
+      end
+
+      it "orders projects by most recent first" do
+        # Create projects with explicit timestamps
+        older_project = create(:project, name: "Projeto Antigo", company: company1, created_at: 2.days.ago)
+        newer_project = create(:project, name: "Projeto Recente", company: company2, created_at: 1.hour.ago)
+
+        get projects_path
+
+        # Extract positions of project names in HTML
+        older_position = response.body.index("Projeto Antigo")
+        newer_position = response.body.index("Projeto Recente")
+
+        # Newer project should appear first (smaller index)
+        expect(newer_position).to be < older_position
+      end
+    end
+  end
+
+  describe "GET /projects/new" do
+    before { sign_in(user) }
+
+    context "when there are active companies" do
+      let!(:company1) { create(:company, name: "Empresa A") }
+      let!(:company2) { create(:company, name: "Empresa B") }
+      let!(:inactive_company) { create(:company, :inactive, name: "Empresa Inativa") }
+
+      it "returns success" do
+        get new_project_path
+        expect(response).to have_http_status(:success)
+      end
+
+      it "displays the project form" do
+        get new_project_path
+        expect(response.body).to include("Novo Projeto")
+        expect(response.body).to include("Nome do Projeto")
+        expect(response.body).to include("Empresa")
+      end
+
+      it "displays only active companies in dropdown" do
+        get new_project_path
+        expect(response.body).to include("Empresa A")
+        expect(response.body).to include("Empresa B")
+        expect(response.body).not_to include("Empresa Inativa")
+      end
+
+      it "displays prompt text in dropdown" do
+        get new_project_path
+        expect(response.body).to include("Selecione uma empresa")
+      end
+    end
+
+    context "when there are no active companies" do
+      it "returns success" do
+        get new_project_path
+        expect(response).to have_http_status(:success)
+      end
+
+      it "displays empty dropdown with prompt only" do
+        get new_project_path
+        expect(response.body).to include("Selecione uma empresa")
+        expect(response.body).to include("Nome do Projeto")
+      end
+    end
+  end
+
+  describe "POST /projects" do
+    before { sign_in(user) }
+    let!(:company) { create(:company, name: "Test Company") }
+
+    context "with valid parameters" do
+      let(:valid_params) { { project: { name: "Novo Projeto", company_id: company.id } } }
+
+      it "creates a new project" do
+        expect {
+          post projects_path, params: valid_params
+        }.to change(Project, :count).by(1)
+      end
+
+      it "redirects to projects index" do
+        post projects_path, params: valid_params
+        expect(response).to redirect_to(projects_path)
+      end
+
+      it "displays success flash message" do
+        post projects_path, params: valid_params
+        follow_redirect!
+        expect(response.body).to include("Projeto cadastrado com sucesso")
+      end
+
+      it "creates project with correct attributes" do
+        post projects_path, params: valid_params
+        project = Project.last
+        expect(project.name).to eq("Novo Projeto")
+        expect(project.company_id).to eq(company.id)
+      end
+
+      it "associates project with correct company" do
+        post projects_path, params: valid_params
+        project = Project.last
+        expect(project.company).to eq(company)
+      end
+    end
+
+    context "with invalid parameters" do
+      context "when name is missing" do
+        let(:invalid_params) { { project: { name: "", company_id: company.id } } }
+
+        it "does not create a project" do
+          expect {
+            post projects_path, params: invalid_params
+          }.not_to change(Project, :count)
+        end
+
+        it "returns unprocessable entity status" do
+          post projects_path, params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "displays validation error" do
+          post projects_path, params: invalid_params
+          expect(response.body).to include("Nome")
+        end
+
+        it "re-renders the form with active companies" do
+          post projects_path, params: invalid_params
+          expect(response.body).to include("Novo Projeto")
+          expect(response.body).to include("Test Company")
+        end
+      end
+
+      context "when company_id is missing" do
+        let(:invalid_params) { { project: { name: "Test Project", company_id: "" } } }
+
+        it "does not create a project" do
+          expect {
+            post projects_path, params: invalid_params
+          }.not_to change(Project, :count)
+        end
+
+        it "returns unprocessable entity status" do
+          post projects_path, params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "displays validation error" do
+          post projects_path, params: invalid_params
+          expect(response.body).to include("Empresa")
+        end
+      end
+
+      context "when company_id is invalid" do
+        let(:invalid_params) { { project: { name: "Test Project", company_id: 99999 } } }
+
+        it "does not create a project" do
+          expect {
+            post projects_path, params: invalid_params
+          }.not_to change(Project, :count)
+        end
+      end
+    end
+  end
+end

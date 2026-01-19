@@ -64,7 +64,7 @@ development_status:
   # Epic 3: Gestão de Projetos
   epic-3: in-progress
   3-1-criar-model-e-migration-de-projects-com-foreign-key: done
-  3-2-implementar-crud-de-projects-index-e-new-create: ready-for-dev
+  3-2-implementar-crud-de-projects-index-e-new-create: done  # Code reviewed and fixed
   3-3-implementar-edit-update-e-destroy-de-projects: ready-for-dev
   3-4-criar-factory-e-testes-para-project: ready-for-dev
   epic-3-retrospective: optional
