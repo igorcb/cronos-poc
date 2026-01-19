@@ -1,6 +1,6 @@
 # Story 3.1: Criar Model e Migration de Projects com Foreign Key
 
-Status: review
+Status: done
 
 ## Story
 
