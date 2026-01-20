@@ -69,14 +69,14 @@ development_status:
   3-4-criar-factory-e-testes-para-project: done  # Code reviewed: 5 issues fixed (2 HIGH, 3 MEDIUM, 0 LOW)
   epic-3-retrospective: done  # 2026-01-19 - Significant architectural change proposed for Epic 4
 
-  # Epic 4: Registro de Entradas de Tempo
-  epic-4: backlog
-  4-1-criar-model-timeentry-com-validacoes-tripla-camada: ready-for-dev
-  4-2-implementar-concern-calculable-para-calculos-automaticos: ready-for-dev
-  4-3-adicionar-validacoes-de-model-e-client-side: ready-for-dev
-  4-4-implementar-crud-de-timeentries-new-create: ready-for-dev
-  4-5-implementar-project-selector-dinamico-com-stimulus: ready-for-dev
-  4-6-criar-factories-e-testes-para-timeentry: ready-for-dev
+  # Epic 4: Task Management (refatorado de TimeEntry)
+  epic-4: in-progress
+  4-1-criar-model-task-com-validacoes-tripla-camada: done
+  4-2-criar-model-taskitem-com-validacoes-calculos: ready-for-dev
+  4-3-implementar-logica-status-automatico-calculos: ready-for-dev
+  4-4-implementar-crud-de-tasks-new-create: ready-for-dev
+  4-5-implementar-project-selector-dinamico-stimulus: ready-for-dev
+  4-6-criar-factories-testes-para-task-taskitem: ready-for-dev
   epic-4-retrospective: optional
 
   # Epic 5: Visualização e Totalizadores
