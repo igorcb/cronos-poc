@@ -1,14 +1,15 @@
 # Story 4.2: Criar Model TaskItem com Validações e Cálculos
 
-Status: backlog
+Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
+<!-- Ultimate context engine analysis completed - comprehensive developer guide created -->
 
 ## Story
 
 **Como** desenvolvedor,
-**Quero** criar tabela task_items para registro granular de horas,
-**Para que** cada período de trabalho seja registrado individualmente.
+**Quero** criar tabela task_items para registro granular de horas com cálculos automáticos,
+**Para que** cada período de trabalho seja registrado individualmente com precisão.
 
 ## Acceptance Criteria
 
@@ -55,19 +56,439 @@ Status: backlog
   - [ ] Adicionar validação `validates :start_time, presence: true`
   - [ ] Adicionar validação `validates :end_time, presence: true`
   - [ ] Adicionar validação `validates :status, presence: true, inclusion: { in: %w[pending completed] }`
+  - [ ] Adicionar enum status: { pending: 'pending', completed: 'completed' }
+    - **NOTA CRÍTICA:** Usar sintaxe Rails 8.1: `enum :status, { pending: 'pending', completed: 'completed' }` (sem `_prefix: true` por conflito)
   - [ ] Adicionar validação customizada `end_time_after_start_time`
   - [ ] Adicionar validação customizada `task_must_not_be_delivered`
-  - [ ] Adicionar enum status: { pending: 'pending', completed: 'completed' }, _prefix: true
   - [ ] Adicionar callback `before_save :calculate_hours_worked`
   - [ ] Adicionar callback `after_save :update_task_status`
   - [ ] Adicionar callback `after_destroy :update_task_status`
-  - [ ] Implementar método `calculate_hours_worked` (private)
-  - [ ] Implementar método `end_time_after_start_time` (private)
-  - [ ] Implementar método `task_must_not_be_delivered` (private)
-  - [ ] Implementar método `update_task_status` (private)
-  - [ ] Adicionar scopes: `scope :pending`, `scope :completed`, `scope :by_task`, `scope :recent_first`
+  - [ ] Adicionar scopes: `scope :by_task`, `scope :recent_first`
 
 - [ ] Testar migrations
   - [ ] Executar `rails db:migrate`
   - [ ] Verificar se tabela foi criada
   - [ ] Verificar se índices foram criados
+
+## Dev Notes
+
+### EPIC CONTEXT: Task Management System
+**Epic 4 foi reformulado de TimeEntry para Task + TaskItem architecture**
+
+**Conceito Chave:**
+- **Task** = Tarefa gerenciável (status automático, valores calculados)
+- **TaskItem** = Registro granular de horas dentro de uma Task
+- TaskItems controlam o status da Task pai automaticamente via callbacks
+
+**Regra de Status Automático (CRÍTICA):**
+```
+Task.status = 'pending'  quando último TaskItem criado está 'pending'
+Task.status = 'completed' quando último TaskItem criado está 'completed'
+Task.status = 'delivered' é DEFINIDO MANUALMENTE e torna Task READ-ONLY
+```
+
+**Algoritmo de Recálculo:**
+```ruby
+def recalculate_status!
+  return if delivered? # Não recalcula se já está delivered
+
+  latest_item = task_items.order(created_at: :desc).first
+  return unless latest_item
+
+  new_status = latest_item.completed? ? 'completed' : 'pending'
+  update_column(:status, new_status) if status != new_status
+end
+```
+
+### Architecture Patterns & Constraints
+
+**Padrão de Validação Tripla Camada (ARQ17-ARQ21):**
+1. **Migration Level:** `null: false`, check constraints
+2. **Model Level:** `validates`, custom validators
+3. **Client Level:** Stimulus controllers
+
+**Padrão `if_not_exists: true` (ARQ18 - OBRIGATÓRIO):**
+```ruby
+create_table :task_items, if_not_exists: true do |t|
+  t.references :task, null: false, foreign_key: true, if_not_exists: true
+  # ...
+end
+
+add_index :task_items, :task_id, if_not_exists: true
+```
+
+**Cálculos de Tempo (CRÍTICO - ARQ26):**
+- `hours_worked` é calculado automaticamente via `before_save`
+- Fórmula: `(end_time - start_time) / 3600.0` (converte segundos para horas)
+- Arredondamento: `.round(2)` para 2 casas decimais
+
+**Tipos de Dados (ARQ25):**
+- `time` para `start_time` e `end_time` (hora apenas, sem data)
+- `decimal precision: 10, scale: 2` para `hours_worked` (NUNCA Float)
+
+**Callbacks ActiveRecord (CRÍTICO):**
+```ruby
+before_save :calculate_hours_worked        # Calcula duração
+after_save :update_task_status             # Recalcula status da Task
+after_destroy :update_task_status          # Recalcula ao deletar
+```
+
+### Project Structure Notes
+
+**Paths (Rails Conventions):**
+- Migration: `db/migrate/YYYYMMDDHHMMSS_create_task_items.rb`
+- Model: `app/models/task_item.rb`
+- Factory: `spec/factories/task_items.rb`
+- Tests: `spec/models/task_item_spec.rb`
+
+**Naming Conventions (ARQ43-ARQ44):**
+- Table: `task_items` (snake_case plural)
+- Model: `TaskItem` (CamelCase singular)
+- Foreign Key: `task_id` (snake_case singular + _id)
+
+**Associações:**
+```ruby
+# app/models/task_item.rb
+class TaskItem < ApplicationRecord
+  belongs_to :task
+end
+
+# app/models/task.rb
+class Task < ApplicationRecord
+  has_many :task_items, dependent: :destroy
+end
+```
+
+### Testing Standards Summary
+
+**RSpec Structure:**
+- Model tests: `spec/models/task_item_spec.rb`
+- Factory: `spec/factories/task_items.rb`
+
+**FactoryBot Pattern (Baseado em Story 4.1):**
+```ruby
+# spec/factories/task_items.rb
+FactoryBot.define do
+  factory :task_item do
+    task { association :task }
+    start_time { '09:00' }
+    end_time { '10:30' }
+    status { 'pending' }
+
+    trait :completed do
+      status { 'completed' }
+    end
+
+    trait :long_duration do
+      start_time { '08:00' }
+      end_time { '18:30' }
+    end
+  end
+end
+```
+
+**Test Coverage Required (Baseado em Task Spec - 34 testes):**
+1. Validations de presence (task, start_time, end_time, status)
+2. Enum status (pending, completed)
+3. Validação customizada: `end_time_after_start_time`
+4. Validação customizada: `task_must_not_be_delivered`
+5. Callback `calculate_hours_worked`:
+   - Calcula corretamente (end_time - start_time) / 3600.0
+   - Testar 09:00 as 10:30 => 1.5
+   - Testar 08:00 as 12:15 => 4.25
+6. Callback `update_task_status`:
+   - Chama `task.recalculate_status!`
+7. Scopes: `by_task`, `recent_first`
+8. Associação `belongs_to :task`
+
+**RSpec Matchers (Shoulda Matchers):**
+```ruby
+it { should belong_to(:task) }
+it { should validate_presence_of(:task) }
+it { should validate_presence_of(:start_time) }
+it { should validate_presence_of(:end_time) }
+it { should define_enum_for(:status).with_values(%w[pending completed]) }
+```
+
+### Previous Story Intelligence (Story 4.1)
+
+**Aprendizados Críticos da Implementação de Task:**
+
+1. **Enum sem `_prefix: true` (Rails 8.1):**
+   - Usar sintaxe: `enum :status, { pending: 'pending', completed: 'completed', delivered: 'delivered' }`
+   - Prefix gera conflito com métodos do Rails 8.1
+   - **Aplicar para TaskItem também**
+
+2. **Scopes individuais removidos:**
+   - Não criar scopes `:pending`, `:completed` como scopes individuais
+   - Eles já são métodos do enum
+   - **TaskItem deve seguir o mesmo padrão**
+
+3. **Validação customizada pattern:**
+   ```ruby
+   validate :custom_validation_name
+
+   private
+
+   def custom_validation_name
+     if condition_fails
+       errors.add(:field, "mensagem de erro")
+     end
+   end
+   ```
+
+4. **Callbacks usando métodos privados:**
+   ```ruby
+   before_save :callback_method
+
+   private
+
+   def callback_method
+     # lógica aqui
+   end
+   ```
+
+5. **Testes comprehensivos:**
+   - Story 4.1 implementou 34 testes
+   - TaskItem deve ter cobertura similar (~25-30 testes)
+   - Testar TODOS os callbacks, validações e cálculos
+
+6. **Estrutura de Model (padrão estabelecido):**
+   ```ruby
+   class TaskItem < ApplicationRecord
+     # ASSOCIAÇÕES
+     belongs_to :task
+
+     # VALIDAÇÕES
+     validates :field, presence: true
+     validate :custom_validation
+
+     # ENUMS
+     enum :status, { pending: 'pending', completed: 'completed' }
+
+     # CALLBACKS
+     before_save :method_name
+     after_save :method_name
+     after_destroy :method_name
+
+     # SCOPES
+     scope :by_task, ->(task_id) { where(task_id: task_id) }
+     scope :recent_first, -> { order(created_at: :desc) }
+
+     private
+
+     # métodos privados aqui
+   end
+   ```
+
+### Git Intelligence
+
+**Commits Recentes (Contexto de Padrões):**
+```
+b37b2d7 docs: Update story status and documentation after code review
+3670602 feat: Implement Task model with validations and tests - Story 4.1
+12ee2f3 feat: Refactor Epic 4 from TimeEntry to Task/TaskItem model
+```
+
+**Padrão de Commit Mensagem:**
+- `feat:` para novas features
+- Story number no título
+- Descrição concisa do que foi implementado
+
+**Arquivos Modificados em Story 4.1 (Referência):**
+- `app/models/task.rb` (novo)
+- `app/models/company.rb` (associação adicionada)
+- `app/models/project.rb` (associação adicionada)
+- `spec/factories/tasks.rb` (novo)
+- `spec/models/task_spec.rb` (novo, 34 testes)
+
+**TaskItem deve seguir o mesmo padrão.**
+
+### Critical Implementation Details
+
+**1. Cálculo de Duração (MATÉMATICA CRÍTICA):**
+```ruby
+def calculate_hours_worked
+  return unless start_time.present? && end_time.present?
+
+  duration_in_seconds = (end_time - start_time)
+  self.hours_worked = (duration_in_seconds / 3600.0).round(2)
+end
+```
+
+**Exemplos:**
+- 09:00 as 10:30 = (10:30 - 09:00) = 5400 segundos / 3600 = 1.5 horas ✅
+- 08:00 as 12:15 = (12:15 - 08:00) = 14700 segundos / 3600 = 4.08333... → 4.08 horas ⚠️
+
+**IMPORTANTE:** Testar arredondamento correto!
+
+**2. Validação de Task Delivered:**
+```ruby
+def task_must_not_be_delivered
+  return unless task.present?
+
+  if task.delivered?
+    errors.add(:base, "Não é possível modificar itens de tarefa já entregue")
+  end
+end
+```
+
+**Comportamento Esperado:**
+- Bloqueia criação de TaskItem se Task.status == 'delivered'
+- Bloqueia edição de TaskItem se Task.status == 'delivered'
+- Bloqueia deleção de TaskItem se Task.status == 'delivered'
+
+**3. Callback de Atualização de Status:**
+```ruby
+def update_task_status
+  task.recalculate_status!
+end
+```
+
+**Fluxo:**
+1. TaskItem criado → `after_save` → chama `task.recalculate_status!`
+2. TaskItem editado → `after_save` → chama `task.recalculate_status!`
+3. TaskItem deletado → `after_destroy` → chama `task.recalculate_status!`
+
+**4. Índice Composto `[task_id, created_at]`:**
+```ruby
+add_index :task_items, [:task_id, :created_at], if_not_exists: true
+```
+
+**Propósito:** Otimizar queries como:
+```ruby
+task.task_items.order(created_at: :desc) # usado em recalculate_status!
+```
+
+### Potential Pitfalls & Prevention
+
+**1. Enum Prefix Conflit (Rails 8.1):**
+❌ ERRADO: `enum status: { pending: 'pending', completed: 'completed' }, _prefix: true`
+✅ CORRETO: `enum :status, { pending: 'pending', completed: 'completed' }`
+
+**2. Esquecer `if_not_exists: true` em migrations:**
+❌ ERRADO: `create_table :task_items do |t|`
+✅ CORRETO: `create_table :task_items, if_not_exists: true do |t|`
+
+**3. Usar Float ao invés de Decimal:**
+❌ ERRADO: `t.float :hours_worked`
+✅ CORRETO: `t.decimal :hours_worked, precision: 10, scale: 2`
+
+**4. Cálculo de Duração Incorreto:**
+❌ ERRADO: `(end_time - start_time)` (retorna segundos, não horas)
+❌ ERRADO: `(end_time - start_time) / 60` (retorna minutos, não horas)
+✅ CORRETO: `(end_time - start_time) / 3600.0` (divide por segundos na hora)
+
+**5. Validação de Task Delivered no Callback Errado:**
+❌ ERRADO: `before_create :task_must_not_be_delivered` (só valida na criação)
+✅ CORRETO: `validate :task_must_not_be_delivered, on: [:create, :update]` (valida sempre)
+
+**6. Esquecer de Chamar Callbacks em Testes:**
+```ruby
+# Testar callback explicitamente
+it 'calculates hours_worked before save' do
+  item = build(:task_item, start_time: '09:00', end_time: '10:30')
+  expect { item.save }.to change(item, :hours_worked).from(nil).to(1.5)
+end
+```
+
+### References
+
+**Epic 4 Technical Spec:**
+- [epics.md lines 570-596](/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/epics.md#L570-L596) - Story 4.2 requirements
+- [epics.md lines 766-793](/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/epics.md#L766-L793) - TaskItem schema definition
+- [epics.md lines 916-993](/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/epics.md#L916-L993) - TaskItem model completo
+
+**Architecture Decisions:**
+- [architecture.md lines 99-127](/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/architecture.md#L99-L127) - Modelagem de dados (ARQ17-ARQ27)
+- [architecture.md lines 492-498](/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/architecture.md#L492-L498) - Validação tripla camada
+
+**Previous Story (4.1) Implementation:**
+- [4-1-criar-model-task-com-validacoes-tripla-camada.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/4-1-criar-model-task-com-validacoes-tripla-camada.md) - Padrões de implementação estabelecidos
+
+**Code Examples from Epic Spec:**
+```ruby
+# app/models/task_item.rb (reference from epics.md lines 916-993)
+class TaskItem < ApplicationRecord
+  belongs_to :task
+
+  validates :task_id, presence: true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
+  validates :status, presence: true, inclusion: { in: %w[pending completed] }
+
+  validate :end_time_after_start_time
+  validate :task_must_not_be_delivered, on: [:create, :update]
+
+  enum :status, { pending: 'pending', completed: 'completed' }
+
+  before_save :calculate_hours_worked
+  after_save :update_task_status
+  after_destroy :update_task_status
+
+  scope :pending, -> { where(status: 'pending') }
+  scope :completed, -> { where(status: 'completed') }
+  scope :by_task, ->(task_id) { where(task_id: task_id) }
+  scope :recent_first, -> { order(created_at: :desc) }
+
+  private
+
+  def end_time_after_start_time
+    return unless start_time.present? && end_time.present?
+
+    if end_time <= start_time
+      errors.add(:end_time, "deve ser posterior à hora inicial")
+    end
+  end
+
+  def task_must_not_be_delivered
+    return unless task.present?
+
+    if task.delivered?
+      errors.add(:base, "Não é possível modificar itens de tarefa já entregue")
+    end
+  end
+
+  def calculate_hours_worked
+    return unless start_time.present? && end_time.present?
+
+    duration_in_seconds = (end_time - start_time)
+    self.hours_worked = (duration_in_seconds / 3600.0).round(2)
+  end
+
+  def update_task_status
+    task.recalculate_status!
+  end
+end
+```
+
+### Definition of Done
+
+- [ ] Migration executada sem erros
+- [ ] Model TaskItem criado com todas as validações e callbacks
+- [ ] Associação `belongs_to :task` funcionando
+- [ ] Enum status funcionando (pending, completed)
+- [ ] Validação `end_time_after_start_time` testada e passando
+- [ ] Validação `task_must_not_be_delivered` testada e passando
+- [ ] Callback `calculate_hours_worked` testado e calculando corretamente
+- [ ] Callback `update_task_status` testado e atualizando Task
+- [ ] Factory criada com traits para diferentes cenários
+- [ ] Testes RSpec criados e passando (100%)
+- [ ] Bullet não detecta N+1 queries em testes
+- [ ] Rubocop não detecta ofensas críticas
+- [ ] Schema anotado com `annotate`
+- [ ] Task model atualizado com `has_many :task_items, dependent: :destroy`
+
+## Dev Agent Record
+
+### Agent Model Used
+*To be filled by Dev agent*
+
+### Debug Log References
+*To be filled by Dev agent*
+
+### Completion Notes List
+*To be filled by Dev agent*
+
+### File List
+*To be filled by Dev agent*

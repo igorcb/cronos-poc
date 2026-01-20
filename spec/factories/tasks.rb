@@ -32,8 +32,8 @@
 FactoryBot.define do
   factory :task do
     sequence(:name) { |n| "Task #{n}" }
-    association :company
-    association :project
+    company
+    project { association :project, company: company }
     start_date { 1.week.ago.to_date }
     end_date { 1.week.from_now.to_date }
     status { 'pending' }
