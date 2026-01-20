@@ -17,6 +17,7 @@
 class Company < ApplicationRecord
   # Associações
   has_many :projects, dependent: :restrict_with_error
+  has_many :tasks, dependent: :restrict_with_error
 
   # Validações
   validates :name, presence: true
