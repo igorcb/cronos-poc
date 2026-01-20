@@ -72,7 +72,7 @@ development_status:
   # Epic 4: Task Management (refatorado de TimeEntry)
   epic-4: in-progress
   4-1-criar-model-task-com-validacoes-tripla-camada: done
-  4-2-criar-model-taskitem-com-validacoes-calculos: ready-for-dev
+  4-2-criar-model-taskitem-com-validacoes-calculos: ready-for-dev  # Story criada com contexto completo - aguardando dev
   4-3-implementar-logica-status-automatico-calculos: ready-for-dev
   4-4-implementar-crud-de-tasks-new-create: ready-for-dev
   4-5-implementar-project-selector-dinamico-stimulus: ready-for-dev
