@@ -62,12 +62,12 @@ development_status:
   epic-2-retrospective: optional
 
   # Epic 3: Gestão de Projetos
-  epic-3: in-progress
+  epic-3: done
   3-1-criar-model-e-migration-de-projects-com-foreign-key: done
   3-2-implementar-crud-de-projects-index-e-new-create: done  # Code reviewed and fixed
   3-3-implementar-edit-update-e-destroy-de-projects: done  # Code reviewed: 10 issues fixed (5 HIGH, 3 MEDIUM, 2 LOW)
-  3-4-criar-factory-e-testes-para-project: ready-for-dev
-  epic-3-retrospective: optional
+  3-4-criar-factory-e-testes-para-project: done  # Code reviewed: 5 issues fixed (2 HIGH, 3 MEDIUM, 0 LOW)
+  epic-3-retrospective: done  # 2026-01-19 - Significant architectural change proposed for Epic 4
 
   # Epic 4: Registro de Entradas de Tempo
   epic-4: backlog
