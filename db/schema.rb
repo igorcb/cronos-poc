@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_19_002519) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_20_224736) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,38 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_19_002519) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "task_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.time "end_time", null: false
+    t.decimal "hours_worked", precision: 10, scale: 2, null: false
+    t.time "start_time", null: false
+    t.string "status", default: "pending", null: false
+    t.bigint "task_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_task_items_on_status"
+    t.index ["task_id", "created_at"], name: "index_task_items_on_task_id_and_created_at"
+    t.index ["task_id"], name: "index_task_items_on_task_id"
+  end
+
+  create_table "tasks", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.date "delivery_date"
+    t.date "end_date"
+    t.decimal "estimated_hours", precision: 10, scale: 2, null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.bigint "project_id", null: false
+    t.date "start_date", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "validated_hours", precision: 10, scale: 2
+    t.index ["company_id", "project_id"], name: "index_tasks_on_company_id_and_project_id"
+    t.index ["company_id"], name: "index_tasks_on_company_id"
+    t.index ["project_id"], name: "index_tasks_on_project_id"
+    t.index ["status"], name: "index_tasks_on_status"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", null: false
@@ -52,4 +84,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_19_002519) do
 
   add_foreign_key "projects", "companies"
   add_foreign_key "sessions", "users"
+  add_foreign_key "task_items", "tasks"
+  add_foreign_key "tasks", "companies"
+  add_foreign_key "tasks", "projects"
 end
