@@ -18,6 +18,6 @@ class CreateTasks < ActiveRecord::Migration[8.1]
     add_index :tasks, :company_id, if_not_exists: true
     add_index :tasks, :project_id, if_not_exists: true
     add_index :tasks, :status, if_not_exists: true
-    add_index :tasks, [:company_id, :project_id], if_not_exists: true
+    add_index :tasks, [ :company_id, :project_id ], if_not_exists: true
   end
 end

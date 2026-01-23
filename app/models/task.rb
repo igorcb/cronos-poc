@@ -36,7 +36,7 @@ class Task < ApplicationRecord
   has_many :task_items, dependent: :destroy
 
   # Enums
-  enum :status, { pending: 'pending', completed: 'completed', delivered: 'delivered' }
+  enum :status, { pending: "pending", completed: "completed", delivered: "delivered" }
 
   # Validações
   validates :name, presence: true
@@ -60,7 +60,7 @@ class Task < ApplicationRecord
     return unless project && company
 
     if project.company_id != company_id
-      errors.add(:project, 'deve pertencer à mesma empresa')
+      errors.add(:project, "deve pertencer à mesma empresa")
     end
   end
 end

@@ -168,7 +168,7 @@ RSpec.describe Task, type: :model do
 
         company_tasks = Task.by_company(company.id)
         expect(company_tasks.count).to eq(3)
-        expect(company_tasks.pluck(:company_id).uniq).to eq([company.id])
+        expect(company_tasks.pluck(:company_id).uniq).to eq([ company.id ])
       end
     end
 
@@ -179,7 +179,7 @@ RSpec.describe Task, type: :model do
 
         project_tasks = Task.by_project(project.id)
         expect(project_tasks.count).to eq(3)
-        expect(project_tasks.pluck(:project_id).uniq).to eq([project.id])
+        expect(project_tasks.pluck(:project_id).uniq).to eq([ project.id ])
       end
     end
   end
