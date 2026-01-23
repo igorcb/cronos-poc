@@ -9,10 +9,13 @@ class TaskItem < ApplicationRecord
   validates :status, presence: true, inclusion: { in: %w[pending completed] }
 
   validate :end_time_after_start_time
-  validate :task_must_not_be_delivered, on: [:create, :update]
+  validate :task_must_not_be_delivered, on: [ :create, :update ]
+
+  # Callbacks de validação para destroy
+  before_destroy :prevent_destroy_if_task_delivered
 
   # ENUMS
-  enum :status, { pending: 'pending', completed: 'completed' }
+  enum :status, { pending: "pending", completed: "completed" }
 
   # CALLBACKS
   before_save :calculate_hours_worked
@@ -55,7 +58,14 @@ class TaskItem < ApplicationRecord
   def update_task_status
     # NOTE: recalculate_status! será implementado na Story 4.3
     # Por ora, adicionamos um stub para evitar erros
-    return unless task.present?
-    # task.recalculate_status! # TODO: Implementar na Story 4.3
+    task.present? # task.recalculate_status! # TODO: Implementar na Story 4.3
+  end
+
+  # Callback: previne deleção se task foi delivered
+  def prevent_destroy_if_task_delivered
+    return unless task.present? && task.delivered?
+
+    errors.add(:base, "Não é possível modificar itens de tarefa já entregue")
+    throw(:abort)
   end
 end

@@ -11,6 +11,6 @@ class CreateTaskItems < ActiveRecord::Migration[8.1]
 
     add_index :task_items, :task_id, if_not_exists: true
     add_index :task_items, :status, if_not_exists: true
-    add_index :task_items, [:task_id, :created_at], if_not_exists: true
+    add_index :task_items, [ :task_id, :created_at ], if_not_exists: true
   end
 end

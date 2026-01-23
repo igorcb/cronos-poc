@@ -83,6 +83,17 @@ RSpec.describe TaskItem, type: :model do
         expect(task_item.errors[:base]).to include("Não é possível modificar itens de tarefa já entregue")
       end
 
+      it "prevents destroy when task is delivered" do
+        task_item = create(:task_item, task: task)
+        task.update!(status: 'delivered')
+
+        result = task_item.destroy
+        expect(result).to be_falsey
+        expect(task_item.errors[:base]).to include("Não é possível modificar itens de tarefa já entregue")
+        # TaskItem ainda deve existir no banco
+        expect(TaskItem.find_by(id: task_item.id)).not_to be_nil
+      end
+
       it "allows modifications when task is not delivered" do
         task_item = build(:task_item, task: task)
         expect(task_item).to be_valid
