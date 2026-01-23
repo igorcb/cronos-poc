@@ -15,6 +15,7 @@
 
 class Project < ApplicationRecord
   belongs_to :company
+  has_many :tasks, dependent: :restrict_with_error
   # TODO (Epic 4): Uncomment has_many :time_entries, dependent: :restrict_with_error
   # This will enforce referential integrity when TimeEntry model is implemented
   # has_many :time_entries, dependent: :restrict_with_error
