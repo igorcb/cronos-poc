@@ -223,7 +223,7 @@ GEM
       racc (~> 1.4)
     ostruct (0.6.3)
     parallel (1.27.0)
-    parser (3.3.10.0)
+    parser (3.3.10.1)
       ast (~> 2.4.1)
       racc
     pg (1.6.3)
@@ -346,7 +346,7 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
-    rubocop-rspec (3.8.0)
+    rubocop-rspec (3.9.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
     ruby-progressbar (1.13.0)
@@ -455,7 +455,7 @@ DEPENDENCIES
   rubocop (~> 1.60)
   rubocop-rails (~> 2.34)
   rubocop-rails-omakase
-  rubocop-rspec (~> 3.8)
+  rubocop-rspec (~> 3.9)
   selenium-webdriver
   shoulda-matchers (~> 7.0)
   solid_cable
