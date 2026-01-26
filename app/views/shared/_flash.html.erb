@@ -3,10 +3,10 @@
     <% flash.each do |type, message| %>
       <%
         bg_color = case type.to_sym
-                   when :notice then "bg-green-900/50 border-green-500 text-green-200"
-                   when :alert then "bg-red-900/50 border-red-500 text-red-200"
-                   when :warning then "bg-yellow-900/50 border-yellow-500 text-yellow-200"
-                   else "bg-blue-900/50 border-blue-500 text-blue-200"
+                   when :notice then "bg-green-800 border-green-700 text-green-100"
+                   when :alert then "bg-red-800 border-red-700 text-red-100"
+                   when :warning then "bg-yellow-800 border-yellow-700 text-yellow-100"
+                   else "bg-blue-800 border-blue-700 text-blue-100"
                    end
       %>
       <div class="<%= bg_color %> border px-4 py-3 rounded mb-4 flex justify-between items-center"
