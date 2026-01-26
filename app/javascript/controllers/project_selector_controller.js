@@ -2,12 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["companySelect", "projectSelect"]
-  static values = { companyId: String }
 
   connect() {
-    if (this.hasCompanySelectTarget) {
-      this.companySelectTarget.addEventListener("change", () => this.loadProjects())
-    }
+    // Stimulus actions handle events via data-action in the view
+    // No manual addEventListener needed - prevents duplicate events
   }
 
   loadProjects() {
@@ -22,12 +20,23 @@ export default class extends Controller {
     this.projectSelectTarget.disabled = true
 
     fetch(url)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
+        return response.json()
+      })
       .then(projects => {
         this.populateProjectSelect(projects)
       })
       .catch(error => {
         console.error("Error loading projects:", error)
+        // Show user-friendly error feedback
+        this.projectSelectTarget.innerHTML = ""
+        const errorOption = document.createElement("option")
+        errorOption.value = ""
+        errorOption.textContent = "Erro ao carregar projetos"
+        this.projectSelectTarget.appendChild(errorOption)
       })
       .finally(() => {
         this.projectSelectTarget.disabled = false

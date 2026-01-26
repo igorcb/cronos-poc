@@ -448,6 +448,22 @@ RSpec.describe "Projects", type: :request do
         expect((end_time - start_time) * 1000).to be < 300
       end
     end
+
+    context "input validation" do
+      it "returns bad request for non-numeric company_id" do
+        get projects_projects_path(company_id: "invalid"), as: :json
+
+        expect(response).to have_http_status(:bad_request)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to be_present
+      end
+
+      it "returns bad request for SQL injection attempt" do
+        get projects_projects_path(company_id: "1 OR 1=1"), as: :json
+
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
   end
 
   describe "DELETE /projects/:id" do

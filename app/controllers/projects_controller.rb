@@ -1,11 +1,13 @@
 class ProjectsController < ApplicationController
   before_action :require_authentication
   before_action :set_project, only: [ :edit, :update, :destroy ]
+  before_action :validate_company_id_param, only: [:projects_json]
 
   def index
     @projects = Project.includes(:company).order(created_at: :desc)
   end
 
+  # JSON API for dynamic project filtering by company
   def projects_json
     @projects = if params[:company_id].present?
                   Project.where(company_id: params[:company_id]).order(:name)
@@ -13,7 +15,7 @@ class ProjectsController < ApplicationController
                   Project.all.order(:name)
                 end
 
-    render json: @projects.map { |p| { id: p.id, name: p.name } }
+    render json: @projects.select(:id, :name).map { |p| { id: p.id, name: p.name } }
   end
 
   def new
@@ -53,6 +55,14 @@ class ProjectsController < ApplicationController
   end
 
   private
+
+  def validate_company_id_param
+    return unless params[:company_id].present?
+
+    unless params[:company_id].to_s.match?(/^\d+$/)
+      render json: { error: "Invalid company_id parameter" }, status: :bad_request
+    end
+  end
 
   def set_project
     @project = Project.find(params[:id])
