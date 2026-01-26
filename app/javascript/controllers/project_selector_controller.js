@@ -3,90 +3,62 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["companySelect", "projectSelect"]
 
-  // Store loaded projects for validation
-  loadedProjects = []
-
   connect() {
-    // Controller initialized
+    // Stimulus actions handle events via data-action in the view
+    // No manual addEventListener needed - prevents duplicate events
   }
 
-  async loadProjects() {
+  loadProjects() {
     const companyId = this.companySelectTarget.value
 
-    // Clear and disable project select
-    this.projectSelectTarget.innerHTML = '<option value="">Carregando...</option>'
+    // Build URL based on whether company is selected
+    const url = companyId
+      ? `/projects.json?company_id=${companyId}`
+      : `/projects.json`
+
+    // Disable project select during loading
     this.projectSelectTarget.disabled = true
-    this.loadedProjects = []
 
-    if (!companyId) {
-      this.projectSelectTarget.innerHTML = '<option value="">Selecione uma empresa primeiro</option>'
-      return
-    }
-
-    try {
-      const response = await fetch(`/tasks/projects?company_id=${companyId}`, {
-        headers: {
-          "Accept": "application/json"
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         }
+        return response.json()
       })
-
-      if (!response.ok) {
-        throw new Error("Failed to load projects")
-      }
-
-      const projects = await response.json()
-      this.loadedProjects = projects
-
-      // Clear existing options
-      this.projectSelectTarget.innerHTML = '<option value="">Selecione um projeto</option>'
-
-      // Add new options
-      projects.forEach(project => {
-        const option = document.createElement("option")
-        option.value = project.id
-        option.textContent = project.name
-        option.dataset.companyId = companyId  // Store company_id for validation
-        this.projectSelectTarget.appendChild(option)
+      .then(projects => {
+        this.populateProjectSelect(projects)
       })
-
-      // Enable select if there are projects
-      this.projectSelectTarget.disabled = projects.length === 0
-
-      // Update hint text
-      const hint = document.getElementById('project-hint')
-      if (hint) {
-        hint.textContent = `${projects.length} projeto(s) disponível(is)`
-      }
-    } catch (error) {
-      console.error("Error loading projects:", error)
-      this.projectSelectTarget.innerHTML = '<option value="">Erro ao carregar projetos</option>'
-
-      const hint = document.getElementById('project-hint')
-      if (hint) {
-        hint.textContent = 'Erro ao carregar projetos'
-      }
-    }
+      .catch(error => {
+        console.error("Error loading projects:", error)
+        // Show user-friendly error feedback
+        this.projectSelectTarget.innerHTML = ""
+        const errorOption = document.createElement("option")
+        errorOption.value = ""
+        errorOption.textContent = "Erro ao carregar projetos"
+        this.projectSelectTarget.appendChild(errorOption)
+      })
+      .finally(() => {
+        this.projectSelectTarget.disabled = false
+      })
   }
 
-  validateBeforeSubmit(event) {
-    const selectedCompanyId = this.companySelectTarget.value
-    const selectedProjectId = this.projectSelectTarget.value
+  populateProjectSelect(projects) {
+    // Clear existing options
+    this.projectSelectTarget.innerHTML = ""
 
-    if (!selectedProjectId) {
-      event.preventDefault()
-      alert('Por favor, selecione um projeto')
-      return false
-    }
+    // Add default option
+    const defaultOption = document.createElement("option")
+    defaultOption.value = ""
+    defaultOption.textContent = "Selecione um projeto"
+    this.projectSelectTarget.appendChild(defaultOption)
 
-    // Validate that selected project belongs to selected company
-    const selectedOption = this.projectSelectTarget.querySelector(`option[value="${selectedProjectId}"]`)
-    if (selectedOption && selectedOption.dataset.companyId !== selectedCompanyId) {
-      event.preventDefault()
-      alert('O projeto selecionado não pertence à empresa escolhida. Por favor, selecione novamente.')
-      this.loadProjects()  // Reload projects to reset
-      return false
-    }
-
-    return true
+    // Add project options
+    projects.forEach(project => {
+      const option = document.createElement("option")
+      option.value = project.id
+      option.textContent = project.name
+      this.projectSelectTarget.appendChild(option)
+    })
   }
 }

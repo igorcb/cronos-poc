@@ -1,4 +1,72 @@
-<div class="max-w-lg mx-auto">
-  <h1 class="text-3xl font-bold text-white mb-6">Nova Tarefa</h1>
-  <%= render "form", task: @task, companies: @companies %>
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white shadow-sm rounded-lg p-6">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Nova Tarefa</h1>
+
+    <%= form_with(model: @task, data: { controller: "project-selector" }) do |f| %>
+      <% if @task.errors.any? %>
+        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+          <h2 class="text-lg font-semibold text-red-800 mb-2">
+            <%= pluralize(@task.errors.count, "erro impede", "erros impedem") %> esta tarefa de ser salva:
+          </h2>
+          <ul class="list-disc list-inside text-red-700">
+            <% @task.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="space-y-6">
+        <!-- Name -->
+        <div>
+          <%= f.label :name, "Nome da Tarefa", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :name, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+        </div>
+
+        <!-- Start Date -->
+        <div>
+          <%= f.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.date_field :start_date, value: Date.today, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+        </div>
+
+        <!-- Estimated Hours -->
+        <div>
+          <%= f.label :estimated_hours, "Horas Estimadas", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.number_field :estimated_hours, step: 0.01, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <%= f.label :company_id, "Empresa", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.collection_select :company_id, @companies, :id, :name,
+              { prompt: "Selecione uma empresa" },
+              data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects" },
+              class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+              required: true %>
+        </div>
+
+        <!-- Project -->
+        <div>
+          <%= f.label :project_id, "Projeto", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.select :project_id, [],
+              { prompt: "Selecione um projeto" },
+              data: { project_selector_target: "projectSelect" },
+              class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+              required: true %>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <%= f.label :notes, "Observações", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_area :notes, rows: 4, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex items-center justify-end space-x-4">
+          <%= link_to "Cancelar", root_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors" %>
+          <%= f.submit "Criar Tarefa", class: "px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>

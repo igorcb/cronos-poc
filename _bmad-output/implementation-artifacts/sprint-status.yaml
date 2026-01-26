@@ -75,7 +75,7 @@ development_status:
   4-2-criar-model-taskitem-com-validacoes-calculos: done
   4-3-implementar-logica-status-automatico-calculos: done  # All ACs met, 84 tests passing
   4-4-implementar-crud-de-tasks-new-create: done  # Code review completed: 6 MEDIUM + 2 LOW issues fixed
-  4-5-implementar-project-selector-dinamico-stimulus: ready-for-dev
+  4-5-implementar-project-selector-dinamico-stimulus: done  # Code reviewed: 6 issues fixed (5 MEDIUM, 1 LOW)
   4-6-criar-factories-testes-para-task-taskitem: ready-for-dev
   epic-4-retrospective: optional
 
