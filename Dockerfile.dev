@@ -23,7 +23,7 @@ RUN groupadd -g ${GROUP_ID} appuser && \
 WORKDIR /app
 
 # Install Rails globally
-RUN gem install rails -v 8.1.1
+RUN gem install rails -v 8.1.2
 
 # Change ownership
 RUN chown -R appuser:appuser /app /usr/local/bundle

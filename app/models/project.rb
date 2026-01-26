@@ -20,6 +20,6 @@ class Project < ApplicationRecord
   # This will enforce referential integrity when TimeEntry model is implemented
   # has_many :time_entries, dependent: :restrict_with_error
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :company_id }
   validates :company_id, presence: true
 end

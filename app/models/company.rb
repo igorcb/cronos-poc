@@ -20,7 +20,7 @@ class Company < ApplicationRecord
   has_many :tasks, dependent: :restrict_with_error
 
   # Validações
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validates :hourly_rate, presence: true, numericality: { greater_than: 0 }
 
   # Scopes

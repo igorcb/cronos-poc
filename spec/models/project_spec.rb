@@ -77,3 +77,27 @@ RSpec.describe Project, type: :model do
   # The Project model has `has_many :time_entries, dependent: :restrict_with_error`
   # which will prevent deletion when time entries exist
 end
+require 'rails_helper'
+
+RSpec.describe Project, type: :model do
+  let(:company) { Company.create!(name: 'Empresa Teste', hourly_rate: 100) }
+
+  describe 'validations' do
+    it 'permite projetos com mesmo nome em empresas diferentes' do
+      company2 = Company.create!(name: 'Outra Empresa', hourly_rate: 150)
+
+      Project.create!(name: 'Projeto Alpha', company: company)
+      project2 = Project.new(name: 'Projeto Alpha', company: company2)
+
+      expect(project2).to be_valid
+    end
+
+    it 'não permite projetos com mesmo nome na mesma empresa' do
+      Project.create!(name: 'Projeto Beta', company: company)
+      project2 = Project.new(name: 'Projeto Beta', company: company)
+
+      expect(project2).not_to be_valid
+      expect(project2.errors[:name]).to include('já está em uso')
+    end
+  end
+end
