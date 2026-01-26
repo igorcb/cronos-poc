@@ -81,5 +81,5 @@ group :development do
   gem "rubocop-rails", "~> 2.34", require: false
   gem "rubocop-rspec", "~> 3.9", require: false
   # gem "bullet", "~> 7.1"  # Disabled: Bullet 7.2.0 does not support Rails 8.1.1 yet
-  gem "annotate"  # Sem constraint de versão para pegar a mais recente compatível
+  gem "annotate", "~> 2.6"  # Annotate models with schema info (3.x incompatible with Rails 8)
 end
