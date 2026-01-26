@@ -4,6 +4,10 @@ on:
   pull_request:
   push:
     branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 env:
   RUBY_VERSION: 3.4.8
@@ -38,6 +42,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -47,6 +53,15 @@ jobs:
 
       - name: Lint Ruby code
         run: bin/rubocop --parallel --auto-correct-all
+
+      - name: Commit auto-corrected files
+        if: github.event_name == 'pull_request'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git diff --quiet && git diff --staged --quiet || git commit -m "style: Auto-correct RuboCop offenses [skip ci]"
+          git push
 
   test:
     name: Tests
