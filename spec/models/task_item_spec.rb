@@ -238,4 +238,67 @@ RSpec.describe TaskItem, type: :model do
       expect { task_item.save }.to change(TaskItem, :count).by(1)
     end
   end
+
+  describe "#update_task_status callback" do
+    let(:task) { create(:task, status: "pending") }
+
+    context "when task_item is created" do
+      it "recalculates task status to pending when task_item is pending" do
+        create(:task_item, :pending, task: task)
+        task.reload
+
+        expect(task.status).to eq("pending")
+      end
+
+      it "recalculates task status to completed when task_item is completed" do
+        create(:task_item, :completed, task: task)
+        task.reload
+
+        expect(task.status).to eq("completed")
+      end
+    end
+
+    context "when task_item is updated" do
+      it "recalculates task status when task_item changes from pending to completed" do
+        task_item = create(:task_item, :pending, task: task)
+        task_item.update!(status: "completed")
+        task.reload
+
+        expect(task.status).to eq("completed")
+      end
+
+      it "recalculates task status when task_item changes from completed to pending" do
+        task.update!(status: "completed")
+        task_item = create(:task_item, :completed, task: task, created_at: 1.day.ago)
+        new_item = create(:task_item, :pending, task: task)
+
+        task.reload
+        expect(task.status).to eq("pending")
+      end
+    end
+
+    context "when task_item is destroyed" do
+      it "recalculates task status when latest task_item is deleted" do
+        completed_item = create(:task_item, :completed, task: task, created_at: 1.day.ago)
+        pending_item = create(:task_item, :pending, task: task, created_at: Date.today)
+
+        expect(task.status).to eq("pending")
+
+        pending_item.destroy
+        task.reload
+
+        expect(task.status).to eq("completed")
+      end
+    end
+
+    context "when task is delivered" do
+      it "prevents creating new task_items" do
+        task.update!(status: "delivered")
+
+        expect {
+          create(:task_item, :completed, task: task)
+        }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+  end
 end

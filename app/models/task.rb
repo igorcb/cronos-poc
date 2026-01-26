@@ -54,6 +54,32 @@ class Task < ApplicationRecord
   scope :by_company, ->(company_id) { where(company_id:) }
   scope :by_project, ->(project_id) { where(project_id:) }
 
+  # Callbacks
+  before_save :update_end_date, if: :status_changed_to_completed?
+  before_save :update_delivery_date, if: :status_changed_to_delivered?
+  after_save :recalculate_validated_hours
+
+  # Métodos públicos de cálculo
+  def total_hours
+    task_items.sum(:hours_worked)
+  end
+
+  def calculated_value
+    return 0 unless company&.hourly_rate
+
+    company.hourly_rate * total_hours
+  end
+
+  def recalculate_status!
+    return if delivered?
+
+    latest_item = task_items.order(created_at: :desc).first
+    return unless latest_item
+
+    new_status = latest_item.completed? ? "completed" : "pending"
+    update_column(:status, new_status) if status != new_status
+  end
+
   private
 
   def project_must_belong_to_company
@@ -62,5 +88,28 @@ class Task < ApplicationRecord
     if project.company_id != company_id
       errors.add(:project, "deve pertencer à mesma empresa")
     end
+  end
+
+  def status_changed_to_completed?
+    status_changed? && completed?
+  end
+
+  def update_end_date
+    self.end_date = Date.today
+  end
+
+  def status_changed_to_delivered?
+    status_changed? && delivered?
+  end
+
+  def update_delivery_date
+    self.delivery_date = Date.today
+  end
+
+  def recalculate_validated_hours
+    new_hours = total_hours
+    return if validated_hours == new_hours
+
+    update_column(:validated_hours, new_hours)
   end
 end

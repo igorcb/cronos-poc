@@ -240,8 +240,12 @@ RSpec.describe Task, type: :model do
     end
 
     it "maintains decimal precision for validated_hours" do
-      task = create(:task, company: company, project: project, validated_hours: 37.50)
-      expect(task.reload.validated_hours).to eq(BigDecimal("37.50"))
+      task = create(:task, company: company, project: project)
+      create(:task_item, task: task, start_time: "09:00", end_time: "12:30", hours_worked: 3.5)
+
+      task.reload
+      expect(task.validated_hours).to be_a(BigDecimal)
+      expect(task.validated_hours.to_f).to eq(3.5)
     end
   end
 
@@ -277,6 +281,119 @@ RSpec.describe Task, type: :model do
       task = build(:task, :with_notes, company: company, project: project)
       expect(task).to be_valid
       expect(task.notes).to be_present
+    end
+  end
+
+  describe "#total_hours" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "returns 0 when no task_items exist" do
+      expect(task.total_hours).to eq(0)
+    end
+
+    it "sums hours_worked from all task_items" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
+      create(:task_item, task: task, start_time: "16:00", end_time: "18:30", hours_worked: 2.5)
+
+      expect(task.total_hours).to eq(6.0)
+    end
+  end
+
+  describe "#calculated_value" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "calculates total_hours * hourly_rate" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
+
+      expect(task.calculated_value).to eq(350.0) # 3.5 hours * 100
+    end
+  end
+
+  describe "#recalculate_status!" do
+    let(:company) { create(:company) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project, status: "pending") }
+
+    context "when task is delivered" do
+      it "does not recalculate status" do
+        task.update!(status: "delivered")
+
+        expect { task.recalculate_status! }.not_to change(task, :status)
+        expect(task.status).to eq("delivered")
+      end
+    end
+
+    context "when no task_items exist" do
+      it "does not change status" do
+        expect { task.recalculate_status! }.not_to change(task, :status)
+        expect(task.status).to eq("pending")
+      end
+    end
+
+    context "when latest task_item is pending" do
+      it "keeps task status as pending" do
+        create(:task_item, :completed, task: task, created_at: 1.day.ago)
+        create(:task_item, :pending, task: task, created_at: Date.today)
+
+        task.recalculate_status!
+        expect(task.reload.status).to eq("pending")
+      end
+    end
+
+    context "when latest task_item is completed" do
+      it "sets task status to completed" do
+        pending_item = create(:task_item, :pending, task: task, created_at: 1.day.ago)
+        task.reload
+        expect(task.status).to eq("pending")
+
+        completed_item = create(:task_item, :completed, task: task, created_at: Date.today)
+        task.reload
+        expect(task.status).to eq("completed")
+      end
+    end
+  end
+
+  describe "callbacks" do
+    let(:company) { create(:company) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    describe "#update_end_date" do
+      it "sets end_date when status changes to completed" do
+        task.update!(status: "completed")
+        expect(task.end_date).to eq(Date.today)
+      end
+
+      it "does not change end_date when status changes from completed to delivered" do
+        task.update!(status: "completed")
+        original_end_date = task.end_date
+        task.update!(status: "delivered")
+
+        expect(task.end_date).to eq(original_end_date)
+      end
+    end
+
+    describe "#update_delivery_date" do
+      it "sets delivery_date when status changes to delivered" do
+        task.update!(status: "delivered")
+        expect(task.delivery_date).to eq(Date.today)
+      end
+    end
+
+    describe "#recalculate_validated_hours" do
+      it "updates validated_hours after task_items are created" do
+        create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
+        create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
+
+        task.reload
+        expect(task.validated_hours.to_f).to eq(3.5)
+      end
     end
   end
 end

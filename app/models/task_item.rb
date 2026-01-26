@@ -56,9 +56,7 @@ class TaskItem < ApplicationRecord
 
   # Callback: atualiza status da Task pai
   def update_task_status
-    # NOTE: recalculate_status! será implementado na Story 4.3
-    # Por ora, adicionamos um stub para evitar erros
-    task.present? # task.recalculate_status! # TODO: Implementar na Story 4.3
+    task&.recalculate_status!
   end
 
   # Callback: previne deleção se task foi delivered
