@@ -61,20 +61,20 @@
   <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
     <h2 class="text-lg font-semibold text-white mb-4">Ações Rápidas</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div class="border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer">
+      <%= link_to new_task_path, class: "block border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer" do %>
         <h3 class="font-medium text-white mb-2">⏱️ Nova Entrada</h3>
         <p class="text-sm text-gray-400">Registrar horas trabalhadas</p>
-      </div>
+      <% end %>
 
-      <div class="border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer">
+      <%= link_to companies_path, class: "block border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer" do %>
         <h3 class="font-medium text-white mb-2">🏢 Empresas</h3>
         <p class="text-sm text-gray-400">Gerenciar empresas</p>
-      </div>
+      <% end %>
 
-      <div class="border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer">
+      <%= link_to projects_path, class: "block border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer" do %>
         <h3 class="font-medium text-white mb-2">📁 Projetos</h3>
         <p class="text-sm text-gray-400">Gerenciar projetos</p>
-      </div>
+      <% end %>
     </div>
   </div>
 </div>
