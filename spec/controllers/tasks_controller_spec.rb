@@ -27,7 +27,7 @@ RSpec.describe TasksController, type: :controller do
 
     it "assigns active companies" do
       get :new
-      expect(assigns(:companies)).to eq([company])
+      expect(assigns(:companies)).to eq([ company ])
     end
   end
 

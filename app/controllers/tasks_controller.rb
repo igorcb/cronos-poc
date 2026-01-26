@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :require_authentication
-  before_action :set_companies, only: [:new, :create]
+  before_action :set_companies, only: [ :new, :create ]
 
   def new
     @task = Task.new
@@ -22,12 +22,13 @@ class TasksController < ApplicationController
                   Project.where(company_id: params[:company_id])
                          .order(:name)
                          .select(:id, :name)
-                else
+    else
                   Project.none
-                end
+    end
 
-    render json: @projects.as_json(only: [:id, :name])
+    render json: @projects.as_json(only: [ :id, :name ])
   end
+
 
   private
 

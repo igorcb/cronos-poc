@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :companies, only: [ :index, :new, :create, :edit, :update, :destroy ]
   resources :projects
-  resources :tasks, only: [:new, :create] do
+  resources :tasks, only: [ :new, :create ] do
     get :projects, on: :collection
   end
 
