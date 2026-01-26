@@ -6,6 +6,16 @@ class ProjectsController < ApplicationController
     @projects = Project.includes(:company).order(created_at: :desc)
   end
 
+  def projects_json
+    @projects = if params[:company_id].present?
+                  Project.where(company_id: params[:company_id]).order(:name)
+                else
+                  Project.all.order(:name)
+                end
+
+    render json: @projects.map { |p| { id: p.id, name: p.name } }
+  end
+
   def new
     @project = Project.new
     @companies = Company.active.order(:name)

@@ -2,7 +2,12 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :companies, only: [ :index, :new, :create, :edit, :update, :destroy ]
-  resources :projects
+  resources :tasks, only: [ :new, :create ]
+  resources :projects do
+    collection do
+      get :projects, to: "projects#projects_json", defaults: { format: :json }
+    end
+  end
 
   # Disabled public signup (single-user system)
   get  "signup", to: "registrations#new"

@@ -356,6 +356,100 @@ RSpec.describe "Projects", type: :request do
     end
   end
 
+  describe "GET /projects/projects (JSON API)" do
+    let(:user) { User.create!(email: "jsonapi@example.com", password: "password123") }
+    let(:company) { create(:company) }
+    let(:company2) { create(:company, name: "Another Company") }
+    let(:project1) { create(:project, company: company, name: "Project Alpha") }
+    let(:project2) { create(:project, company: company, name: "Project Beta") }
+    let(:project3) { create(:project, company: company2, name: "Project Gamma") }
+
+    before { sign_in(user) }
+
+    context "when company_id is provided" do
+      it "returns only projects for that company" do
+        project1
+        project2
+        project3
+
+        get projects_projects_path(company_id: company.id), as: :json
+
+        expect(response).to be_successful
+        projects = JSON.parse(response.body)
+
+        expect(projects.length).to eq(2)
+        expect(projects.map { |p| p["id"] }).to include(project1.id, project2.id)
+        expect(projects.map { |p| p["id"] }).not_to include(project3.id)
+      end
+
+      it "returns projects ordered by name" do
+        project2
+        project1
+
+        get projects_projects_path(company_id: company.id), as: :json
+
+        expect(response).to be_successful
+        projects = JSON.parse(response.body)
+
+        expect(projects.first["name"]).to eq("Project Alpha")
+        expect(projects.second["name"]).to eq("Project Beta")
+      end
+
+      it "returns empty array for non-existent company" do
+        get projects_projects_path(company_id: 99999), as: :json
+
+        expect(response).to be_successful
+        projects = JSON.parse(response.body)
+
+        expect(projects).to eq([])
+      end
+    end
+
+    context "when company_id is not provided" do
+      it "returns all projects ordered by name" do
+        project3
+        project1
+        project2
+
+        get projects_projects_path, as: :json
+
+        expect(response).to be_successful
+        projects = JSON.parse(response.body)
+
+        expect(projects.length).to eq(3)
+        expect(projects.map { |p| p["name"] }).to eq(["Project Alpha", "Project Beta", "Project Gamma"])
+      end
+    end
+
+    context "JSON structure" do
+      it "returns only id and name fields" do
+        project1
+
+        get projects_projects_path(company_id: company.id), as: :json
+
+        expect(response).to be_successful
+        projects = JSON.parse(response.body)
+
+        expect(projects.first.keys).to match_array(["id", "name"])
+        expect(projects.first["id"]).to eq(project1.id)
+        expect(projects.first["name"]).to eq(project1.name)
+      end
+    end
+
+    context "performance" do
+      it "responds in less than 300ms" do
+        create_list(:project, 10, company: company)
+
+        start_time = Time.now
+        get projects_projects_path(company_id: company.id), as: :json
+        end_time = Time.now
+
+        expect(response).to be_successful
+        expect((end_time - start_time) * 1000).to be < 300
+      end
+    end
+  end
+
   describe "DELETE /projects/:id" do
     before { sign_in(user) }
     let!(:company) { create(:company, name: "Test Company") }
