@@ -76,8 +76,8 @@ development_status:
   4-3-implementar-logica-status-automatico-calculos: done  # All ACs met, 84 tests passing
   4-4-implementar-crud-de-tasks-new-create: done  # Code review completed: 6 MEDIUM + 2 LOW issues fixed
   4-5-implementar-project-selector-dinamico-stimulus: done  # Code reviewed: 6 issues fixed (5 MEDIUM, 1 LOW)
-  4-6-criar-factories-testes-para-task-taskitem: ready-for-dev
-  epic-4-retrospective: optional
+  4-6-criar-factories-testes-para-task-taskitem: done  # Factories com Faker, bug fix recalculate_validated_hours
+  epic-4-retrospective: ready-for-dev
 
   # Epic 5: Visualização e Totalizadores
   epic-5: backlog
