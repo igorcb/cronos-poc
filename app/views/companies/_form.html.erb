@@ -1,6 +1,6 @@
 <%= form_with(model: company, class: "space-y-6") do |form| %>
   <% if company.errors.any? %>
-    <div role="alert" class="bg-red-600 border border-red-500 text-white px-4 py-3 rounded-md">
+    <div role="alert" class="bg-red-800 border border-red-700 text-red-100 px-4 py-3 rounded-md">
       <h2 class="font-bold mb-2">
         <%= pluralize(company.errors.count, "erro encontrado:", "erros encontrados:") %>
       </h2>
