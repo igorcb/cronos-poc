@@ -57,7 +57,6 @@ class TaskItem < ApplicationRecord
   # Callback: atualiza status da Task pai
   def update_task_status
     task&.recalculate_status!
-    task&.update_column(:validated_hours, task.total_hours)
   end
 
   # Callback: previne deleção se task foi delivered
