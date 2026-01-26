@@ -417,7 +417,7 @@ RSpec.describe "Projects", type: :request do
         projects = JSON.parse(response.body)
 
         expect(projects.length).to eq(3)
-        expect(projects.map { |p| p["name"] }).to eq(["Project Alpha", "Project Beta", "Project Gamma"])
+        expect(projects.map { |p| p["name"] }).to eq([ "Project Alpha", "Project Beta", "Project Gamma" ])
       end
     end
 
@@ -430,7 +430,7 @@ RSpec.describe "Projects", type: :request do
         expect(response).to be_successful
         projects = JSON.parse(response.body)
 
-        expect(projects.first.keys).to match_array(["id", "name"])
+        expect(projects.first.keys).to match_array([ "id", "name" ])
         expect(projects.first["id"]).to eq(project1.id)
         expect(projects.first["name"]).to eq(project1.name)
       end

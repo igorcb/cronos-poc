@@ -8,7 +8,7 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(task_params)
-    @task.status = 'pending'
+    @task.status = "pending"
 
     if @task.save
       redirect_to root_path, notice: "Tarefa criada com sucesso"
