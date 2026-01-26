@@ -15,3 +15,22 @@ user.save!
 
 puts "Admin user created/updated: #{user.email}"
 puts "Login at: http://localhost:3000/session/new"
+
+# Create companies
+puts "\nCreating companies..."
+
+companies = [
+  { name: 'NobeSistema', hourly_rate: 45 },
+  { name: 'Jedis', hourly_rate: 50 },
+  { name: 'Solix Gescam', hourly_rate: 60 }
+]
+
+companies.each do |company_data|
+  company = Company.find_or_initialize_by(name: company_data[:name])
+  company.hourly_rate = company_data[:hourly_rate]
+  company.active = true
+  company.save!
+  puts "  ✓ #{company.name} - R$ #{company.hourly_rate}/h"
+end
+
+puts "\nCreated #{Company.count} companies"
