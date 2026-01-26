@@ -80,6 +80,13 @@ class Task < ApplicationRecord
     update_column(:status, new_status) if status != new_status
   end
 
+  def recalculate_validated_hours
+    new_hours = total_hours
+    return if validated_hours == new_hours
+
+    update_column(:validated_hours, new_hours)
+  end
+
   private
 
   def project_must_belong_to_company
@@ -104,12 +111,5 @@ class Task < ApplicationRecord
 
   def update_delivery_date
     self.delivery_date = Date.today
-  end
-
-  def recalculate_validated_hours
-    new_hours = total_hours
-    return if validated_hours == new_hours
-
-    update_column(:validated_hours, new_hours)
   end
 end

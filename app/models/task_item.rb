@@ -54,9 +54,10 @@ class TaskItem < ApplicationRecord
     self.hours_worked = (duration_in_seconds / 3600.0).round(2)
   end
 
-  # Callback: atualiza status da Task pai
+  # Callback: atualiza status e horas da Task pai
   def update_task_status
     task&.recalculate_status!
+    task&.recalculate_validated_hours
   end
 
   # Callback: previne deleção se task foi delivered

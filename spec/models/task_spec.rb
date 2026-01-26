@@ -241,9 +241,9 @@ RSpec.describe Task, type: :model do
 
     it "maintains decimal precision for validated_hours" do
       task = create(:task, company: company, project: project)
-      create(:task_item, task: task, start_time: "09:00", end_time: "12:30", hours_worked: 3.5)
-
+      create(:task_item, task: task, start_time: "09:00", end_time: "12:30")
       task.reload
+
       expect(task.validated_hours).to be_a(BigDecimal)
       expect(task.validated_hours.to_f).to eq(3.5)
     end
@@ -388,8 +388,8 @@ RSpec.describe Task, type: :model do
 
     describe "#recalculate_validated_hours" do
       it "updates validated_hours after task_items are created" do
-        create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
-        create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
+        create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+        create(:task_item, task: task, start_time: "14:00", end_time: "16:00")
 
         task.reload
         expect(task.validated_hours.to_f).to eq(3.5)
