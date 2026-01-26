@@ -46,7 +46,7 @@ jobs:
           bundler-cache: true
 
       - name: Lint Ruby code
-        run: bin/rubocop --parallel
+        run: bin/rubocop --parallel --auto-correct-all
 
   test:
     name: Tests

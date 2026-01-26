@@ -2,7 +2,18 @@
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
 # Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+
+# Allow flexible array literal spacing
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+
+# Prefer double quotes for consistency
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+# Allow flexible else/end alignment in ternary assignments
+Layout/ElseAlignment:
+  Enabled: false
+
+Layout/EndAlignment:
+  Enabled: false
