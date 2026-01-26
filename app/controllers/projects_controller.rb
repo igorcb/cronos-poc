@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_action :require_authentication
   before_action :set_project, only: [ :edit, :update, :destroy ]
-  before_action :validate_company_id_param, only: [:projects_json]
+  before_action :validate_company_id_param, only: [ :projects_json ]
 
   def index
     @projects = Project.includes(:company).order(created_at: :desc)
@@ -11,9 +11,9 @@ class ProjectsController < ApplicationController
   def projects_json
     @projects = if params[:company_id].present?
                   Project.where(company_id: params[:company_id]).order(:name)
-                else
+    else
                   Project.all.order(:name)
-                end
+    end
 
     render json: @projects.select(:id, :name).map { |p| { id: p.id, name: p.name } }
   end
