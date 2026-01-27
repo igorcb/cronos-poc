@@ -2,6 +2,7 @@ class ProjectsController < ApplicationController
   before_action :require_authentication
   before_action :set_project, only: [ :edit, :update, :destroy ]
   before_action :validate_company_id_param, only: [ :projects_json ]
+  skip_before_action :require_authentication, only: [:projects_json], if: :json_request?
 
   def index
     @projects = Project.includes(:company).order(created_at: :desc)
@@ -55,6 +56,10 @@ class ProjectsController < ApplicationController
   end
 
   private
+
+  def json_request?
+    request.format.json?
+  end
 
   def validate_company_id_param
     return unless params[:company_id].present?
