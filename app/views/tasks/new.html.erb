@@ -4,11 +4,11 @@
 
     <%= form_with(model: @task, data: { controller: "project-selector" }) do |f| %>
       <% if @task.errors.any? %>
-        <div class="mb-4 p-4 bg-red-900 border border-red-700 rounded-md">
-          <h2 class="text-lg font-semibold text-red-200 mb-2">
-            <%= pluralize(@task.errors.count, "erro impede", "erros impedem") %> esta tarefa de ser salva:
+        <div role="alert" style="background-color: #7f1d1d; border: 1px solid #991b1b; color: #fef3c7;" class="px-4 py-3 rounded-md">
+          <h2 class="font-bold mb-2">
+            <%= pluralize(@task.errors.count, "erro encontrado:", "erros encontrados:") %>
           </h2>
-          <ul class="list-disc list-inside text-red-300">
+          <ul class="list-disc list-inside space-y-1">
             <% @task.errors.full_messages.each do |message| %>
               <li><%= message %></li>
             <% end %>
@@ -17,24 +17,6 @@
       <% end %>
 
       <div class="space-y-6">
-        <!-- Name -->
-        <div>
-          <%= f.label :name, "Nome da Tarefa", class: "block text-sm font-medium text-gray-300 mb-1" %>
-          <%= f.text_field :name, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
-        </div>
-
-        <!-- Start Date -->
-        <div>
-          <%= f.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-300 mb-1" %>
-          <%= f.date_field :start_date, value: Date.today, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
-        </div>
-
-        <!-- Estimated Hours -->
-        <div>
-          <%= f.label :estimated_hours, "Horas Estimadas", class: "block text-sm font-medium text-gray-300 mb-1" %>
-          <%= f.number_field :estimated_hours, step: 0.01, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
-        </div>
-
         <!-- Company -->
         <div>
           <%= f.label :company_id, "Empresa", class: "block text-sm font-medium text-gray-300 mb-1" %>
@@ -55,6 +37,28 @@
               required: true %>
         </div>
 
+        <!-- Name -->
+        <div>
+          <%= f.label :name, "Nome da Tarefa", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= f.text_field :name, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+        </div>
+
+        <!-- Estimated Hours and Start Date (same row) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Estimated Hours (HH:MM format) -->
+          <div>
+            <%= f.label :estimated_hours_hm, "Horas Estimadas (HH:MM)", class: "block text-sm font-medium text-gray-300 mb-1" %>
+            <%= f.text_field :estimated_hours_hm, placeholder: "03:00", class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+            <p class="mt-1 text-xs text-gray-400">Formato: HH:MM (ex: 03:00, 02:30, 18:00)</p>
+          </div>
+
+          <!-- Start Date -->
+          <div>
+            <%= f.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-300 mb-1" %>
+            <%= f.date_field :start_date, value: Date.today, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+          </div>
+        </div>
+
         <!-- Notes -->
         <div>
           <%= f.label :notes, "Observações", class: "block text-sm font-medium text-gray-300 mb-1" %>
@@ -62,9 +66,11 @@
         </div>
 
         <!-- Submit -->
-        <div class="flex items-center justify-end space-x-4">
-          <%= link_to "Cancelar", root_path, class: "px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors" %>
-          <%= f.submit "Criar Tarefa", class: "px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+        <div class="flex flex-col sm:flex-row gap-3 pt-4">
+          <%= f.submit "Criar Tarefa",
+              class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] cursor-pointer" %>
+          <%= link_to "Cancelar", root_path,
+              class: "bg-gray-600 hover:bg-gray-500 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] inline-flex items-center justify-center" %>
         </div>
       </div>
     <% end %>

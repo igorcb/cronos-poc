@@ -13,8 +13,8 @@ export default class extends Controller {
 
     // Build URL based on whether company is selected
     const url = companyId
-      ? `/projects.json?company_id=${companyId}`
-      : `/projects.json`
+      ? `/projects/projects.json?company_id=${companyId}`
+      : `/projects/projects.json`
 
     // Disable project select during loading
     this.projectSelectTarget.disabled = true
