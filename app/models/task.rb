@@ -35,6 +35,9 @@ class Task < ApplicationRecord
   belongs_to :project
   has_many :task_items, dependent: :destroy
 
+  # Atributo virtual para formato HH:MM
+  attr_accessor :estimated_hours_hm
+
   # Enums
   enum :status, { pending: "pending", completed: "completed", delivered: "delivered" }
 
@@ -43,7 +46,7 @@ class Task < ApplicationRecord
   validates :company_id, presence: true
   validates :project_id, presence: true
   validates :start_date, presence: true
-  validates :estimated_hours, presence: true, numericality: { greater_than: 0 }
+  validate :estimated_hours_hm_must_be_valid
   validates :status, presence: true, inclusion: { in: %w[pending completed delivered] }
 
   # Validação customizada
@@ -57,7 +60,9 @@ class Task < ApplicationRecord
   # Callbacks
   before_save :update_end_date, if: :status_changed_to_completed?
   before_save :update_delivery_date, if: :status_changed_to_delivered?
+  before_save :convert_estimated_hours_from_hm
   after_save :recalculate_validated_hours
+  after_find :convert_estimated_hours_to_hm
 
   # Métodos públicos de cálculo
   def total_hours
@@ -85,6 +90,61 @@ class Task < ApplicationRecord
     return if validated_hours == new_hours
 
     update_column(:validated_hours, new_hours)
+  end
+
+  def estimated_hours_hm
+    @estimated_hours_hm || decimal_to_hm(estimated_hours)
+  end
+
+  private
+
+  def estimated_hours_hm_must_be_valid
+    if estimated_hours_hm.blank?
+      errors.add(:estimated_hours_hm, "não pode ficar em branco")
+      return
+    end
+
+    unless estimated_hours_hm.match?(/^\d{1,2}:\d{2}$/)
+      errors.add(:estimated_hours_hm, "deve estar no formato HH:MM (ex: 03:00, 02:30)")
+      return
+    end
+
+    hours, minutes = estimated_hours_hm.split(":").map(&:to_i)
+    if hours < 0 || hours > 23 || minutes < 0 || minutes > 59
+      errors.add(:estimated_hours_hm, "deve conter horas válidas (00-23) e minutos válidos (00-59)")
+    end
+
+    decimal = hm_to_decimal(estimated_hours_hm)
+    if decimal <= 0
+      errors.add(:estimated_hours_hm, "deve ser maior que zero")
+    end
+  end
+
+  def convert_estimated_hours_from_hm
+    return unless estimated_hours_hm.present?
+
+    self.estimated_hours = hm_to_decimal(estimated_hours_hm)
+  end
+
+  def convert_estimated_hours_to_hm
+    @estimated_hours_hm = decimal_to_hm(estimated_hours)
+  end
+
+  def hm_to_decimal(hm_string)
+    return 0 if hm_string.blank?
+
+    parts = hm_string.split(":")
+    hours = parts[0].to_i
+    minutes = parts[1].to_i rescue 0
+    hours + (minutes / 60.0)
+  end
+
+  def decimal_to_hm(decimal)
+    return "00:00" unless decimal.present?
+
+    hours = decimal.to_i
+    minutes = ((decimal - hours) * 60).round
+    format("%02d:%02d", hours, minutes)
   end
 
   private
