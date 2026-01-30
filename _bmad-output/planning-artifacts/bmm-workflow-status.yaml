@@ -1,0 +1,42 @@
+# BMad Method Workflow Status
+# Tracks progress through Analysis, Planning, and Solutioning phases
+# Implementation phase tracked separately in sprint-status.yaml
+
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2026-01-29"
+project: "cronos-poc"
+project_type: "greenfield"
+selected_track: "bmad-method"
+field_type: "greenfield"
+workflow_path: "_bmad/bmm/workflows/workflow-status/paths/method-greenfield.yaml"
+
+workflow_status:
+  # Phase 0: Discovery (Optional)
+  brainstorm-project: skipped
+  research: skipped
+  product-brief: skipped
+
+  # Phase 1: Planning
+  prd: "/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/prd.md"
+  create-ux-design: skipped
+
+  # Phase 2: Solutioning
+  create-architecture: "/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/architecture.md"
+  create-epics-and-stories: "/home/igor/rails_app/cronos-poc/_bmad-output/planning-artifacts/epics.md"
+  test-design: recommended
+  validate-architecture: optional
+  implementation-readiness: required
+
+  # Phase 3: Implementation
+  sprint-planning: "/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/sprint-status.yaml"
