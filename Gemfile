@@ -77,7 +77,7 @@ group :development do
   gem "web-console"
 
   # Code Quality Tools
-  gem "rubocop", "~> 1.60", require: false
+  gem "rubocop", "~> 1.84", require: false
   gem "rubocop-rails", "~> 2.34", require: false
   gem "rubocop-rspec", "~> 3.9", require: false
   # gem "bullet", "~> 7.1"  # Disabled: Bullet 7.2.0 does not support Rails 8.1.1 yet
