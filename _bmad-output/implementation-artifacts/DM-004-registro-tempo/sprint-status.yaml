@@ -1,0 +1,111 @@
+# Sprint Status - DM-004: Registro de Tempo (Task Management)
+# Dominio: DM-004-registro-tempo
+# Tipo: Core / Principal
+# Epics: Epic 4 + Epic 7
+# Gerado: 2026-03-27
+
+domain: DM-004
+domain_name: Registro de Tempo
+domain_type: Core / Principal
+status: in-progress
+progress: 64%  # 7 de 11 stories concluidas
+
+dependencies:
+  requires:
+    - DM-001  # Infraestrutura base
+    - DM-002  # Company model (FK, hourly_rate)
+    - DM-003  # Project model (FK, validacao cascata)
+
+stories:
+  # === Epic 4: Task Management System ===
+  001-task-management-specification:
+    status: done
+    priority: critical
+    description: Especificacao do sistema Task Management (substituiu TimeEntries)
+    epic: 4
+
+  002-criar-model-task-com-validacoes-tripla-camada:
+    status: done
+    priority: critical
+    description: Model Task com validacao tripla camada (DB + Model + Client)
+    epic: 4
+
+  003-criar-model-taskitem-com-validacoes-calculos:
+    status: done
+    priority: critical
+    description: Model TaskItem com validacoes e calculos automaticos
+    epic: 4
+
+  004-implementar-logica-status-automatico-calculos:
+    status: done
+    priority: critical
+    description: Logica de status automatico e calculos (pending/completed/delivered)
+    epic: 4
+    notes: Todos ACs atendidos, 84 testes passando
+
+  005-implementar-crud-de-tasks-new-create:
+    status: done
+    priority: high
+    description: CRUD de Tasks - New/Create
+    epic: 4
+    notes: "Code review: 6 MEDIUM + 2 LOW issues fixed"
+
+  006-implementar-project-selector-dinamico-stimulus:
+    status: done
+    priority: high
+    description: Project selector dinamico com Stimulus (filtra por company)
+    epic: 4
+    notes: "Code review: 6 issues fixed (5 MEDIUM, 1 LOW)"
+
+  007-criar-factories-testes-para-task-taskitem:
+    status: done
+    priority: medium
+    description: Factories com Faker e testes completos para Task/TaskItem
+    epic: 4
+    notes: Bug fix recalculate_validated_hours
+
+  # === Epic 7: Edicao e Correcao ===
+  008-implementar-edit-update-de-timeentries:
+    status: ready-for-dev
+    priority: high
+    description: Implementar Edit/Update de Tasks e TaskItems
+    epic: 7
+
+  009-implementar-destroy-de-timeentries-com-confirmacao:
+    status: ready-for-dev
+    priority: high
+    description: Implementar Destroy de TaskItems com confirmacao
+    epic: 7
+
+  010-criar-testes-de-system-para-fluxo-completo:
+    status: ready-for-dev
+    priority: medium
+    description: Testes de system para fluxo completo CRUD
+    epic: 7
+
+  011-retro:
+    status: done
+    priority: low
+    description: Retrospectiva Epic 4
+    epic: 4
+    notes: "161 testes passando, 0 blockers, Epic 5 ready to start"
+
+retrospective:
+  status: done
+  date: 2026-01-26
+  key_outcomes:
+    - 161 testes passando
+    - Zero blockers
+    - Epic 5 pronto para iniciar
+
+summary:
+  total_stories: 11
+  done: 7
+  in_progress: 0
+  ready_for_dev: 3
+  backlog: 0
+  blockers: []
+  next_actions:
+    - Implementar Edit/Update de Tasks (story 008)
+    - Implementar Destroy com confirmacao (story 009)
+    - Testes de system E2E (story 010)

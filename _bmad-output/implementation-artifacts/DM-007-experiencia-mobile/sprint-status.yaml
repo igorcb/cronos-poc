@@ -1,0 +1,58 @@
+# Sprint Status - DM-007: Experiencia Mobile & Responsividade
+# Dominio: DM-007-experiencia-mobile
+# Tipo: Transversal / Experiencia
+# Epic: Epic 8
+# Gerado: 2026-03-27
+
+domain: DM-007
+domain_name: Experiencia Mobile & Responsividade
+domain_type: Transversal / Experiencia
+status: backlog
+progress: 0%
+
+dependencies:
+  requires:
+    - DM-001  # Tailwind CSS base
+    - DM-004  # Forms de Task (prioridade maxima para mobile)
+    - DM-005  # Cards e totalizadores adaptativos
+    - DM-006  # Filtros collapsible em mobile
+
+stories:
+  001-implementar-mobile-first-com-tailwind-breakpoints:
+    status: ready-for-dev
+    priority: critical
+    description: Mobile-first com Tailwind breakpoints padrao (md/lg)
+    notes: CSS base mobile, progressive enhancement para tablet/desktop
+
+  002-otimizar-timeentry-form-para-mobile:
+    status: ready-for-dev
+    priority: critical
+    description: Otimizar form de Task/TaskItem para mobile (touch-friendly)
+    notes: "Inputs HTML5 nativos, minimo 44x44px touch targets"
+
+  003-garantir-acessibilidade-wcag-nivel-a:
+    status: ready-for-dev
+    priority: high
+    description: Garantir acessibilidade WCAG nivel A
+    notes: "HTML semantico, contraste 4.5:1, labels, tab order, skip links"
+
+  004-testar-responsividade-em-multiplos-dispositivos:
+    status: ready-for-dev
+    priority: medium
+    description: Testar responsividade em multiplos viewports
+    notes: "iPhone SE 375px, iPhone 14 390px, iPad 768px, Desktop 1440px"
+
+retrospective:
+  status: optional
+
+summary:
+  total_stories: 4
+  done: 0
+  in_progress: 0
+  ready_for_dev: 4
+  backlog: 0
+  blockers:
+    - DM-005 e DM-006 devem estar concluidos (componentes visuais completos)
+  next_actions:
+    - Aguardar conclusao dos dominios visuais (DM-005, DM-006)
+    - Pode iniciar story 001 em paralelo (breakpoints base)

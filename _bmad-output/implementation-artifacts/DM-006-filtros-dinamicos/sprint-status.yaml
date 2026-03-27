@@ -1,0 +1,59 @@
+# Sprint Status - DM-006: Filtros Dinamicos
+# Dominio: DM-006-filtros-dinamicos
+# Tipo: Consumo / Interacao
+# Epic: Epic 6
+# Gerado: 2026-03-27
+
+domain: DM-006
+domain_name: Filtros Dinamicos
+domain_type: Consumo / Interacao
+status: backlog
+progress: 0%
+
+dependencies:
+  requires:
+    - DM-001  # Infraestrutura base
+    - DM-002  # Company.active para dropdown
+    - DM-003  # Project.where(company_id:) para dropdown dinamico
+    - DM-004  # Scopes: by_company, by_project, pending, completed, delivered
+    - DM-005  # ViewComponents reutilizados para resultados filtrados
+
+stories:
+  001-implementar-filtros-por-empresa-e-projeto:
+    status: ready-for-dev
+    priority: critical
+    description: Filtros por empresa e projeto com query params combinaveis
+    notes: URL bookmarkable - /tasks?company_id=1&project_id=5
+
+  002-implementar-filtros-por-status-e-data-periodo:
+    status: ready-for-dev
+    priority: high
+    description: Filtros por status e periodo (presets + custom range)
+    notes: Presets - current_month, last_month, last_7_days, current_week, custom
+
+  003-recalcular-totalizadores-conforme-filtros-aplicados:
+    status: ready-for-dev
+    priority: high
+    description: Recalculo server-side de totalizadores ao aplicar filtros
+    notes: Reutiliza calculate_totals do DM-005
+
+  004-criar-stimulus-controller-para-filtros-com-turbo-frames:
+    status: ready-for-dev
+    priority: high
+    description: Stimulus filter_controller + Turbo Frame para resultados parciais
+    notes: onChange submete form, atualiza frame filtered_results
+
+retrospective:
+  status: optional
+
+summary:
+  total_stories: 4
+  done: 0
+  in_progress: 0
+  ready_for_dev: 4
+  backlog: 0
+  blockers:
+    - DM-005 deve estar concluido antes de iniciar (ViewComponents necessarios)
+  next_actions:
+    - Aguardar conclusao do DM-005
+    - Iniciar por story 001 (filtros base por empresa/projeto)
