@@ -1,0 +1,70 @@
+# Sprint Status - DM-001: Autenticacao & Infraestrutura
+# Dominio: DM-001-autenticacao-infraestrutura
+# Tipo: Transversal / Tecnico
+# Epic: Epic 1
+# Gerado: 2026-03-27
+
+domain: DM-001
+domain_name: Autenticacao & Infraestrutura
+domain_type: Transversal / Tecnico
+status: done
+progress: 100%
+
+stories:
+  001-inicializar-projeto-rails-com-starter-template:
+    status: done
+    priority: critical
+    description: Inicializar projeto Rails 8 com starter template
+    notes: Docker e RSpec incluidos (scope creep absorvido)
+
+  002-configurar-docker-e-docker-compose:
+    status: done
+    priority: high
+    description: Configurar Docker e Docker Compose para desenvolvimento
+    notes: Implementado junto com Story 001
+
+  003-configurar-rspec-e-factories:
+    status: done
+    priority: high
+    description: Configurar RSpec e factories para testes
+    notes: Implementado junto com Story 001
+
+  004-configurar-code-quality-tools:
+    status: done
+    priority: medium
+    description: Configurar ferramentas de qualidade de codigo (Rubocop, Brakeman)
+
+  005-implementar-autenticacao-single-user-com-rails-8-generator:
+    status: done
+    priority: critical
+    description: Autenticacao single-user com Rails 8 authentication generator
+
+  006-desabilitar-signup-publico-e-criar-seed-de-usuario-admin:
+    status: done
+    priority: high
+    description: Desabilitar signup publico e criar seed de usuario admin
+
+  007-configurar-rails-credentials-para-secrets:
+    status: done
+    priority: high
+    description: Configurar Rails credentials para gestao de secrets
+    notes: master.key restaurado, README documentado
+
+  008-implementar-ui-base-com-tailwind:
+    status: done
+    priority: medium
+    description: Implementar UI base com Tailwind CSS
+    notes: Layout, navbar, flash messages, dashboard estilizados
+
+retrospective:
+  status: optional
+  notes: Dominio concluido sem retrospectiva formal
+
+summary:
+  total_stories: 8
+  done: 8
+  in_progress: 0
+  ready_for_dev: 0
+  backlog: 0
+  blockers: []
+  next_actions: []

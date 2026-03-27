@@ -1,0 +1,63 @@
+# Sprint Status - DM-005: Visualizacao & Totalizadores
+# Dominio: DM-005-visualizacao-totalizadores
+# Tipo: Consumo / Apresentacao
+# Epic: Epic 5
+# Gerado: 2026-03-27
+
+domain: DM-005
+domain_name: Visualizacao & Totalizadores
+domain_type: Consumo / Apresentacao
+status: backlog
+progress: 0%
+
+dependencies:
+  requires:
+    - DM-001  # Infraestrutura base
+    - DM-002  # Company (hourly_rate, name)
+    - DM-003  # Project (name)
+    - DM-004  # Tasks + TaskItems (dados primarios)
+
+stories:
+  001-implementar-index-de-timeentries-com-eager-loading:
+    status: ready-for-dev
+    priority: critical
+    description: Index de Tasks com eager loading (includes company, project, task_items)
+    notes: Prevenir N+1 queries - meta 4 queries fixas
+
+  002-criar-viewcomponent-para-timeentry-card:
+    status: ready-for-dev
+    priority: high
+    description: ViewComponent para Task Card (status badge, horas, valor)
+    notes: TaskCardComponent, StatusBadgeComponent
+
+  003-implementar-totalizadores-dinamicos-total-do-dia:
+    status: ready-for-dev
+    priority: high
+    description: Totalizadores dinamicos - total de horas do dia
+    notes: TotalizerComponent, DailyTotalComponent
+
+  004-implementar-totalizadores-por-empresa-no-mes:
+    status: ready-for-dev
+    priority: high
+    description: Totalizadores por empresa no mes (horas e valor R$)
+    notes: CompanyMonthlyTotalComponent com queries agregadas
+
+  005-configurar-turbo-streams-para-atualizacao-em-tempo-real:
+    status: ready-for-dev
+    priority: medium
+    description: Turbo Streams para atualizacao de totalizadores sem reload
+    notes: broadcast_replace_to para daily_total e company_total
+
+retrospective:
+  status: optional
+
+summary:
+  total_stories: 5
+  done: 0
+  in_progress: 0
+  ready_for_dev: 5
+  backlog: 0
+  blockers: []
+  next_actions:
+    - Iniciar story 001 (eager loading - fundacao do dominio)
+    - Criar ViewComponents (story 002) apos index pronto
