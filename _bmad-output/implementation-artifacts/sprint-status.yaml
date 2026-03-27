@@ -80,8 +80,8 @@ development_status:
   epic-4-retrospective: done  # Retrospective completa: 161 testes, 0 blockers, Epic 5 ready to start
 
   # Epic 5: Visualização e Totalizadores
-  epic-5: backlog
-  5-1-implementar-index-de-timeentries-com-eager-loading: ready-for-dev
+  epic-5: in-progress
+  5-1-implementar-index-de-timeentries-com-eager-loading: done
   5-2-criar-viewcomponent-para-timeentry-card: ready-for-dev
   5-3-implementar-totalizadores-dinamicos-total-do-dia: ready-for-dev
   5-4-implementar-totalizadores-por-empresa-no-mes: ready-for-dev
