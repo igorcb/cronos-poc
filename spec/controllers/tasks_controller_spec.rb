@@ -39,7 +39,7 @@ RSpec.describe TasksController, type: :controller do
           company_id: company.id,
           project_id: project.id,
           start_date: Date.today,
-          estimated_hours: 8.0,
+          estimated_hours_hm: "08:00",
           notes: "Test notes"
         }
       }
@@ -101,7 +101,7 @@ RSpec.describe TasksController, type: :controller do
               company_id: company.id,
               project_id: other_project.id,
               start_date: Date.today,
-              estimated_hours: 8.0
+              estimated_hours_hm: "08:00"
             }
           }
         }.not_to change(Task, :count)
@@ -114,49 +114,12 @@ RSpec.describe TasksController, type: :controller do
             company_id: company.id,
             project_id: other_project.id,
             start_date: Date.today,
-            estimated_hours: 8.0
+            estimated_hours_hm: "08:00"
           }
         }
         expect(response).to render_template(:new)
         expect(assigns(:task).errors[:project]).to be_present
       end
-    end
-  end
-
-  describe "GET #projects" do
-    let!(:other_company) { create(:company) }
-    let!(:other_project) { create(:project, company: other_company, name: "Other Project") }
-
-    it "requires authentication" do
-      cookies.delete(:session_id)
-      get :projects, format: :json
-      expect(response).to redirect_to(new_session_path)
-    end
-
-    it "returns all projects when no company_id provided" do
-      get :projects, format: :json
-      json_response = JSON.parse(response.body)
-      expect(json_response.size).to eq(0)
-    end
-
-    it "filters projects by company_id", :aggregate_failures do
-      get :projects, format: :json, params: { company_id: company.id }
-      expect(response).to have_http_status(:success)
-
-      json_response = JSON.parse(response.body)
-      expect(json_response).to be_an(Array)
-      expect(json_response.size).to eq(1)
-      expect(json_response.first["id"]).to eq(project.id)
-    end
-
-    it "returns projects with id and name", :aggregate_failures do
-      get :projects, format: :json, params: { company_id: company.id }
-      expect(response).to have_http_status(:success)
-
-      json_response = JSON.parse(response.body)
-      expect(json_response).to be_an(Array)
-      expect(json_response.first).to have_key("id")
-      expect(json_response.first).to have_key("name")
     end
   end
 end

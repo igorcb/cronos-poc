@@ -65,22 +65,22 @@ RSpec.describe Task, type: :model do
       expect(task.errors[:start_date]).to include("não pode ficar em branco")
     end
 
-    it "requires estimated_hours" do
-      task = build(:task, estimated_hours: nil, company: company, project: project)
+    it "requires estimated_hours_hm" do
+      task = build(:task, estimated_hours_hm: "00:00", company: company, project: project)
       expect(task).not_to be_valid
-      expect(task.errors[:estimated_hours]).to include("não pode ficar em branco")
+      expect(task.errors[:estimated_hours_hm]).to include("deve ser maior que zero")
     end
 
-    it "requires estimated_hours to be greater than 0" do
-      task = build(:task, estimated_hours: 0, company: company, project: project)
+    it "requires estimated_hours_hm to be greater than 0" do
+      task = build(:task, estimated_hours_hm: "00:00", company: company, project: project)
       expect(task).not_to be_valid
-      expect(task.errors[:estimated_hours]).to include("deve ser maior que 0")
+      expect(task.errors[:estimated_hours_hm]).to include("deve ser maior que zero")
     end
 
-    it "rejects negative estimated_hours" do
-      task = build(:task, estimated_hours: -10, company: company, project: project)
+    it "rejects invalid estimated_hours_hm format" do
+      task = build(:task, estimated_hours_hm: "invalid", company: company, project: project)
       expect(task).not_to be_valid
-      expect(task.errors[:estimated_hours]).to include("deve ser maior que 0")
+      expect(task.errors[:estimated_hours_hm]).to include("deve estar no formato HH:MM (ex: 03:00, 02:30)")
     end
 
     it "requires status to be valid" do
@@ -214,7 +214,7 @@ RSpec.describe Task, type: :model do
         company: company,
         project: project,
         start_date: Date.today,
-        estimated_hours: 40
+        estimated_hours_hm: "08:00"
       )
       expect(task.status).to eq('pending')
     end
@@ -225,13 +225,13 @@ RSpec.describe Task, type: :model do
     let(:project) { create(:project, company: company) }
 
     it "stores estimated_hours as BigDecimal" do
-      task = create(:task, company: company, project: project, estimated_hours: 40.50)
+      task = create(:task, company: company, project: project, estimated_hours_hm: "08:30")
       expect(task.estimated_hours).to be_a(BigDecimal)
     end
 
     it "maintains decimal precision for estimated_hours" do
-      task = create(:task, company: company, project: project, estimated_hours: 39.99)
-      expect(task.reload.estimated_hours).to eq(BigDecimal("39.99"))
+      task = create(:task, company: company, project: project, estimated_hours_hm: "08:30")
+      expect(task.reload.estimated_hours).to eq(BigDecimal("8.5"))
     end
 
     it "stores validated_hours as BigDecimal" do

@@ -69,7 +69,7 @@ RSpec.describe "Tasks", type: :request do
             company_id: company.id,
             project_id: project.id,
             start_date: Date.today,
-            estimated_hours: 8.0,
+            estimated_hours_hm: "08:00",
             notes: "Observações"
           }
         }
@@ -115,7 +115,7 @@ RSpec.describe "Tasks", type: :request do
 
         it "displays validation errors" do
           post tasks_path, params: invalid_params
-          expect(response.body).to include("erros impedem")
+          expect(response.body).to include("erros encontrados")
         end
       end
 
@@ -130,7 +130,7 @@ RSpec.describe "Tasks", type: :request do
               company_id: company.id,
               project_id: other_project.id,
               start_date: Date.today,
-              estimated_hours: 8.0
+              estimated_hours_hm: "08:00"
             }
           }
         end
