@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :companies, only: [ :index, :new, :create, :edit, :update, :destroy ]
   resources :tasks, only: [ :new, :create ]
-  resources :projects do
+  resources :projects, only: [ :index, :new, :create, :edit, :update, :destroy ] do
     collection do
       get :projects, to: "projects#projects_json", defaults: { format: :json }
     end
