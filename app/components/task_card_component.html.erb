@@ -1,0 +1,14 @@
+<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700">
+  <td class="px-4 py-3 text-sm text-gray-300"><%= task.start_date&.strftime("%d/%m/%Y") %></td>
+  <td class="px-4 py-3 text-sm text-white font-medium"><%= task.name %></td>
+  <td class="px-4 py-3 text-sm text-gray-300"><%= task.company&.name %></td>
+  <td class="px-4 py-3 text-sm text-gray-300"><%= task.project&.name %></td>
+  <td class="px-4 py-3"><%= render StatusBadgeComponent.new(status: task.status.to_s) %></td>
+  <td class="px-4 py-3 text-sm text-gray-300"><%= task.estimated_hours_hm %></td>
+  <td class="px-4 py-3 text-sm text-gray-300">
+    <%= task.validated_hours.present? ? number_with_precision(task.validated_hours, precision: 2) : "-" %>
+  </td>
+  <td class="px-4 py-3 text-sm text-gray-300">
+    <%= task.calculated_value.present? ? number_to_currency(task.calculated_value, unit: "R$", separator: ",", delimiter: ".") : "-" %>
+  </td>
+</tr>

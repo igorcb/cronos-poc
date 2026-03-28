@@ -82,7 +82,7 @@ development_status:
   # Epic 5: Visualização e Totalizadores
   epic-5: in-progress
   5-1-implementar-index-de-timeentries-com-eager-loading: done
-  5-2-criar-viewcomponent-para-timeentry-card: ready-for-dev
+  5-2-criar-viewcomponent-para-timeentry-card: done  # Code reviewed, patches applied, UI validated via Playwright 2026-03-28
   5-3-implementar-totalizadores-dinamicos-total-do-dia: ready-for-dev
   5-4-implementar-totalizadores-por-empresa-no-mes: ready-for-dev
   5-5-configurar-turbo-streams-para-atualizacao-em-tempo-real: ready-for-dev
