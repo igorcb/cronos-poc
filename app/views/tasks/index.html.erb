@@ -5,6 +5,10 @@
         class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition" %>
   </div>
 
+  <div class="mb-6">
+    <%= render DailyTotalComponent.new(total_hours: @daily_total) %>
+  </div>
+
   <div class="bg-gray-800 shadow-sm rounded-lg border border-gray-700 overflow-hidden">
     <% if @tasks.empty? %>
       <div class="px-6 py-12 text-center text-gray-400">
