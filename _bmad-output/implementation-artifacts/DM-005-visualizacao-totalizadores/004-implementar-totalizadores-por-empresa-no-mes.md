@@ -1,6 +1,6 @@
 # Story 5.4: Implementar Totalizadores por Empresa no Mês
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-005-visualizacao-totalizadores
 **Data:** 2026-03-30
 **Epic:** DM-005 — Visualização & Totalizadores
@@ -206,13 +206,13 @@ task_items:
 
 ### 1. Atualizar `TasksController#index` para calcular `@company_monthly_totals`
 
-- [ ] Abrir `app/controllers/tasks_controller.rb`
-- [ ] Adicionar a query de agregação após `@daily_total` (ver query acima)
-- [ ] **Não modificar** as queries de `@tasks` e `@daily_total` existentes
+- [x] Abrir `app/controllers/tasks_controller.rb`
+- [x] Adicionar a query de agregação após `@daily_total` (ver query acima)
+- [x] **Não modificar** as queries de `@tasks` e `@daily_total` existentes
 
 ### 2. Criar `CompanyMonthlyTotalComponent`
 
-- [ ] Criar `app/components/company_monthly_total_component.rb`:
+- [x] Criar `app/components/company_monthly_total_component.rb`:
 
 ```ruby
 class CompanyMonthlyTotalComponent < ViewComponent::Base
@@ -231,7 +231,7 @@ class CompanyMonthlyTotalComponent < ViewComponent::Base
 end
 ```
 
-- [ ] Criar `app/components/company_monthly_total_component.html.erb`:
+- [x] Criar `app/components/company_monthly_total_component.html.erb`:
 
 ```erb
 <div class="bg-gray-800 border border-gray-700 rounded-lg px-6 py-4">
@@ -256,8 +256,8 @@ end
 
 ### 3. Integrar componente em `tasks/index.html.erb`
 
-- [ ] Abrir `app/views/tasks/index.html.erb`
-- [ ] Adicionar **após** o `DailyTotalComponent`:
+- [x] Abrir `app/views/tasks/index.html.erb`
+- [x] Adicionar **após** o `DailyTotalComponent`:
 
 ```erb
 <div class="mb-6">
@@ -267,7 +267,7 @@ end
 
 ### 4. Escrever specs do componente
 
-- [ ] Criar `spec/components/company_monthly_total_component_spec.rb`:
+- [x] Criar `spec/components/company_monthly_total_component_spec.rb`:
 
 ```ruby
 require "rails_helper"
@@ -330,10 +330,10 @@ end
 
 ### 5. Rodar todos os testes
 
-- [ ] `bundle exec rspec spec/components/company_monthly_total_component_spec.rb` — 100% passando
-- [ ] `bundle exec rspec spec/components/` — todos os componentes passando
-- [ ] `bundle exec rspec spec/controllers/tasks_controller_spec.rb` — sem regressões
-- [ ] `bundle exec rspec spec/models/` — sem regressões
+- [x] `bundle exec rspec spec/components/company_monthly_total_component_spec.rb` — 11/11 passando
+- [x] `bundle exec rspec spec/components/` — 41/41 passando
+- [x] `bundle exec rspec spec/controllers/tasks_controller_spec.rb` — sem regressões (falhas pré-existentes confirmadas)
+- [x] `bundle exec rspec spec/models/` — sem regressões (falhas pré-existentes confirmadas)
 
 ---
 
@@ -371,8 +371,17 @@ end
 
 ### Completion Notes
 
-_Preencher após implementação_
+Implementado em 2026-03-30 por Dev Agent (Amelia).
+
+- **Task 1**: Query `@company_monthly_totals` adicionada em `TasksController#index` usando JOIN em `companies` e `task_items`, GROUP BY empresa, SUM de `hours_worked`. Queries `@tasks` e `@daily_total` preservadas sem modificação.
+- **Task 2**: `CompanyMonthlyTotalComponent` criado. **Decisão crítica**: usou `sprintf('%.2f', ...)` ao invés de `format()` da spec (guardrail do projeto — `ViewComponent::Base` sobrescreve `format()`).
+- **Task 3**: Componente integrado na view após `DailyTotalComponent`.
+- **Task 4**: 11 specs criadas. Fix necessário: adicionado `require "ostruct"` pois Ruby 3.x não carrega `OpenStruct` automaticamente.
+- **Task 5**: 11/11 specs do componente passando. 41/41 specs de componentes passando. 2 falhas pré-existentes em `tasks_controller_spec.rb` e `task_spec.rb` confirmadas como anteriores a esta story.
 
 ### Change Log
 
 - 2026-03-30: Story 5.4 reescrita — corrigido uso de TimeEntry para Task/TaskItem/Company conforme arquitetura DM-005
+- 2026-03-30: Story 5.4 implementada — CompanyMonthlyTotalComponent criado, integrado na view, 11 specs passando
+- 2026-03-30: Ajustes pós-QA — HIGH-001: separador de milhar em formatted_value; MEDIUM-002: removed unused let(:company); MEDIUM-003: controller spec cobre @company_monthly_totals; LOW-002: ordenação por companies.name adicionada
+- 2026-03-30: Fix crítico pós-Playwright — query migrada de Task.joins(:company) para Company.joins(tasks: :task_items); Task#after_find disparava MissingAttributeError ao iterar resultados com SELECT parcial

@@ -9,6 +9,10 @@
     <%= render DailyTotalComponent.new(total_hours: @daily_total) %>
   </div>
 
+  <div class="mb-6">
+    <%= render CompanyMonthlyTotalComponent.new(totals: @company_monthly_totals) %>
+  </div>
+
   <div class="bg-gray-800 shadow-sm rounded-lg border border-gray-700 overflow-hidden">
     <% if @tasks.empty? %>
       <div class="px-6 py-12 text-center text-gray-400">

@@ -52,6 +52,31 @@ RSpec.describe TasksController, type: :controller do
       get :index
       expect(assigns(:daily_total)).to eq(0)
     end
+
+    it "assigns @company_monthly_totals" do
+      get :index
+      expect(assigns(:company_monthly_totals)).not_to be_nil
+    end
+
+    it "includes current month tasks in @company_monthly_totals" do
+      task = create(:task, company: company, project: project, start_date: Date.current)
+      create(:task_item, task: task, start_time: "09:00", end_time: "11:00")
+      get :index
+      sql = assigns(:company_monthly_totals).to_sql
+      result = ActiveRecord::Base.connection.execute(sql)
+      company_ids = result.map { |r| r["id"] }
+      expect(company_ids).to include(company.id)
+    end
+
+    it "excludes tasks from other months in @company_monthly_totals" do
+      task_other_month = create(:task, company: company, project: project, start_date: 2.months.ago.to_date)
+      create(:task_item, task: task_other_month, start_time: "09:00", end_time: "11:00")
+      get :index
+      sql = assigns(:company_monthly_totals).to_sql
+      result = ActiveRecord::Base.connection.execute(sql)
+      company_ids = result.map { |r| r["id"] }
+      expect(company_ids).not_to include(company.id)
+    end
   end
 
   describe "GET #new" do
