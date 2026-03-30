@@ -15,14 +15,14 @@ class TasksController < ApplicationController
     @company_monthly_totals = Company
       .joins(tasks: :task_items)
       .where(tasks: { start_date: Date.current.all_month })
-      .group('companies.id', 'companies.name', 'companies.hourly_rate')
+      .group("companies.id", "companies.name", "companies.hourly_rate")
       .select(
-        'companies.id',
-        'companies.name',
-        'companies.hourly_rate',
-        'SUM(task_items.hours_worked) as total_hours'
+        "companies.id",
+        "companies.name",
+        "companies.hourly_rate",
+        "SUM(task_items.hours_worked) as total_hours"
       )
-      .order('companies.name')
+      .order("companies.name")
   end
 
   def new
