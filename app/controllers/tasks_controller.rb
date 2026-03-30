@@ -6,6 +6,11 @@ class TasksController < ApplicationController
       .includes(:company, :project, :task_items)
       .where(start_date: Date.current.all_month)
       .order(start_date: :desc, created_at: :desc)
+
+    @daily_total = TaskItem
+      .joins(:task)
+      .where(tasks: { start_date: Date.current })
+      .sum(:hours_worked)
   end
 
   def new

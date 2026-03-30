@@ -8,6 +8,52 @@ RSpec.describe TasksController, type: :controller do
 
   before { cookies.signed[:session_id] = session.id }
 
+  describe "GET #index" do
+    it "requires authentication" do
+      cookies.delete(:session_id)
+      get :index
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns success" do
+      get :index
+      expect(response).to have_http_status(:success)
+    end
+
+    it "assigns @tasks for current month" do
+      task_today = create(:task, company: company, project: project, start_date: Date.current)
+      task_last_month = create(:task, company: company, project: project, start_date: 2.months.ago.to_date)
+      get :index
+      expect(assigns(:tasks)).to include(task_today)
+      expect(assigns(:tasks)).not_to include(task_last_month)
+    end
+
+    it "assigns @daily_total as a numeric value" do
+      get :index
+      expect(assigns(:daily_total)).to be_a(Numeric)
+    end
+
+    it "assigns @daily_total as 0 when no TaskItems exist today" do
+      get :index
+      expect(assigns(:daily_total)).to eq(0)
+    end
+
+    it "assigns @daily_total with sum of hours_worked for today's task_items" do
+      task_today = create(:task, company: company, project: project, start_date: Date.current)
+      create(:task_item, task: task_today, start_time: "09:00", end_time: "10:30")
+      create(:task_item, task: task_today, start_time: "14:00", end_time: "15:00")
+      get :index
+      expect(assigns(:daily_total)).to be > 0
+    end
+
+    it "does not include hours from other days in @daily_total" do
+      task_yesterday = create(:task, company: company, project: project, start_date: Date.current - 1)
+      create(:task_item, task: task_yesterday, start_time: "09:00", end_time: "10:30")
+      get :index
+      expect(assigns(:daily_total)).to eq(0)
+    end
+  end
+
   describe "GET #new" do
     it "requires authentication" do
       cookies.delete(:session_id)
