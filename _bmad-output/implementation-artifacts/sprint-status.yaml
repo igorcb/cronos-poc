@@ -85,7 +85,7 @@ development_status:
   5-2-criar-viewcomponent-para-timeentry-card: done  # Code reviewed, patches applied, UI validated via Playwright 2026-03-28
   5-3-implementar-totalizadores-dinamicos-total-do-dia: ready-for-dev
   5-4-implementar-totalizadores-por-empresa-no-mes: done  # QA reviewed, Playwright validated, fixes applied 2026-03-30
-  5-5-configurar-turbo-streams-para-atualizacao-em-tempo-real: ready-for-dev
+  5-5-configurar-turbo-streams-para-atualizacao-em-tempo-real: done
   epic-5-retrospective: optional
 
   # Epic 6: Filtros Dinâmicos

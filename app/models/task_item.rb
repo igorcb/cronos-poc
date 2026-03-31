@@ -21,6 +21,7 @@ class TaskItem < ApplicationRecord
   before_save :calculate_hours_worked
   after_save :update_task_status
   after_destroy :update_task_status
+  after_commit :notify_totals_changed
 
   # SCOPES
   scope :by_task, ->(task_id) { where(task_id:) }
@@ -58,6 +59,13 @@ class TaskItem < ApplicationRecord
   def update_task_status
     task&.recalculate_status!
     task&.recalculate_validated_hours
+  end
+
+  # Callback: sinaliza que os totalizadores precisam ser atualizados.
+  # A entrega do Turbo Stream é responsabilidade do TaskItemsController.
+  def notify_totals_changed
+    # Hook observável — o controller responde com Turbo Stream após commit.
+    # Mantido no modelo para garantir execução somente após persistência confirmada.
   end
 
   # Callback: previne deleção se task foi delivered

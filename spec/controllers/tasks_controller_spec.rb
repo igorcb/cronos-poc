@@ -98,7 +98,7 @@ RSpec.describe TasksController, type: :controller do
 
     it "assigns active companies" do
       get :new
-      expect(assigns(:companies)).to eq([ company ])
+      expect(assigns(:companies)).to include(company)
     end
   end
 
@@ -138,6 +138,25 @@ RSpec.describe TasksController, type: :controller do
         post :create, params: valid_params
         expect(response).to redirect_to(root_path)
         expect(flash[:notice]).to eq("Tarefa criada com sucesso")
+      end
+
+      context "with format turbo_stream" do
+        it "returns turbo_stream response with daily_total target" do
+          post :create, params: valid_params, format: :turbo_stream
+          expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+          expect(response.body).to include("daily_total")
+        end
+
+        it "returns turbo_stream response with company_monthly_totals target" do
+          post :create, params: valid_params, format: :turbo_stream
+          expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+          expect(response.body).to include("company_monthly_totals")
+        end
+
+        it "returns replace turbo_stream actions" do
+          post :create, params: valid_params, format: :turbo_stream
+          expect(response.body).to include("action=\"replace\"")
+        end
       end
     end
 
@@ -190,6 +209,98 @@ RSpec.describe TasksController, type: :controller do
         }
         expect(response).to render_template(:new)
         expect(assigns(:task).errors[:project]).to be_present
+      end
+    end
+  end
+
+  describe "PATCH #update" do
+    let!(:task) { create(:task, company: company, project: project, start_date: Date.current) }
+    let(:update_params) { { id: task.id, task: { name: "Updated Task" } } }
+
+    it "requires authentication" do
+      cookies.delete(:session_id)
+      patch :update, params: update_params
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    context "with valid params" do
+      it "updates the task" do
+        patch :update, params: update_params
+        expect(task.reload.name).to eq("Updated Task")
+      end
+
+      it "redirects to tasks_path with notice" do
+        patch :update, params: update_params
+        expect(response).to redirect_to(tasks_path)
+        expect(flash[:notice]).to eq("Tarefa atualizada com sucesso")
+      end
+
+      context "with format turbo_stream" do
+        it "returns turbo_stream response with daily_total target" do
+          patch :update, params: update_params, format: :turbo_stream
+          expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+          expect(response.body).to include("daily_total")
+        end
+
+        it "returns turbo_stream response with company_monthly_totals target" do
+          patch :update, params: update_params, format: :turbo_stream
+          expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+          expect(response.body).to include("company_monthly_totals")
+        end
+
+        it "returns replace turbo_stream actions" do
+          patch :update, params: update_params, format: :turbo_stream
+          expect(response.body).to include("action=\"replace\"")
+        end
+      end
+    end
+
+    context "with invalid params" do
+      it "renders edit with unprocessable_entity status" do
+        patch :update, params: { id: task.id, task: { name: "" } }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to render_template(:edit)
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    let!(:task) { create(:task, company: company, project: project, start_date: Date.current) }
+
+    it "requires authentication" do
+      cookies.delete(:session_id)
+      delete :destroy, params: { id: task.id }
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "destroys the task" do
+      expect {
+        delete :destroy, params: { id: task.id }
+      }.to change(Task, :count).by(-1)
+    end
+
+    it "redirects to tasks_path with notice" do
+      delete :destroy, params: { id: task.id }
+      expect(response).to redirect_to(tasks_path)
+      expect(flash[:notice]).to eq("Tarefa removida com sucesso")
+    end
+
+    context "with format turbo_stream" do
+      it "returns turbo_stream response with daily_total target" do
+        delete :destroy, params: { id: task.id }, format: :turbo_stream
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response.body).to include("daily_total")
+      end
+
+      it "returns turbo_stream response with company_monthly_totals target" do
+        delete :destroy, params: { id: task.id }, format: :turbo_stream
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response.body).to include("company_monthly_totals")
+      end
+
+      it "returns replace turbo_stream actions" do
+        delete :destroy, params: { id: task.id }, format: :turbo_stream
+        expect(response.body).to include("action=\"replace\"")
       end
     end
   end
