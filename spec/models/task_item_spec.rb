@@ -239,6 +239,36 @@ RSpec.describe TaskItem, type: :model do
     end
   end
 
+  describe "#notify_totals_changed (after_commit)" do
+    let(:task) { create(:task) }
+
+    it "is called after create commit" do
+      task_item = build(:task_item, task: task)
+      expect(task_item).to receive(:notify_totals_changed)
+      task_item.save
+    end
+
+    it "is called after update commit" do
+      task_item = create(:task_item, task: task)
+      expect(task_item).to receive(:notify_totals_changed)
+      task_item.update!(status: "completed")
+    end
+
+    it "is called after destroy commit" do
+      task_item = create(:task_item, task: task)
+      expect(task_item).to receive(:notify_totals_changed)
+      task_item.destroy
+    end
+
+    it "fires only after transaction is committed" do
+      task_item = build(:task_item, task: task)
+      committed = false
+      allow(task_item).to receive(:notify_totals_changed) { committed = true }
+      task_item.save
+      expect(committed).to be true
+    end
+  end
+
   describe "#update_task_status callback" do
     let(:task) { create(:task, status: "pending") }
 

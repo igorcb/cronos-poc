@@ -1,27 +1,12 @@
-class TasksController < ApplicationController
+class TaskItemsController < ApplicationController
   before_action :require_authentication
-  before_action :set_task, only: [ :edit, :update, :destroy ]
-
-  def index
-    @tasks = Task
-      .includes(:company, :project, :task_items)
-      .where(start_date: Date.current.all_month)
-      .order(start_date: :desc, created_at: :desc)
-
-    @daily_total = calculate_daily_total
-    @company_monthly_totals = calculate_company_totals
-  end
-
-  def new
-    @task = Task.new
-    @companies = Company.active.order(:name)
-  end
+  before_action :set_task
+  before_action :set_task_item, only: [ :update, :destroy ]
 
   def create
-    @task = Task.new(task_params)
-    @task.status = "pending"
+    @task_item = @task.task_items.build(task_item_params)
 
-    if @task.save
+    if @task_item.save
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
@@ -29,20 +14,18 @@ class TasksController < ApplicationController
             turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: calculate_company_totals })
           ]
         end
-        format.html { redirect_to root_path, notice: "Tarefa criada com sucesso" }
+        format.html { redirect_to tasks_path, notice: "Item criado com sucesso" }
       end
     else
-      @companies = Company.active.order(:name)
-      render :new, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("task_item_errors_#{@task.id}", partial: "task_items/errors", locals: { task_item: @task_item }) }
+        format.html { redirect_to tasks_path, alert: @task_item.errors.full_messages.to_sentence }
+      end
     end
   end
 
-  def edit
-    @companies = Company.active.order(:name)
-  end
-
   def update
-    if @task.update(task_params)
+    if @task_item.update(task_item_params)
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
@@ -50,16 +33,18 @@ class TasksController < ApplicationController
             turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: calculate_company_totals })
           ]
         end
-        format.html { redirect_to tasks_path, notice: "Tarefa atualizada com sucesso" }
+        format.html { redirect_to tasks_path, notice: "Item atualizado com sucesso" }
       end
     else
-      @companies = Company.active.order(:name)
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("task_item_errors_#{@task.id}", partial: "task_items/errors", locals: { task_item: @task_item }) }
+        format.html { redirect_to tasks_path, alert: @task_item.errors.full_messages.to_sentence }
+      end
     end
   end
 
   def destroy
-    @task.destroy
+    @task_item.destroy
 
     respond_to do |format|
       format.turbo_stream do
@@ -68,14 +53,18 @@ class TasksController < ApplicationController
           turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: calculate_company_totals })
         ]
       end
-      format.html { redirect_to tasks_path, notice: "Tarefa removida com sucesso" }
+      format.html { redirect_to tasks_path, notice: "Item removido com sucesso" }
     end
   end
 
   private
 
   def set_task
-    @task = Task.find(params[:id])
+    @task = Task.find(params[:task_id])
+  end
+
+  def set_task_item
+    @task_item = @task.task_items.find(params[:id])
   end
 
   def calculate_daily_total
@@ -99,7 +88,7 @@ class TasksController < ApplicationController
       .order("companies.name")
   end
 
-  def task_params
-    params.require(:task).permit(:name, :company_id, :project_id, :start_date, :estimated_hours_hm, :notes)
+  def task_item_params
+    params.require(:task_item).permit(:start_time, :end_time, :status)
   end
 end
