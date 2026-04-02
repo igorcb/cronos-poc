@@ -5,6 +5,8 @@
         class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition" %>
   </div>
 
+  <%= render "tasks/filters" %>
+
   <%= render "tasks/daily_total", daily_total: @daily_total %>
 
   <%= render "tasks/company_monthly_totals", totals: @company_monthly_totals %>

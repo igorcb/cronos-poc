@@ -77,6 +77,107 @@ RSpec.describe TasksController, type: :controller do
       company_ids = result.map { |r| r["id"] }
       expect(company_ids).not_to include(company.id)
     end
+
+    it "assigns @companies for filter selects" do
+      get :index
+      expect(assigns(:companies)).to include(company)
+    end
+
+    it "assigns @projects for filter selects" do
+      get :index
+      expect(assigns(:projects)).to include(project)
+    end
+
+    context "com filtro de empresa" do
+      let(:company1) { create(:company) }
+      let(:company2) { create(:company) }
+      let!(:task1) { create(:task, company: company1, project: create(:project, company: company1), start_date: Date.current) }
+      let!(:task2) { create(:task, company: company2, project: create(:project, company: company2), start_date: Date.current) }
+
+      it "filtra tasks pela empresa selecionada" do
+        get :index, params: { company_id: company1.id }
+        expect(assigns(:tasks)).to include(task1)
+        expect(assigns(:tasks)).not_to include(task2)
+      end
+
+      it "atribui apenas projetos da empresa selecionada em @projects" do
+        get :index, params: { company_id: company1.id }
+        project_company_ids = assigns(:projects).map(&:company_id).uniq
+        expect(project_company_ids).to eq([ company1.id ])
+      end
+    end
+
+    context "com filtro de projeto" do
+      let(:company_f) { create(:company) }
+      let(:project1) { create(:project, company: company_f) }
+      let(:project2) { create(:project, company: company_f) }
+      let!(:task1) { create(:task, company: company_f, project: project1, start_date: Date.current) }
+      let!(:task2) { create(:task, company: company_f, project: project2, start_date: Date.current) }
+
+      it "filtra tasks pelo projeto selecionado" do
+        get :index, params: { project_id: project1.id }
+        expect(assigns(:tasks)).to include(task1)
+        expect(assigns(:tasks)).not_to include(task2)
+      end
+    end
+
+    context "com filtros combinados (empresa + projeto)" do
+      let(:company_f) { create(:company) }
+      let(:project_a) { create(:project, company: company_f) }
+      let(:project_b) { create(:project, company: company_f) }
+      let!(:task1) { create(:task, company: company_f, project: project_a, start_date: Date.current) }
+      let!(:task2) { create(:task, company: company_f, project: project_b, start_date: Date.current) }
+
+      it "aplica ambos os filtros simultaneamente" do
+        get :index, params: { company_id: company_f.id, project_id: project_a.id }
+        expect(assigns(:tasks)).to include(task1)
+        expect(assigns(:tasks)).not_to include(task2)
+      end
+    end
+
+    context "sem filtros" do
+      it "retorna todas as tasks do mês" do
+        create(:task, company: company, project: project, start_date: Date.current)
+        get :index
+        expect(assigns(:tasks)).to be_present
+      end
+    end
+
+    context "coerção de params para inteiro" do
+      let(:company_f) { create(:company) }
+      let(:project_f) { create(:project, company: company_f) }
+      let!(:task_f) { create(:task, company: company_f, project: project_f, start_date: Date.current) }
+
+      it "aceita company_id como string numérica e filtra corretamente" do
+        get :index, params: { company_id: company_f.id.to_s }
+        expect(assigns(:tasks)).to include(task_f)
+      end
+
+      it "ignora company_id inválido (zero após to_i)" do
+        get :index, params: { company_id: "abc" }
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "@daily_total respeita filtros ativos" do
+      let(:company1) { create(:company) }
+      let(:company2) { create(:company) }
+      let(:proj1) { create(:project, company: company1) }
+      let(:proj2) { create(:project, company: company2) }
+      let!(:task1) { create(:task, company: company1, project: proj1, start_date: Date.current) }
+      let!(:task2) { create(:task, company: company2, project: proj2, start_date: Date.current) }
+
+      before do
+        create(:task_item, task: task1, start_time: "09:00", end_time: "10:00")
+        create(:task_item, task: task2, start_time: "11:00", end_time: "13:00")
+      end
+
+      it "retorna apenas horas das tasks da empresa filtrada" do
+        get :index, params: { company_id: company1.id }
+        expect(assigns(:daily_total)).to be > 0
+        expect(assigns(:daily_total)).to be < 3
+      end
+    end
   end
 
   describe "GET #new" do
