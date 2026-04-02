@@ -80,17 +80,17 @@ development_status:
   epic-4-retrospective: done  # Retrospective completa: 161 testes, 0 blockers, Epic 5 ready to start
 
   # Epic 5: Visualização e Totalizadores
-  epic-5: in-progress
+  epic-5: done
   5-1-implementar-index-de-timeentries-com-eager-loading: done
   5-2-criar-viewcomponent-para-timeentry-card: done  # Code reviewed, patches applied, UI validated via Playwright 2026-03-28
-  5-3-implementar-totalizadores-dinamicos-total-do-dia: ready-for-dev
+  5-3-implementar-totalizadores-dinamicos-total-do-dia: done  # Implementado 2026-03-30, validado via Playwright
   5-4-implementar-totalizadores-por-empresa-no-mes: done  # QA reviewed, Playwright validated, fixes applied 2026-03-30
   5-5-configurar-turbo-streams-para-atualizacao-em-tempo-real: done
   epic-5-retrospective: optional
 
   # Epic 6: Filtros Dinâmicos
-  epic-6: backlog
-  6-1-implementar-filtros-por-empresa-e-projeto: ready-for-dev
+  epic-6: in-progress
+  6-1-implementar-filtros-por-empresa-e-projeto: done  # Playwright validated, UI polished 2026-04-02
   6-2-implementar-filtros-por-status-e-data-periodo: ready-for-dev
   6-3-recalcular-totalizadores-conforme-filtros-aplicados: ready-for-dev
   6-4-criar-stimulus-controller-para-filtros-com-turbo-frames: ready-for-dev

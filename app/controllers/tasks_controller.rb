@@ -8,8 +8,19 @@ class TasksController < ApplicationController
       .where(start_date: Date.current.all_month)
       .order(start_date: :desc, created_at: :desc)
 
-    @daily_total = calculate_daily_total
-    @company_monthly_totals = calculate_company_totals
+    company_id = params[:company_id].present? ? params[:company_id].to_i : nil
+    project_id = params[:project_id].present? ? params[:project_id].to_i : nil
+
+    @tasks = @tasks.by_company(company_id) if company_id
+    @tasks = @tasks.by_project(project_id) if project_id
+
+    @daily_total = calculate_daily_total(@tasks)
+    @company_monthly_totals = calculate_company_totals(@tasks)
+
+    @companies = Company.active.order(:name)
+    @projects = company_id ?
+      Project.where(company_id: company_id).order(:name) :
+      Project.joins(:company).merge(Company.active).order(:name)
   end
 
   def new
@@ -78,17 +89,21 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
   end
 
-  def calculate_daily_total
-    TaskItem
-      .joins(:task)
-      .where(tasks: { start_date: Date.current })
-      .sum(:hours_worked)
+  def calculate_daily_total(filtered_tasks = nil)
+    base_ids = if filtered_tasks
+      filtered_tasks.unscope(:includes).where(start_date: Date.current).select(:id)
+    else
+      Task.where(start_date: Date.current).select(:id)
+    end
+    TaskItem.joins(:task).where(tasks: { id: base_ids }).sum(:hours_worked)
   end
 
-  def calculate_company_totals
+  def calculate_company_totals(filtered_tasks = nil)
+    base_relation = filtered_tasks || Task.where(start_date: Date.current.all_month)
+    base_ids = base_relation.unscope(:includes).select(:id)
     Company
       .joins(tasks: :task_items)
-      .where(tasks: { start_date: Date.current.all_month })
+      .where(tasks: { id: base_ids })
       .group("companies.id", "companies.name", "companies.hourly_rate")
       .select(
         "companies.id",

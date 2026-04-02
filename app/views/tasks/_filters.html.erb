@@ -1,0 +1,32 @@
+<div class="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6" data-controller="project-selector">
+  <%= form_with url: tasks_path, method: :get, class: "flex items-center justify-between gap-4" do |f| %>
+    <div class="flex gap-4 items-center">
+      <div>
+        <label class="block text-gray-400 text-sm mb-1">Empresa</label>
+        <%= select_tag :company_id,
+          options_from_collection_for_select(@companies, :id, :name, params[:company_id]),
+          include_blank: "Todas as empresas",
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
+          data: { "project-selector-target": "companySelect",
+                  action: "change->project-selector#loadProjects" } %>
+      </div>
+
+      <div>
+        <label class="block text-gray-400 text-sm mb-1">Projeto</label>
+        <%= select_tag :project_id,
+          options_from_collection_for_select(@projects, :id, :name, params[:project_id]),
+          include_blank: "Todos os projetos",
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
+          data: { "project-selector-target": "projectSelect" } %>
+      </div>
+    </div>
+
+    <div class="flex gap-2 shrink-0">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition cursor-pointer">Filtrar</button>
+      <% if params[:company_id].present? || params[:project_id].present? %>
+        <%= link_to "Limpar", tasks_path,
+          class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
