@@ -5,7 +5,7 @@ class TasksController < ApplicationController
   def index
     @tasks = Task
       .includes(:company, :project, :task_items)
-      .where(start_date: Date.current.all_month)
+      .where(start_date: resolve_period_range)
       .order(start_date: :desc, created_at: :desc)
 
     company_id = params[:company_id].present? ? params[:company_id].to_i : nil
@@ -13,6 +13,7 @@ class TasksController < ApplicationController
 
     @tasks = @tasks.by_company(company_id) if company_id
     @tasks = @tasks.by_project(project_id) if project_id
+    @tasks = @tasks.where(status: params[:status]) if params[:status].in?(Task.statuses.keys)
 
     @daily_total = calculate_daily_total(@tasks)
     @company_monthly_totals = calculate_company_totals(@tasks)
@@ -112,6 +113,21 @@ class TasksController < ApplicationController
         "SUM(task_items.hours_worked) as total_hours"
       )
       .order("companies.name")
+  end
+
+  def resolve_period_range
+    case params[:period]
+    when "current_month"  then Date.current.all_month
+    when "last_month"     then 1.month.ago.all_month
+    when "last_7_days"    then 7.days.ago.to_date..Date.current
+    when "current_week"   then Date.current.all_week
+    when "custom"
+      start_d = params[:start_date].present? ? (Date.parse(params[:start_date]) rescue nil) : nil
+      end_d   = params[:end_date].present?   ? (Date.parse(params[:end_date])   rescue nil) : nil
+      (start_d && end_d) ? start_d..end_d : Date.current.all_month
+    else
+      Date.current.all_month
+    end
   end
 
   def task_params

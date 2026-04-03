@@ -143,6 +143,111 @@ RSpec.describe TasksController, type: :controller do
       end
     end
 
+    context "com filtro de status" do
+      let!(:task_pending)   { create(:task, :pending,   company: company, project: project, start_date: Date.current) }
+      let!(:task_completed) { create(:task, :completed, company: company, project: project, start_date: Date.current) }
+
+      it "filtra tasks pelo status selecionado" do
+        get :index, params: { status: "pending" }
+        expect(assigns(:tasks)).to include(task_pending)
+        expect(assigns(:tasks)).not_to include(task_completed)
+      end
+    end
+
+    context "com filtro de período last_7_days" do
+      let!(:task_recent) { create(:task, company: company, project: project, start_date: 3.days.ago.to_date) }
+      let!(:task_old)    { create(:task, company: company, project: project, start_date: 2.months.ago.to_date) }
+
+      it "retorna apenas tasks dos últimos 7 dias" do
+        get :index, params: { period: "last_7_days" }
+        expect(assigns(:tasks)).to include(task_recent)
+        expect(assigns(:tasks)).not_to include(task_old)
+      end
+    end
+
+    context "com filtro de período personalizado" do
+      let!(:task_in_range)  { create(:task, company: company, project: project, start_date: Date.new(2026, 3, 15)) }
+      let!(:task_out_range) { create(:task, company: company, project: project, start_date: Date.new(2026, 1, 1)) }
+
+      it "filtra tasks pelo range de datas informado" do
+        get :index, params: { period: "custom", start_date: "2026-03-01", end_date: "2026-03-31" }
+        expect(assigns(:tasks)).to include(task_in_range)
+        expect(assigns(:tasks)).not_to include(task_out_range)
+      end
+    end
+
+    context "com filtros combinados (status + empresa)" do
+      let(:company_sc) { create(:company) }
+      let!(:task1) { create(:task, :pending,   company: company_sc, project: create(:project, company: company_sc), start_date: Date.current) }
+      let!(:task2) { create(:task, :completed, company: company_sc, project: create(:project, company: company_sc), start_date: Date.current) }
+
+      it "aplica status e empresa simultaneamente" do
+        get :index, params: { company_id: company_sc.id, status: "pending" }
+        expect(assigns(:tasks)).to include(task1)
+        expect(assigns(:tasks)).not_to include(task2)
+      end
+    end
+
+    context "com filtro de período last_month" do
+      let!(:task_last_month) { create(:task, company: company, project: project, start_date: 1.month.ago.to_date) }
+      let!(:task_current)    { create(:task, company: company, project: project, start_date: Date.current) }
+
+      it "retorna apenas tasks do mês anterior" do
+        get :index, params: { period: "last_month" }
+        expect(assigns(:tasks)).to include(task_last_month)
+        expect(assigns(:tasks)).not_to include(task_current)
+      end
+    end
+
+    context "com filtro de período current_week" do
+      let!(:task_this_week) { create(:task, company: company, project: project, start_date: Date.current.beginning_of_week) }
+      let!(:task_old)       { create(:task, company: company, project: project, start_date: 2.months.ago.to_date) }
+
+      it "retorna apenas tasks da semana atual" do
+        get :index, params: { period: "current_week" }
+        expect(assigns(:tasks)).to include(task_this_week)
+        expect(assigns(:tasks)).not_to include(task_old)
+      end
+    end
+
+    context "com filtro de período custom com data inválida" do
+      let!(:task_current) { create(:task, company: company, project: project, start_date: Date.current) }
+
+      it "faz fallback para mês atual quando start_date é inválida" do
+        get :index, params: { period: "custom", start_date: "nao-e-data", end_date: "2026-03-31" }
+        expect(assigns(:tasks)).to include(task_current)
+      end
+
+      it "faz fallback para mês atual quando apenas start_date é fornecida" do
+        get :index, params: { period: "custom", start_date: "2026-03-01" }
+        expect(assigns(:tasks)).to include(task_current)
+      end
+    end
+
+    context "com status inválido" do
+      let!(:task_pending) { create(:task, :pending, company: company, project: project, start_date: Date.current) }
+
+      it "ignora status inválido e retorna tasks do mês" do
+        get :index, params: { status: "invalid_value" }
+        expect(response).to have_http_status(:success)
+        expect(assigns(:tasks)).to include(task_pending)
+      end
+    end
+
+    context "com filtros combinados (project_id + period)" do
+      let(:company_cp) { create(:company) }
+      let(:project_cp) { create(:project, company: company_cp) }
+      let(:project_cp2) { create(:project, company: company_cp) }
+      let!(:task_in)  { create(:task, company: company_cp, project: project_cp,  start_date: 3.days.ago.to_date) }
+      let!(:task_out) { create(:task, company: company_cp, project: project_cp2, start_date: 3.days.ago.to_date) }
+
+      it "aplica project_id e period simultaneamente" do
+        get :index, params: { project_id: project_cp.id, period: "last_7_days" }
+        expect(assigns(:tasks)).to include(task_in)
+        expect(assigns(:tasks)).not_to include(task_out)
+      end
+    end
+
     context "coerção de params para inteiro" do
       let(:company_f) { create(:company) }
       let(:project_f) { create(:project, company: company_f) }
