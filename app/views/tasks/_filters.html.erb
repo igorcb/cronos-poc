@@ -19,11 +19,49 @@
           class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
           data: { "project-selector-target": "projectSelect" } %>
       </div>
+
+      <div>
+        <label class="block text-gray-400 text-sm mb-1">Status</label>
+        <%= select_tag :status,
+          options_for_select([
+            ["Todos os status", ""],
+            ["Pendente", "pending"],
+            ["Concluído", "completed"],
+            ["Entregue", "delivered"]
+          ], params[:status]),
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+      </div>
+
+      <div>
+        <label class="block text-gray-400 text-sm mb-1">Período</label>
+        <%= select_tag :period,
+          options_for_select([
+            ["Mês atual", "current_month"],
+            ["Mês anterior", "last_month"],
+            ["Últimos 7 dias", "last_7_days"],
+            ["Semana atual", "current_week"],
+            ["Personalizado", "custom"]
+          ], params[:period] || "current_month"),
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+      </div>
+
+      <div>
+        <label class="block text-gray-400 text-sm mb-1">De</label>
+        <%= date_field_tag :start_date, params[:start_date],
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+      </div>
+
+      <div>
+        <label class="block text-gray-400 text-sm mb-1">Até</label>
+        <%= date_field_tag :end_date, params[:end_date],
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+      </div>
     </div>
 
     <div class="flex gap-2 shrink-0">
       <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition cursor-pointer">Filtrar</button>
-      <% if params[:company_id].present? || params[:project_id].present? %>
+      <% if params[:company_id].present? || params[:project_id].present? ||
+            params[:status].present? || (params[:period].present? && params[:period] != "current_month") %>
         <%= link_to "Limpar", tasks_path,
           class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition" %>
       <% end %>

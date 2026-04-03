@@ -26,7 +26,7 @@ stories:
     notes: URL bookmarkable - /tasks?company_id=1&project_id=5
 
   002-implementar-filtros-por-status-e-data-periodo:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Filtros por status e periodo (presets + custom range)
     notes: Presets - current_month, last_month, last_7_days, current_week, custom
