@@ -18,6 +18,12 @@ class TasksController < ApplicationController
     @daily_total = calculate_daily_total(@tasks)
     @company_monthly_totals = calculate_company_totals(@tasks)
 
+    @filtered_count = @tasks.count
+    @is_filtered = (company_id&.positive?) || (project_id&.positive?) ||
+                   params[:status].in?(Task.statuses.keys) ||
+                   (params[:period].present? && params[:period] != "current_month")
+    @period_label = resolve_period_label
+
     @companies = Company.active.order(:name)
     @projects = company_id ?
       Project.where(company_id: company_id).order(:name) :
@@ -113,6 +119,16 @@ class TasksController < ApplicationController
         "SUM(task_items.hours_worked) as total_hours"
       )
       .order("companies.name")
+  end
+
+  def resolve_period_label
+    case params[:period]
+    when "last_month"    then "o mês anterior"
+    when "last_7_days"   then "os últimos 7 dias"
+    when "current_week"  then "a semana atual"
+    when "custom"        then "o período selecionado"
+    else "este mês"
+    end
   end
 
   def resolve_period_range
