@@ -32,7 +32,7 @@ stories:
     notes: Presets - current_month, last_month, last_7_days, current_week, custom
 
   003-recalcular-totalizadores-conforme-filtros-aplicados:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Recalculo server-side de totalizadores ao aplicar filtros
     notes: Reutiliza calculate_totals do DM-005
@@ -48,9 +48,9 @@ retrospective:
 
 summary:
   total_stories: 4
-  done: 0
+  done: 2
   in_progress: 0
-  ready_for_dev: 4
+  ready_for_dev: 2
   backlog: 0
   blockers:
     - DM-005 deve estar concluido antes de iniciar (ViewComponents necessarios)

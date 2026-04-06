@@ -7,6 +7,12 @@
 
   <%= render "tasks/filters" %>
 
+  <% if @is_filtered %>
+    <div id="filter_count_message" class="mb-4 text-sm text-blue-400">
+      Mostrando <%= @filtered_count %> <%= @filtered_count == 1 ? "entrada" : "entradas" %> (filtrado)
+    </div>
+  <% end %>
+
   <%= render "tasks/daily_total", daily_total: @daily_total %>
 
   <%= render "tasks/company_monthly_totals", totals: @company_monthly_totals %>
@@ -14,7 +20,7 @@
   <div class="bg-gray-800 shadow-sm rounded-lg border border-gray-700 overflow-hidden">
     <% if @tasks.empty? %>
       <div class="px-6 py-12 text-center text-gray-400">
-        <p>Nenhuma tarefa encontrada para este mês.</p>
+        <p>Nenhuma tarefa encontrada para <%= @period_label %>.</p>
       </div>
     <% else %>
       <table class="min-w-full divide-y divide-gray-700">

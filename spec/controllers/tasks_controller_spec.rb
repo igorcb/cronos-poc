@@ -248,6 +248,149 @@ RSpec.describe TasksController, type: :controller do
       end
     end
 
+    context "Story 6.3 - recalcular totalizadores conforme filtros (AC1-AC5)" do
+      let(:company1) { create(:company, hourly_rate: 100) }
+      let(:company2) { create(:company, hourly_rate: 200) }
+      let(:proj1) { create(:project, company: company1) }
+      let(:proj2) { create(:project, company: company2) }
+      let!(:task1) { create(:task, company: company1, project: proj1, start_date: Date.current) }
+      let!(:task2) { create(:task, company: company2, project: proj2, start_date: Date.current) }
+
+      before do
+        create(:task_item, task: task1, start_time: "09:00", end_time: "10:00")
+        create(:task_item, task: task2, start_time: "11:00", end_time: "13:00")
+      end
+
+      context "AC1 - totalizadores recalculam baseados nas entradas filtradas" do
+        it "daily_total reflete apenas horas das tasks da empresa filtrada" do
+          get :index, params: { company_id: company1.id }
+          total_with_filter = assigns(:daily_total)
+          get :index
+          total_without_filter = assigns(:daily_total)
+          expect(total_with_filter).to be < total_without_filter
+        end
+
+        it "company_monthly_totals inclui apenas empresa filtrada" do
+          get :index, params: { company_id: company1.id }
+          totals = assigns(:company_monthly_totals)
+          sql = totals.to_sql
+          result = ActiveRecord::Base.connection.execute(sql)
+          ids = result.map { |r| r["id"] }
+          expect(ids).to include(company1.id)
+          expect(ids).not_to include(company2.id)
+        end
+      end
+
+      context "AC2 - total geral exibe soma apenas das entradas visíveis" do
+        it "daily_total não inclui horas de tasks excluídas pelo filtro de projeto" do
+          get :index, params: { project_id: proj1.id }
+          expect(assigns(:daily_total)).to eq(1.0)
+        end
+      end
+
+      context "AC3 - total por empresa agrupa apenas entradas filtradas" do
+        it "company_monthly_totals exclui empresa sem tasks no filtro aplicado" do
+          get :index, params: { company_id: company1.id }
+          totals = assigns(:company_monthly_totals)
+          sql = totals.to_sql
+          result = ActiveRecord::Base.connection.execute(sql)
+          ids = result.map { |r| r["id"] }
+          expect(ids).not_to include(company2.id)
+        end
+      end
+
+      context "AC5 - mensagem indica quantidade de entradas filtradas" do
+        it "atribui @filtered_count com total de tasks visíveis" do
+          get :index, params: { company_id: company1.id }
+          expect(assigns(:filtered_count)).to eq(1)
+        end
+
+        it "atribui @is_filtered como true quando filtro de empresa está ativo" do
+          get :index, params: { company_id: company1.id }
+          expect(assigns(:is_filtered)).to be true
+        end
+
+        it "atribui @is_filtered como true quando filtro de projeto está ativo" do
+          get :index, params: { project_id: proj1.id }
+          expect(assigns(:is_filtered)).to be true
+        end
+
+        it "atribui @is_filtered como true quando filtro de status está ativo" do
+          get :index, params: { status: "pending" }
+          expect(assigns(:is_filtered)).to be true
+        end
+
+        it "atribui @is_filtered como true quando período não é current_month" do
+          get :index, params: { period: "last_7_days" }
+          expect(assigns(:is_filtered)).to be true
+        end
+
+        it "atribui @is_filtered como false sem filtros ativos" do
+          get :index
+          expect(assigns(:is_filtered)).to be false
+        end
+
+        it "atribui @is_filtered como false quando period é current_month (padrão)" do
+          get :index, params: { period: "current_month" }
+          expect(assigns(:is_filtered)).to be false
+        end
+
+        it "atribui @filtered_count igual ao total de tasks sem filtros" do
+          get :index
+          expect(assigns(:filtered_count)).to eq(assigns(:tasks).count)
+        end
+
+        it "atribui @filtered_count maior que zero quando há tasks filtradas" do
+          get :index, params: { company_id: company1.id }
+          expect(assigns(:filtered_count)).to be > 0
+        end
+
+        it "retorna sucesso com filtros ativos" do
+          get :index, params: { company_id: company1.id }
+          expect(response).to have_http_status(:success)
+        end
+      end
+    end
+
+    context "QA fix - @is_filtered não deve ser true com company_id inválido" do
+      it "atribui @is_filtered como false quando company_id é string não-numérica" do
+        get :index, params: { company_id: "abc" }
+        expect(assigns(:is_filtered)).to be false
+      end
+
+      it "atribui @is_filtered como false quando project_id é string não-numérica" do
+        get :index, params: { project_id: "xyz" }
+        expect(assigns(:is_filtered)).to be false
+      end
+    end
+
+    context "QA fix - @period_label reflete o período selecionado" do
+      it "retorna 'este mês' por padrão" do
+        get :index
+        expect(assigns(:period_label)).to eq("este mês")
+      end
+
+      it "retorna 'o mês anterior' para last_month" do
+        get :index, params: { period: "last_month" }
+        expect(assigns(:period_label)).to eq("o mês anterior")
+      end
+
+      it "retorna 'os últimos 7 dias' para last_7_days" do
+        get :index, params: { period: "last_7_days" }
+        expect(assigns(:period_label)).to eq("os últimos 7 dias")
+      end
+
+      it "retorna 'a semana atual' para current_week" do
+        get :index, params: { period: "current_week" }
+        expect(assigns(:period_label)).to eq("a semana atual")
+      end
+
+      it "retorna 'o período selecionado' para custom" do
+        get :index, params: { period: "custom", start_date: "2026-03-01", end_date: "2026-03-31" }
+        expect(assigns(:period_label)).to eq("o período selecionado")
+      end
+    end
+
     context "coerção de params para inteiro" do
       let(:company_f) { create(:company) }
       let(:project_f) { create(:project, company: company_f) }
