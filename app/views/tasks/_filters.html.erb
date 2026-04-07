@@ -1,5 +1,7 @@
 <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6" data-controller="project-selector">
-  <%= form_with url: tasks_path, method: :get, class: "flex items-center justify-between gap-4" do |f| %>
+  <%= form_with url: tasks_path, method: :get,
+      class: "flex items-center justify-between gap-4",
+      data: { controller: "filter", turbo_action: "advance" } do |f| %>
     <div class="flex gap-4 items-center">
       <div>
         <label class="block text-gray-400 text-sm mb-1">Empresa</label>
@@ -8,7 +10,7 @@
           include_blank: "Todas as empresas",
           class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
           data: { "project-selector-target": "companySelect",
-                  action: "change->project-selector#loadProjects" } %>
+                  action: "change->project-selector#loadProjects change->filter#submit" } %>
       </div>
 
       <div>
@@ -17,7 +19,8 @@
           options_from_collection_for_select(@projects, :id, :name, params[:project_id]),
           include_blank: "Todos os projetos",
           class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
-          data: { "project-selector-target": "projectSelect" } %>
+          data: { "project-selector-target": "projectSelect",
+                  action: "change->filter#submit" } %>
       </div>
 
       <div>
@@ -29,7 +32,8 @@
             ["Concluído", "completed"],
             ["Entregue", "delivered"]
           ], params[:status]),
-          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
+          data: { action: "change->filter#submit" } %>
       </div>
 
       <div>
@@ -42,19 +46,22 @@
             ["Semana atual", "current_week"],
             ["Personalizado", "custom"]
           ], params[:period] || "current_month"),
-          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
+          data: { action: "change->filter#submit" } %>
       </div>
 
       <div>
         <label class="block text-gray-400 text-sm mb-1">De</label>
         <%= date_field_tag :start_date, params[:start_date],
-          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
+          data: { action: "change->filter#submit" } %>
       </div>
 
       <div>
         <label class="block text-gray-400 text-sm mb-1">Até</label>
         <%= date_field_tag :end_date, params[:end_date],
-          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm" %>
+          class: "bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 text-sm",
+          data: { action: "change->filter#submit" } %>
       </div>
     </div>
 

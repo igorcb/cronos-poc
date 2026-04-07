@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import ProjectSelectorController from "./project_selector_controller"
 application.register("project-selector", ProjectSelectorController)
+
+import FilterController from "./filter_controller"
+application.register("filter", FilterController)
