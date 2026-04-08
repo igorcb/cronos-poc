@@ -19,11 +19,11 @@
 
           <div class="flex gap-2 mt-4">
             <%= link_to "Editar", edit_company_path(company),
-                class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition" %>
+                class: "min-h-[44px] inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition" %>
             <%= button_to "Desativar", company_path(company),
                 method: :delete,
                 data: { turbo_confirm: "Tem certeza que deseja desativar esta empresa?" },
-                class: "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition" %>
+                class: "min-h-[44px] bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm transition cursor-pointer" %>
           </div>
         </div>
       <% end %>

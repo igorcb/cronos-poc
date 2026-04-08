@@ -2,7 +2,7 @@
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold text-white">Tarefas do Mês</h1>
     <%= link_to "Nova Tarefa", new_task_path,
-        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition" %>
+        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition min-h-[44px] inline-flex items-center" %>
   </div>
 
   <%= render "tasks/filters" %>
@@ -24,6 +24,7 @@
           <p>Nenhuma tarefa encontrada para <%= @period_label %>.</p>
         </div>
       <% else %>
+        <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-700">
           <thead class="bg-gray-900">
             <tr>
@@ -43,6 +44,7 @@
             <% end %>
           </tbody>
         </table>
+        </div>
       <% end %>
     </div>
   </turbo-frame>
