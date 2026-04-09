@@ -1,5 +1,5 @@
-<div class="max-w-2xl mx-auto">
-  <div class="bg-gray-800 shadow-sm rounded-lg p-6 border border-gray-700">
+<div class="w-full sm:max-w-2xl sm:mx-auto">
+  <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
     <h1 class="text-2xl font-bold text-white mb-6">Editar Tarefa</h1>
 
     <%= form_with(model: @task, data: { controller: "project-selector" }) do |f| %>
@@ -23,7 +23,7 @@
           <%= f.collection_select :company_id, @companies, :id, :name,
               { prompt: "Selecione uma empresa" },
               data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects" },
-              class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
               required: true %>
         </div>
 
@@ -33,14 +33,14 @@
           <%= f.select :project_id, [],
               { prompt: "Selecione um projeto" },
               data: { project_selector_target: "projectSelect" },
-              class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
               required: true %>
         </div>
 
         <!-- Name -->
         <div>
           <%= f.label :name, "Nome da Tarefa", class: "block text-sm font-medium text-gray-300 mb-1" %>
-          <%= f.text_field :name, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+          <%= f.text_field :name, class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
         </div>
 
         <!-- Estimated Hours and Start Date (same row) -->
@@ -48,21 +48,21 @@
           <!-- Estimated Hours (HH:MM format) -->
           <div>
             <%= f.label :estimated_hours_hm, "Horas Estimadas (HH:MM)", class: "block text-sm font-medium text-gray-300 mb-1" %>
-            <%= f.text_field :estimated_hours_hm, placeholder: "03:00", class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+            <%= f.text_field :estimated_hours_hm, placeholder: "03:00", class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
             <p class="mt-1 text-xs text-gray-400">Formato: HH:MM (ex: 03:00, 02:30, 18:00)</p>
           </div>
 
           <!-- Start Date -->
           <div>
             <%= f.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-300 mb-1" %>
-            <%= f.date_field :start_date, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+            <%= f.date_field :start_date, class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
           </div>
         </div>
 
         <!-- Notes -->
         <div>
           <%= f.label :notes, "Observações", class: "block text-sm font-medium text-gray-300 mb-1" %>
-          <%= f.text_area :notes, rows: 4, class: "w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+          <%= f.text_area :notes, rows: 4, class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
         </div>
 
         <!-- Submit -->
