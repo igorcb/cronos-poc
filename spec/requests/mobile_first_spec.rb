@@ -38,7 +38,7 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
     # AC5: Botões touch-friendly com min-h-[44px]
     it "renders botão submit com min-h-[44px]" do
       get new_task_path
-      expect(response.body).to include('class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] cursor-pointer"')
+      expect(response.body).to match(/bg-blue-600[^"]*min-h-\[44px\]|min-h-\[44px\][^"]*bg-blue-600/)
     end
 
     # AC6: Dropdowns com min-h-[44px] para touch

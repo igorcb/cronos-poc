@@ -25,7 +25,7 @@ stories:
     notes: CSS base mobile, progressive enhancement para tablet/desktop
 
   002-otimizar-timeentry-form-para-mobile:
-    status: ready-for-dev
+    status: review
     priority: critical
     description: Otimizar form de Task/TaskItem para mobile (touch-friendly)
     notes: "Inputs HTML5 nativos, minimo 44x44px touch targets"
