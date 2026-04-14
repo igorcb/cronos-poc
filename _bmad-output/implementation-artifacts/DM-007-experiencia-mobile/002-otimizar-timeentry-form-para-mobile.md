@@ -1,6 +1,6 @@
 # Story 8.2: Otimizar TimeEntry Form para Mobile
 
-Status: review
+Status: done
 
 ## Story
 
