@@ -17,8 +17,15 @@
     <%= form.text_field :name,
         required: true,
         "aria-required": "true",
+        "aria-describedby": company.errors[:name].any? ? "company_name_error" : nil,
+        "aria-invalid": company.errors[:name].any? ? "true" : nil,
         class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
         placeholder: "Nome da empresa" %>
+    <% if company.errors[:name].any? %>
+      <span id="company_name_error" role="alert" class="mt-1 text-sm text-red-400">
+        <%= company.errors[:name].first %>
+      </span>
+    <% end %>
   </div>
 
   <div>
@@ -28,8 +35,15 @@
         "aria-required": "true",
         step: 0.01,
         min: 0.01,
+        "aria-describedby": company.errors[:hourly_rate].any? ? "company_hourly_rate_error" : nil,
+        "aria-invalid": company.errors[:hourly_rate].any? ? "true" : nil,
         class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
         placeholder: "150.00" %>
+    <% if company.errors[:hourly_rate].any? %>
+      <span id="company_hourly_rate_error" role="alert" class="mt-1 text-sm text-red-400">
+        <%= company.errors[:hourly_rate].first %>
+      </span>
+    <% end %>
   </div>
 
   <div class="flex flex-col sm:flex-row gap-3 pt-4">

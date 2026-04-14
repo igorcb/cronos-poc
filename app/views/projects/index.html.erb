@@ -1,36 +1,41 @@
 <div class="space-y-6">
-  <div class="flex justify-between items-center">
-    <h1 class="text-3xl font-bold text-white">Projetos</h1>
-    <%= link_to "Novo Projeto", new_project_path,
-        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition min-h-[44px] inline-flex items-center" %>
-  </div>
+  <section aria-labelledby="projects-heading">
+    <div class="flex justify-between items-center">
+      <h1 id="projects-heading" class="text-3xl font-bold text-white">Projetos</h1>
+      <%= link_to "Novo Projeto", new_project_path,
+          class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition min-h-[44px] inline-flex items-center",
+          aria: { label: "Cadastrar novo projeto" } %>
+    </div>
 
-  <% if @projects.any? %>
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <% @projects.each do |project| %>
-        <div class="bg-gray-800 p-4 rounded-lg shadow border border-gray-700">
-          <h3 class="text-lg font-semibold text-white"><%= project.name %></h3>
-          <p class="text-blue-400 mt-2">
-            <%= project.company.name %>
-          </p>
-          <p class="text-sm text-gray-400 mt-2">
-            Criado em <%= l(project.created_at, format: :short) %>
-          </p>
-          <div class="flex gap-2 mt-4">
-            <%= link_to "Editar", edit_project_path(project),
-                class: "min-h-[44px] inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition" %>
-            <%= button_to "Deletar", project_path(project),
-                method: :delete,
-                data: { turbo_confirm: "Tem certeza que deseja deletar este projeto?" },
-                class: "min-h-[44px] bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm transition cursor-pointer" %>
+    <% if @projects.any? %>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6" role="list">
+        <% @projects.each do |project| %>
+          <div class="bg-gray-800 p-4 rounded-lg shadow border border-gray-700" role="listitem">
+            <h3 class="text-lg font-semibold text-white"><%= project.name %></h3>
+            <p class="text-blue-400 mt-2">
+              <%= project.company.name %>
+            </p>
+            <p class="text-sm text-gray-400 mt-2">
+              Criado em <%= l(project.created_at, format: :short) %>
+            </p>
+            <div class="flex gap-2 mt-4">
+              <%= link_to "Editar", edit_project_path(project),
+                  class: "min-h-[44px] inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition",
+                  aria: { label: "Editar projeto #{project.name}" } %>
+              <%= button_to "Deletar", project_path(project),
+                  method: :delete,
+                  data: { turbo_confirm: "Tem certeza que deseja deletar este projeto?" },
+                  class: "min-h-[44px] bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm transition cursor-pointer",
+                  aria: { label: "Deletar projeto #{project.name}" } %>
+            </div>
           </div>
-        </div>
-      <% end %>
-    </div>
-  <% else %>
-    <div class="text-center py-12">
-      <p class="text-gray-400 text-lg">Nenhum projeto cadastrado.</p>
-      <p class="text-gray-500 mt-2">Clique em "Novo Projeto" para cadastrar o primeiro.</p>
-    </div>
-  <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-12" role="status">
+        <p class="text-gray-400 text-lg">Nenhum projeto cadastrado.</p>
+        <p class="text-gray-500 mt-2">Clique em "Novo Projeto" para cadastrar o primeiro.</p>
+      </div>
+    <% end %>
+  </section>
 </div>
