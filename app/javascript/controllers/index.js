@@ -12,3 +12,6 @@ application.register("project-selector", ProjectSelectorController)
 
 import FilterController from "./filter_controller"
 application.register("filter", FilterController)
+
+import NavbarController from "./navbar_controller"
+application.register("navbar", NavbarController)

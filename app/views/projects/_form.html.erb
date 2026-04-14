@@ -17,8 +17,15 @@
     <%= form.text_field :name,
         required: true,
         "aria-required": "true",
+        "aria-describedby": project.errors[:name].any? ? "project_name_error" : nil,
+        "aria-invalid": project.errors[:name].any? ? "true" : nil,
         class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
         placeholder: "Nome do projeto" %>
+    <% if project.errors[:name].any? %>
+      <span id="project_name_error" role="alert" class="mt-1 text-sm text-red-400">
+        <%= project.errors[:name].first %>
+      </span>
+    <% end %>
   </div>
 
   <div>
@@ -28,7 +35,14 @@
         { required: true,
           "aria-required": "true",
           "aria-labelledby": "company-label",
+          "aria-describedby": project.errors[:company_id].any? ? "project_company_error" : nil,
+          "aria-invalid": project.errors[:company_id].any? ? "true" : nil,
           class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2" } %>
+    <% if project.errors[:company_id].any? %>
+      <span id="project_company_error" role="alert" class="mt-1 text-sm text-red-400">
+        <%= project.errors[:company_id].first %>
+      </span>
+    <% end %>
   </div>
 
   <div class="flex flex-col sm:flex-row gap-3 pt-4">
