@@ -48,7 +48,12 @@
           <!-- Estimated Hours (HH:MM format) -->
           <div>
             <%= f.label :estimated_hours_hm, "Horas Estimadas (HH:MM)", class: "block text-sm font-medium text-gray-300 mb-1" %>
-            <%= f.text_field :estimated_hours_hm, placeholder: "03:00", class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", required: true %>
+            <%= f.text_field :estimated_hours_hm, placeholder: "03:00",
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+              required: true,
+              pattern: "\\d{1,2}:\\d{2}",
+              inputmode: "numeric",
+              title: "Formato HH:MM (ex: 03:00, 02:30, 18:00)" %>
             <p class="mt-1 text-xs text-gray-400">Formato: HH:MM (ex: 03:00, 02:30, 18:00)</p>
           </div>
 
@@ -62,13 +67,13 @@
         <!-- Notes -->
         <div>
           <%= f.label :notes, "Observações", class: "block text-sm font-medium text-gray-300 mb-1" %>
-          <%= f.text_area :notes, rows: 4, class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+          <%= f.text_area :notes, rows: 4, class: "w-full min-h-[88px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
         </div>
 
         <!-- Submit -->
         <div class="flex flex-col sm:flex-row gap-3 pt-4">
           <%= f.submit "Salvar Alterações",
-              class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] cursor-pointer" %>
+              class: "w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition min-h-[44px] cursor-pointer" %>
           <%= link_to "Cancelar", tasks_path,
               class: "bg-gray-600 hover:bg-gray-500 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] inline-flex items-center justify-center" %>
         </div>

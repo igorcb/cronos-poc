@@ -106,7 +106,7 @@ development_status:
   # Epic 8: Responsividade e Experiência Mobile
   epic-8: in-progress
   8-1-implementar-mobile-first-com-tailwind-breakpoints: done  # Validated via Playwright 2026-04-08
-  8-2-otimizar-timeentry-form-para-mobile: ready-for-dev
+  8-2-otimizar-timeentry-form-para-mobile: review
   8-3-garantir-acessibilidade-wcag-nivel-a: ready-for-dev
   8-4-testar-responsividade-em-multiplos-dispositivos: ready-for-dev
   epic-8-retrospective: optional
