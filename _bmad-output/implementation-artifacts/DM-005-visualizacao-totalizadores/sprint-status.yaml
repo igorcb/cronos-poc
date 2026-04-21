@@ -48,16 +48,21 @@ stories:
     description: Turbo Streams para atualizacao de totalizadores sem reload
     notes: broadcast_replace_to para daily_total e company_total
 
+  006-exibir-lista-de-tarefas-do-mes-no-dashboard:
+    status: ready-for-dev
+    priority: medium
+    description: Exibir lista read-only de tarefas do mês no dashboard com eager loading
+    notes: Criado 2026-04-21 — DashboardController + nova seção na view
+
 retrospective:
   status: optional
 
 summary:
-  total_stories: 5
-  done: 0
+  total_stories: 6
+  done: 5
   in_progress: 0
-  ready_for_dev: 5
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - Iniciar story 001 (eager loading - fundacao do dominio)
-    - Criar ViewComponents (story 002) apos index pronto
+    - Implementar story 006 (lista de tarefas no dashboard)

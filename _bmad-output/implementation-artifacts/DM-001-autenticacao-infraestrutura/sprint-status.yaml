@@ -56,15 +56,22 @@ stories:
     description: Implementar UI base com Tailwind CSS
     notes: Layout, navbar, flash messages, dashboard estilizados
 
+  009-adicionar-tarefas-ao-menu-de-navegacao:
+    status: ready-for-dev
+    priority: low
+    description: Adicionar link "Tarefas" no menu de navegação (desktop e mobile)
+    notes: Criado 2026-04-21 — mudança cirúrgica no application.html.erb
+
 retrospective:
   status: optional
   notes: Dominio concluido sem retrospectiva formal
 
 summary:
-  total_stories: 8
+  total_stories: 9
   done: 8
   in_progress: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
-  next_actions: []
+  next_actions:
+    - Implementar story 009 (adicionar Tarefas ao menu nav)
