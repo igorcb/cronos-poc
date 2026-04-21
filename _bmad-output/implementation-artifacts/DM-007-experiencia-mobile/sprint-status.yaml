@@ -7,8 +7,8 @@
 domain: DM-007
 domain_name: Experiencia Mobile & Responsividade
 domain_type: Transversal / Experiencia
-status: backlog
-progress: 0%
+status: in-progress
+progress: 75%  # 3 de 4 stories concluidas
 
 dependencies:
   requires:
@@ -19,22 +19,22 @@ dependencies:
 
 stories:
   001-implementar-mobile-first-com-tailwind-breakpoints:
-    status: ready-for-dev
+    status: done
     priority: critical
     description: Mobile-first com Tailwind breakpoints padrao (md/lg)
-    notes: CSS base mobile, progressive enhancement para tablet/desktop
+    notes: Validado via Playwright 2026-04-08
 
   002-otimizar-timeentry-form-para-mobile:
-    status: review
+    status: done
     priority: critical
     description: Otimizar form de Task/TaskItem para mobile (touch-friendly)
-    notes: "Inputs HTML5 nativos, minimo 44x44px touch targets"
+    notes: Validado via Playwright 2026-04-14
 
   003-garantir-acessibilidade-wcag-nivel-a:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Garantir acessibilidade WCAG nivel A
-    notes: "HTML semantico, contraste 4.5:1, labels, tab order, skip links"
+    notes: "57 testes, navbar_controller fix, Playwright validado 2026-04-14"
 
   004-testar-responsividade-em-multiplos-dispositivos:
     status: ready-for-dev
@@ -47,12 +47,10 @@ retrospective:
 
 summary:
   total_stories: 4
-  done: 0
+  done: 3
   in_progress: 0
-  ready_for_dev: 4
+  ready_for_dev: 1
   backlog: 0
-  blockers:
-    - DM-005 e DM-006 devem estar concluidos (componentes visuais completos)
+  blockers: []
   next_actions:
-    - Aguardar conclusao dos dominios visuais (DM-005, DM-006)
-    - Pode iniciar story 001 em paralelo (breakpoints base)
+    - Implementar Story 8.4 - testar responsividade em multiplos dispositivos
