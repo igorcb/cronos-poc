@@ -7,8 +7,8 @@
 domain: DM-007
 domain_name: Experiencia Mobile & Responsividade
 domain_type: Transversal / Experiencia
-status: in-progress
-progress: 75%  # 3 de 4 stories concluidas
+status: done
+progress: 100%
 
 dependencies:
   requires:
@@ -37,7 +37,7 @@ stories:
     notes: "57 testes, navbar_controller fix, Playwright validado 2026-04-14"
 
   004-testar-responsividade-em-multiplos-dispositivos:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Testar responsividade em multiplos viewports
     notes: "iPhone SE 375px, iPhone 14 390px, iPad 768px, Desktop 1440px"
@@ -47,10 +47,9 @@ retrospective:
 
 summary:
   total_stories: 4
-  done: 3
+  done: 4
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
-  next_actions:
-    - Implementar Story 8.4 - testar responsividade em multiplos dispositivos
+  next_actions: []
