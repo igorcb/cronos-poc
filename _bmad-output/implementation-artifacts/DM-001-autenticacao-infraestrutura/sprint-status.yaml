@@ -63,7 +63,7 @@ stories:
     notes: Criado 2026-04-21 — mudança cirúrgica no application.html.erb
 
   010-aplicar-padrao-campos-obrigatorios-asterisco-formularios:
-    status: in-progress
+    status: done
     priority: medium
     description: Aplicar asterisco * vermelho nos campos obrigatórios de projects/_form e tasks/_form
     notes: Padrão aprovado em companies/_form — aplicar nos 2 formulários restantes

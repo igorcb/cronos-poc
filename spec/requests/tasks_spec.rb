@@ -48,9 +48,10 @@ RSpec.describe "Tasks", type: :request do
         expect(response.body).not_to include("Empresa Inativa")
       end
 
-      it "includes project selector Stimulus controller" do
+      it "includes project selector and form-validation Stimulus controllers" do
         get new_task_path
-        expect(response.body).to include('data-controller="project-selector"')
+        # Story 1.10: form-validation adicionado junto com project-selector
+        expect(response.body).to include('project-selector form-validation')
       end
     end
   end

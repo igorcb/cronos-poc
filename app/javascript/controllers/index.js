@@ -15,3 +15,6 @@ application.register("filter", FilterController)
 
 import NavbarController from "./navbar_controller"
 application.register("navbar", NavbarController)
+
+import FormValidationController from "./form_validation_controller"
+application.register("form-validation", FormValidationController)

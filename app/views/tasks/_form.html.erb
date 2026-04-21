@@ -1,4 +1,6 @@
-<%= form_with(model: task, class: "space-y-6", data: { controller: "project-selector" }) do |form| %>
+<%= form_with(model: task, class: "space-y-6",
+    data: { controller: "project-selector form-validation" },
+    novalidate: true) do |form| %>
   <% if task.errors.any? %>
     <div role="alert" class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md">
       <h2 class="font-bold mb-2">
@@ -13,13 +15,16 @@
   <% end %>
 
   <div>
-    <%= form.label :name, "Nome da Tarefa", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.label :name, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+      Nome da Tarefa
+      <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+    <% end %>
     <%= form.text_field :name,
-        required: true,
         "aria-required": "true",
         "aria-describedby": task.errors[:name].any? ? "task_name_error" : nil,
         "aria-invalid": task.errors[:name].any? ? "true" : nil,
-        class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
+        data: { action: "input->form-validation#clearError" },
+        class: "mt-1 block w-full rounded-md bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border #{task.errors[:name].any? ? 'border-red-500' : 'border-gray-600'}",
         placeholder: "Nome da tarefa" %>
     <% if task.errors[:name].any? %>
       <span id="task_name_error" role="alert" class="mt-1 text-sm text-red-400">
@@ -29,16 +34,18 @@
   </div>
 
   <div>
-    <%= form.label :company_id, "Empresa", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.label :company_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+      Empresa
+      <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+    <% end %>
     <%= form.collection_select :company_id, companies, :id, :name,
         { prompt: "Selecione uma empresa" },
         {
-          required: true,
           "aria-required": "true",
           "aria-describedby": task.errors[:company_id].any? ? "task_company_error" : nil,
           "aria-invalid": task.errors[:company_id].any? ? "true" : nil,
-          class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
-          data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects" }
+          class: "mt-1 block w-full rounded-md bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border #{task.errors[:company_id].any? ? 'border-red-500' : 'border-gray-600'}",
+          data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects change->form-validation#clearError" }
         } %>
     <% if task.errors[:company_id].any? %>
       <span id="task_company_error" role="alert" class="mt-1 text-sm text-red-400">
@@ -48,17 +55,19 @@
   </div>
 
   <div>
-    <%= form.label :project_id, "Projeto", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.label :project_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+      Projeto
+      <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+    <% end %>
     <%= form.select :project_id,
         [],
         { prompt: "Selecione uma empresa primeiro" },
         {
-          required: true,
           "aria-required": "true",
           "aria-describedby": task.errors[:project_id].any? ? "task_project_error" : "project-hint",
           "aria-invalid": task.errors[:project_id].any? ? "true" : nil,
-          class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
-          data: { project_selector_target: "projectSelect" },
+          class: "mt-1 block w-full rounded-md bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border #{task.errors[:project_id].any? ? 'border-red-500' : 'border-gray-600'}",
+          data: { project_selector_target: "projectSelect", action: "change->form-validation#clearError" },
           disabled: true
         } %>
     <p class="mt-1 text-sm text-gray-400" id="project-hint"></p>
@@ -70,14 +79,17 @@
   </div>
 
   <div>
-    <%= form.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.label :start_date, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+      Data de Início
+      <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+    <% end %>
     <%= form.date_field :start_date,
-        required: true,
         value: Date.today,
         "aria-required": "true",
         "aria-describedby": task.errors[:start_date].any? ? "task_start_date_error" : nil,
         "aria-invalid": task.errors[:start_date].any? ? "true" : nil,
-        class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2" %>
+        data: { action: "input->form-validation#clearError" },
+        class: "mt-1 block w-full rounded-md bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border #{task.errors[:start_date].any? ? 'border-red-500' : 'border-gray-600'}" %>
     <% if task.errors[:start_date].any? %>
       <span id="task_start_date_error" role="alert" class="mt-1 text-sm text-red-400">
         <%= task.errors[:start_date].first %>
@@ -86,15 +98,18 @@
   </div>
 
   <div>
-    <%= form.label :estimated_hours, "Horas Estimadas", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.label :estimated_hours, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+      Horas Estimadas
+      <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+    <% end %>
     <%= form.number_field :estimated_hours,
-        required: true,
         step: 0.01,
         min: 0.01,
         "aria-required": "true",
         "aria-describedby": task.errors[:estimated_hours].any? ? "task_estimated_hours_error" : nil,
         "aria-invalid": task.errors[:estimated_hours].any? ? "true" : nil,
-        class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
+        data: { action: "input->form-validation#clearError" },
+        class: "mt-1 block w-full rounded-md bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border #{task.errors[:estimated_hours].any? ? 'border-red-500' : 'border-gray-600'}",
         placeholder: "8.0" %>
     <% if task.errors[:estimated_hours].any? %>
       <span id="task_estimated_hours_error" role="alert" class="mt-1 text-sm text-red-400">
@@ -110,6 +125,8 @@
         class: "mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
         placeholder: "Observações sobre a tarefa (opcional)" %>
   </div>
+
+  <p class="text-xs text-gray-400"><span class="text-red-400">*</span> campos obrigatórios</p>
 
   <div class="flex flex-col sm:flex-row gap-3 pt-4">
     <%= form.submit "Criar Tarefa",

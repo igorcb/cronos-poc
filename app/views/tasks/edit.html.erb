@@ -2,7 +2,7 @@
   <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
     <h1 class="text-2xl font-bold text-white mb-6">Editar Tarefa</h1>
 
-    <%= form_with(model: @task, data: { controller: "project-selector" }) do |f| %>
+    <%= form_with(model: @task, data: { controller: "project-selector form-validation" }, html: { novalidate: true }) do |f| %>
       <% if @task.errors.any? %>
         <div role="alert" class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md">
           <h2 class="font-bold mb-2">
@@ -19,15 +19,17 @@
       <div class="space-y-6">
         <!-- Company -->
         <div>
-          <%= f.label :company_id, "Empresa", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= f.label :company_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+            Empresa
+            <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+          <% end %>
           <%= f.collection_select :company_id, @companies, :id, :name,
               { prompt: "Selecione uma empresa" },
-              data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects" },
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-              required: true,
               "aria-required": "true",
               "aria-describedby": @task.errors[:company_id].any? ? "edit_task_company_id_error" : nil,
-              "aria-invalid": @task.errors[:company_id].any? ? "true" : nil %>
+              "aria-invalid": @task.errors[:company_id].any? ? "true" : nil,
+              data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects change->form-validation#clearError" },
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:company_id].any? ? 'border-red-500' : 'border-gray-600'}" %>
           <% if @task.errors[:company_id].any? %>
             <span id="edit_task_company_id_error" role="alert" class="mt-1 text-sm text-red-400">
               <%= @task.errors[:company_id].first %>
@@ -37,15 +39,18 @@
 
         <!-- Project -->
         <div>
-          <%= f.label :project_id, "Projeto", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= f.label :project_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+            Projeto
+            <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+          <% end %>
           <%= f.select :project_id, [],
               { prompt: "Selecione um projeto" },
-              data: { project_selector_target: "projectSelect" },
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-              required: true,
               "aria-required": "true",
               "aria-describedby": @task.errors[:project_id].any? ? "edit_task_project_id_error" : nil,
-              "aria-invalid": @task.errors[:project_id].any? ? "true" : nil %>
+              "aria-invalid": @task.errors[:project_id].any? ? "true" : nil,
+              data: { project_selector_target: "projectSelect", action: "change->form-validation#clearError" },
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:project_id].any? ? 'border-red-500' : 'border-gray-600'}",
+              disabled: true %>
           <% if @task.errors[:project_id].any? %>
             <span id="edit_task_project_id_error" role="alert" class="mt-1 text-sm text-red-400">
               <%= @task.errors[:project_id].first %>
@@ -55,13 +60,16 @@
 
         <!-- Name -->
         <div>
-          <%= f.label :name, "Nome da Tarefa", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= f.label :name, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+            Nome da Tarefa
+            <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+          <% end %>
           <%= f.text_field :name,
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-              required: true,
               "aria-required": "true",
               "aria-describedby": @task.errors[:name].any? ? "edit_task_name_error" : nil,
-              "aria-invalid": @task.errors[:name].any? ? "true" : nil %>
+              "aria-invalid": @task.errors[:name].any? ? "true" : nil,
+              data: { action: "input->form-validation#clearError" },
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:name].any? ? 'border-red-500' : 'border-gray-600'}" %>
           <% if @task.errors[:name].any? %>
             <span id="edit_task_name_error" role="alert" class="mt-1 text-sm text-red-400">
               <%= @task.errors[:name].first %>
@@ -73,17 +81,20 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Estimated Hours (HH:MM format) -->
           <div>
-            <%= f.label :estimated_hours_hm, "Horas Estimadas (HH:MM)", class: "block text-sm font-medium text-gray-300 mb-1" %>
+            <%= f.label :estimated_hours_hm, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+              Horas Estimadas (HH:MM)
+              <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+            <% end %>
             <%= f.text_field :estimated_hours_hm,
                 placeholder: "03:00",
-                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                required: true,
                 pattern: "\\d{1,2}:\\d{2}",
                 inputmode: "numeric",
                 title: "Formato HH:MM (ex: 03:00, 02:30, 18:00)",
                 "aria-required": "true",
                 "aria-describedby": @task.errors[:estimated_hours_hm].any? ? "edit_task_estimated_hours_hm_error" : "edit-estimated-hours-hint",
-                "aria-invalid": @task.errors[:estimated_hours_hm].any? ? "true" : nil %>
+                "aria-invalid": @task.errors[:estimated_hours_hm].any? ? "true" : nil,
+                data: { action: "input->form-validation#clearError" },
+                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:estimated_hours_hm].any? ? 'border-red-500' : 'border-gray-600'}" %>
             <p id="edit-estimated-hours-hint" class="mt-1 text-xs text-gray-400">Formato: HH:MM (ex: 03:00, 02:30, 18:00)</p>
             <% if @task.errors[:estimated_hours_hm].any? %>
               <span id="edit_task_estimated_hours_hm_error" role="alert" class="mt-1 text-sm text-red-400">
@@ -94,13 +105,16 @@
 
           <!-- Start Date -->
           <div>
-            <%= f.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-300 mb-1" %>
+            <%= f.label :start_date, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+              Data de Início
+              <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+            <% end %>
             <%= f.date_field :start_date,
-                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                required: true,
                 "aria-required": "true",
                 "aria-describedby": @task.errors[:start_date].any? ? "edit_task_start_date_error" : nil,
-                "aria-invalid": @task.errors[:start_date].any? ? "true" : nil %>
+                "aria-invalid": @task.errors[:start_date].any? ? "true" : nil,
+                data: { action: "input->form-validation#clearError" },
+                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:start_date].any? ? 'border-red-500' : 'border-gray-600'}" %>
             <% if @task.errors[:start_date].any? %>
               <span id="edit_task_start_date_error" role="alert" class="mt-1 text-sm text-red-400">
                 <%= @task.errors[:start_date].first %>
@@ -114,6 +128,8 @@
           <%= f.label :notes, "Observações", class: "block text-sm font-medium text-gray-300 mb-1" %>
           <%= f.text_area :notes, rows: 4, class: "w-full min-h-[88px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
         </div>
+
+        <p class="text-xs text-gray-400"><span class="text-red-400">*</span> campos obrigatórios</p>
 
         <!-- Submit -->
         <div class="flex flex-col sm:flex-row gap-3 pt-4">
