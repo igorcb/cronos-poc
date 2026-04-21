@@ -97,16 +97,16 @@ development_status:
   epic-6-retrospective: optional
 
   # Epic 7: Edição e Correção de Entradas
-  epic-7: backlog
-  7-1-implementar-edit-update-de-timeentries: ready-for-dev
+  epic-7: in-progress
+  7-1-implementar-edit-update-de-timeentries: done  # Validated via Playwright 2026-04-21
   7-2-implementar-destroy-de-timeentries-com-confirmacao: ready-for-dev
   7-3-criar-testes-de-system-para-fluxo-completo: ready-for-dev
   epic-7-retrospective: optional
 
   # Epic 8: Responsividade e Experiência Mobile
-  epic-8: in-progress
+  epic-8: done
   8-1-implementar-mobile-first-com-tailwind-breakpoints: done  # Validated via Playwright 2026-04-08
   8-2-otimizar-timeentry-form-para-mobile: done  # Validated via Playwright 2026-04-14
-  8-3-garantir-acessibilidade-wcag-nivel-a: ready-for-dev
-  8-4-testar-responsividade-em-multiplos-dispositivos: ready-for-dev
+  8-3-garantir-acessibilidade-wcag-nivel-a: done  # Implementado 2026-04-14
+  8-4-testar-responsividade-em-multiplos-dispositivos: done  # Validated via Playwright 2026-04-21
   epic-8-retrospective: optional
