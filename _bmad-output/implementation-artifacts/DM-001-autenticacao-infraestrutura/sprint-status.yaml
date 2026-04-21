@@ -57,7 +57,7 @@ stories:
     notes: Layout, navbar, flash messages, dashboard estilizados
 
   009-adicionar-tarefas-ao-menu-de-navegacao:
-    status: ready-for-dev
+    status: done
     priority: low
     description: Adicionar link "Tarefas" no menu de navegação (desktop e mobile)
     notes: Criado 2026-04-21 — mudança cirúrgica no application.html.erb

@@ -1,6 +1,6 @@
 # Story 1.9: Adicionar "Tarefas" ao Menu de Navegação
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-001-autenticacao-infraestrutura
 **Data:** 2026-04-21
 **Epic:** Epic 1 — Autenticação & Infraestrutura (UI Base)
@@ -55,11 +55,11 @@ tasks_path  # GET /tasks
 
 ## Acceptance Criteria
 
-- [ ] AC1: Link "Tarefas" aparece no menu desktop entre "Projetos" e o User Menu
-- [ ] AC2: Link "Tarefas" aparece no menu mobile entre "Projetos" e a seção de usuário
-- [ ] AC3: Link aponta para `tasks_path` (`/tasks`)
-- [ ] AC4: Estilo visual idêntico aos demais links do menu (mesmas classes CSS)
-- [ ] AC5: Link visível apenas quando autenticado (já garantido pelo `if authenticated?` que envolve toda a navbar)
+- [x] AC1: Link "Tarefas" aparece no menu desktop entre "Projetos" e o User Menu
+- [x] AC2: Link "Tarefas" aparece no menu mobile entre "Projetos" e a seção de usuário
+- [x] AC3: Link aponta para `tasks_path` (`/tasks`)
+- [x] AC4: Estilo visual idêntico aos demais links do menu (mesmas classes CSS)
+- [x] AC5: Link visível apenas quando autenticado (já garantido pelo `if authenticated?` que envolve toda a navbar)
 
 ---
 
@@ -95,10 +95,19 @@ docker exec -e RAILS_ENV=test cronos-poc-web-1 bundle exec rspec spec/system/tas
 ## Dev Agent Record
 
 ### Checklist de Implementação
-- [ ] Link "Tarefas" adicionado no menu desktop
-- [ ] Link "Tarefas" adicionado no menu mobile
-- [ ] Estilo consistente com links existentes
-- [ ] Rota correta (`tasks_path`)
+- [x] Link "Tarefas" adicionado no menu desktop
+- [x] Link "Tarefas" adicionado no menu mobile
+- [x] Estilo consistente com links existentes
+- [x] Rota correta (`tasks_path`)
 
 ### Notas de Implementação
-_(Preencher pelo dev agent)_
+- Adicionado `<%= link_to "Tarefas", tasks_path, class: "..." %>` após link de Projetos no menu desktop (linha 47) e mobile (linha 85) em `app/views/layouts/application.html.erb`
+- 3 specs adicionados em `spec/requests/tasks_spec.rb` cobrindo AC1-AC5
+- 398 exemplos passando, 0 falhas, 0 regressões
+
+### File List
+- `app/views/layouts/application.html.erb` — adicionados links Tarefas desktop e mobile
+- `spec/requests/tasks_spec.rb` — adicionado describe "navbar navigation link" com 3 specs
+
+### Change Log
+- 2026-04-21: Implementado link "Tarefas" no menu de navegação (desktop e mobile) — Story 1.9

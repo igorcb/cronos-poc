@@ -148,4 +148,31 @@ RSpec.describe "Tasks", type: :request do
       end
     end
   end
+
+  describe "navbar navigation link" do
+    context "when authenticated" do
+      before { sign_in(user) }
+
+      it "exibe o link 'Tarefas' no menu desktop (AC1, AC3, AC4)" do
+        get tasks_path
+        expect(response.body).to include('href="/tasks"')
+        expect(response.body).to include("Tarefas")
+        expect(response.body).to include("text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium")
+      end
+
+      it "exibe o link 'Tarefas' no menu mobile (AC2, AC3, AC4)" do
+        get tasks_path
+        expect(response.body).to include('href="/tasks"')
+        expect(response.body).to match(/href="\/tasks"[^>]*>Tarefas</)
+        expect(response.body).to include("block text-gray-300 hover:text-blue-400 hover:bg-gray-700 px-3 py-2 rounded-md text-base font-medium")
+      end
+    end
+
+    context "when not authenticated" do
+      it "nao exibe a navbar com link 'Tarefas' — redireciona para login (AC5)" do
+        get tasks_path
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
 end
