@@ -7,8 +7,8 @@
 domain: DM-006
 domain_name: Filtros Dinamicos
 domain_type: Consumo / Interacao
-status: backlog
-progress: 0%
+status: in-progress
+progress: 50%  # 2 de 4 stories concluidas
 
 dependencies:
   requires:
@@ -52,8 +52,7 @@ summary:
   in_progress: 0
   ready_for_dev: 2
   backlog: 0
-  blockers:
-    - DM-005 deve estar concluido antes de iniciar (ViewComponents necessarios)
+  blockers: []
   next_actions:
-    - Aguardar conclusao do DM-005
-    - Iniciar por story 001 (filtros base por empresa/projeto)
+    - Implementar story 001 (filtros base por empresa/projeto)
+    - Implementar story 004 (Stimulus filter_controller + Turbo Frame)

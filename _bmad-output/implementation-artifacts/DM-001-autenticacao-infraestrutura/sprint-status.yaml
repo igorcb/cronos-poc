@@ -7,8 +7,8 @@
 domain: DM-001
 domain_name: Autenticacao & Infraestrutura
 domain_type: Transversal / Tecnico
-status: done
-progress: 100%
+status: in-progress
+progress: 90%  # 9 de 10 stories concluidas
 
 stories:
   001-inicializar-projeto-rails-com-starter-template:
@@ -74,11 +74,10 @@ retrospective:
 
 summary:
   total_stories: 10
-  done: 8
-  in_progress: 0
-  ready_for_dev: 2
+  done: 9
+  in_progress: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 009 (adicionar Tarefas ao menu nav)
-    - Implementar story 010 (asterisco campos obrigatórios em projects e tasks)
+    - Concluir story 010 (asterisco campos obrigatórios em projects e tasks)
