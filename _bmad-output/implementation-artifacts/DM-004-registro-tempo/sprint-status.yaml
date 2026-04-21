@@ -8,7 +8,7 @@ domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
 status: in-progress
-progress: 64%  # 7 de 11 stories concluidas
+progress: 92%  # 11 de 12 stories concluidas
 
 dependencies:
   requires:
@@ -66,19 +66,19 @@ stories:
 
   # === Epic 7: Edicao e Correcao ===
   008-implementar-edit-update-de-timeentries:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Implementar Edit/Update de Tasks e TaskItems
     epic: 7
 
   009-implementar-destroy-de-timeentries-com-confirmacao:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Implementar Destroy de TaskItems com confirmacao
     epic: 7
 
   010-criar-testes-de-system-para-fluxo-completo:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Testes de system para fluxo completo CRUD
     epic: 7
@@ -106,13 +106,11 @@ retrospective:
     - Epic 5 pronto para iniciar
 
 summary:
-  total_stories: 11
-  done: 7
+  total_stories: 12
+  done: 11
   in_progress: 0
-  ready_for_dev: 3
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar Edit/Update de Tasks (story 008)
-    - Implementar Destroy com confirmacao (story 009)
-    - Testes de system E2E (story 010)
+    - Implementar story 012 (simplificar ações rápidas dashboard)

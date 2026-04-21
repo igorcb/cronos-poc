@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: backlog
-progress: 0%
+status: in-progress
+progress: 83%  # 5 de 6 stories concluidas
 
 dependencies:
   requires:
@@ -19,31 +19,31 @@ dependencies:
 
 stories:
   001-implementar-index-de-timeentries-com-eager-loading:
-    status: ready-for-dev
+    status: done
     priority: critical
     description: Index de Tasks com eager loading (includes company, project, task_items)
     notes: Prevenir N+1 queries - meta 4 queries fixas
 
   002-criar-viewcomponent-para-timeentry-card:
-    status: ready-for-dev
+    status: done
     priority: high
     description: ViewComponent para Task Card (status badge, horas, valor)
     notes: TaskCardComponent, StatusBadgeComponent
 
   003-implementar-totalizadores-dinamicos-total-do-dia:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Totalizadores dinamicos - total de horas do dia
     notes: TotalizerComponent, DailyTotalComponent
 
   004-implementar-totalizadores-por-empresa-no-mes:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Totalizadores por empresa no mes (horas e valor R$)
     notes: CompanyMonthlyTotalComponent com queries agregadas
 
   005-configurar-turbo-streams-para-atualizacao-em-tempo-real:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Turbo Streams para atualizacao de totalizadores sem reload
     notes: broadcast_replace_to para daily_total e company_total
