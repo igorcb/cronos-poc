@@ -97,10 +97,10 @@ development_status:
   epic-6-retrospective: optional
 
   # Epic 7: Edição e Correção de Entradas
-  epic-7: in-progress
+  epic-7: done
   7-1-implementar-edit-update-de-timeentries: done  # Validated via Playwright 2026-04-21
-  7-2-implementar-destroy-de-timeentries-com-confirmacao: ready-for-dev
-  7-3-criar-testes-de-system-para-fluxo-completo: ready-for-dev
+  7-2-implementar-destroy-de-timeentries-com-confirmacao: done  # Implementado na Story 7.1 (turbo_confirm + turbo_stream.remove)
+  7-3-criar-testes-de-system-para-fluxo-completo: done  # 12 specs, 0 failures 2026-04-21
   epic-7-retrospective: optional
 
   # Epic 8: Responsividade e Experiência Mobile

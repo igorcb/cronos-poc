@@ -1,6 +1,6 @@
 # Story 7.2: Implementar Destroy de TimeEntries com Confirmação
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
