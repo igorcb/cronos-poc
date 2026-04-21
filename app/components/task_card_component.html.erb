@@ -1,4 +1,4 @@
-<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700">
+<tr id="<%= dom_id(task) %>" class="hover:bg-gray-700 transition-colors border-b border-gray-700">
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.start_date&.strftime("%d/%m/%Y") %></td>
   <td class="px-4 py-3 text-sm text-white font-medium"><%= task.name %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.company&.name %></td>
@@ -10,5 +10,17 @@
   </td>
   <td class="px-4 py-3 text-sm text-gray-300">
     <%= task.calculated_value.present? ? number_to_currency(task.calculated_value, unit: "R$", separator: ",", delimiter: ".") : "-" %>
+  </td>
+  <td class="px-4 py-3 text-sm">
+    <div class="flex gap-3">
+      <%= link_to "Editar", edit_task_path(task),
+          data: { turbo_frame: "_top" },
+          class: "text-blue-400 hover:text-blue-300 font-medium transition",
+          aria: { label: "Editar tarefa #{task.name}" } %>
+      <%= link_to "Excluir", task_path(task),
+          data: { turbo_method: :delete, turbo_confirm: "Tem certeza que deseja remover \"#{task.name}\"?" },
+          class: "text-red-400 hover:text-red-300 font-medium transition",
+          aria: { label: "Excluir tarefa #{task.name}" } %>
+    </div>
   </td>
 </tr>

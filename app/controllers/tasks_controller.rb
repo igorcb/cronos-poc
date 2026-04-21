@@ -77,16 +77,19 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    @task.destroy
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace("daily_total", partial: "tasks/daily_total", locals: { daily_total: calculate_daily_total }),
-          turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: calculate_company_totals })
-        ]
+    if @task.destroy
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.remove(ActionView::RecordIdentifier.dom_id(@task)),
+            turbo_stream.replace("daily_total", partial: "tasks/daily_total", locals: { daily_total: calculate_daily_total }),
+            turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: calculate_company_totals })
+          ]
+        end
+        format.html { redirect_to tasks_path, notice: "Tarefa removida com sucesso" }
       end
-      format.html { redirect_to tasks_path, notice: "Tarefa removida com sucesso" }
+    else
+      redirect_to tasks_path, alert: "Não foi possível remover a tarefa"
     end
   end
 
