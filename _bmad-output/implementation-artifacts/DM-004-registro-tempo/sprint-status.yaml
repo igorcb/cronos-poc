@@ -7,8 +7,8 @@
 domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
-status: in-progress
-progress: 92%  # 11 de 12 stories concluidas
+status: done
+progress: 100%
 
 dependencies:
   requires:
@@ -84,7 +84,7 @@ stories:
     epic: 7
 
   012-simplificar-acoes-rapidas-dashboard:
-    status: ready-for-dev
+    status: done
     priority: low
     description: Remover cards Empresas/Projetos das Ações Rápidas, manter só Nova Tarefa
     notes: Criado 2026-04-21 — mudança cirúrgica no dashboard/index.html.erb
@@ -107,10 +107,9 @@ retrospective:
 
 summary:
   total_stories: 12
-  done: 11
+  done: 12
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
-  next_actions:
-    - Implementar story 012 (simplificar ações rápidas dashboard)
+  next_actions: []
