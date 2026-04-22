@@ -41,13 +41,8 @@ class TasksController < ApplicationController
 
     if @task.save
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace("daily_total", partial: "tasks/daily_total", locals: { daily_total: calculate_daily_total }),
-            turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: calculate_company_totals })
-          ]
-        end
-        format.html { redirect_to root_path, notice: "Tarefa criada com sucesso" }
+        format.turbo_stream { redirect_to tasks_path, notice: "Tarefa criada com sucesso" }
+        format.html { redirect_to tasks_path, notice: "Tarefa criada com sucesso" }
       end
     else
       @companies = Company.active.order(:name)

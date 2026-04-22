@@ -87,9 +87,9 @@ RSpec.describe "Tasks", type: :request do
         expect(Task.last.status).to eq("pending")
       end
 
-      it "redirects to root path" do
+      it "redirects to tasks path" do
         post tasks_path, params: valid_params
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(tasks_path)
       end
 
       it "displays success flash message" do
