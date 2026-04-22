@@ -117,16 +117,17 @@ RSpec.describe "Mobile TimeEntry Form Optimization", type: :request do
       expect(response.body).to include("Formato HH:MM")
     end
 
-    it "GET /tasks/new: campo nome tem required para validação nativa" do
+    it "GET /tasks/new: campo nome tem aria-required para validação Stimulus (story 1.10)" do
       get new_task_path
-      expect(response.body).to include('required="required"')
+      # Story 1.10: required nativo removido; Stimulus form-validation usa aria-required
+      expect(response.body).to include('aria-required="true"')
+      expect(response.body).not_to include('required="required"')
     end
 
-    it "GET /tasks/new: data de início tem required para validação nativa" do
+    it "GET /tasks/new: data de início tem aria-required e type=date" do
       get new_task_path
-      # date_field com required gera required="required"
       expect(response.body).to include('type="date"')
-      expect(response.body).to include('required="required"')
+      expect(response.body).to include('aria-required="true"')
     end
 
     it "GET /tasks/:id/edit: campo estimated_hours_hm tem pattern HH:MM" do

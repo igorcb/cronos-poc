@@ -1,6 +1,6 @@
 # Story 1.10: Aplicar Padrão de Campos Obrigatórios com Asterisco nos Formulários
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-001-autenticacao-infraestrutura
 **Data:** 2026-04-21
 **Epic:** Epic 1 — Autenticação & Infraestrutura (UI Base)
@@ -164,26 +164,26 @@ class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 text-white shadow-
 ## Acceptance Criteria
 
 ### Asterisco (Melhoria 1)
-- [ ] AC1: `projects/_form` — labels com `*` vermelho nos campos obrigatórios
-- [ ] AC2: `projects/_form` — nota `* campos obrigatórios` antes dos botões
-- [ ] AC3: `tasks/_form` — labels com `*` vermelho nos 5 campos obrigatórios
-- [ ] AC4: `tasks/_form` — "Observações" **sem** asterisco
-- [ ] AC5: `tasks/_form` — nota `* campos obrigatórios` antes dos botões
-- [ ] AC6: `required: true` removido de todos os campos obrigatórios nos 3 forms
+- [x] AC1: `projects/_form` — labels com `*` vermelho nos campos obrigatórios
+- [x] AC2: `projects/_form` — nota `* campos obrigatórios` antes dos botões
+- [x] AC3: `tasks/_form` — labels com `*` vermelho nos 5 campos obrigatórios
+- [x] AC4: `tasks/_form` — "Observações" **sem** asterisco
+- [x] AC5: `tasks/_form` — nota `* campos obrigatórios` antes dos botões
+- [x] AC6: `required: true` removido de todos os campos obrigatórios nos 3 forms
 
 ### Validação client-side (Melhoria 2)
-- [ ] AC7: Submeter form vazio **não bate no backend** — Stimulus intercepta
-- [ ] AC8: Primeiro campo vazio recebe foco automaticamente
-- [ ] AC9: Campo vazio recebe `border-red-500` ao tentar submeter
-- [ ] AC10: Ao preencher campo com erro, borda volta para `border-gray-600`
-- [ ] AC11: `novalidate` nos 3 forms — sem popover nativo do browser
+- [x] AC7: Submeter form vazio **não bate no backend** — Stimulus intercepta
+- [x] AC8: Primeiro campo vazio recebe foco automaticamente
+- [x] AC9: Campo vazio recebe `border-red-500` ao tentar submeter
+- [x] AC10: Ao preencher campo com erro, borda volta para `border-gray-600`
+- [x] AC11: `novalidate` nos 3 forms — sem popover nativo do browser
 
 ### Borda vermelha server-side (Melhoria 3)
-- [ ] AC12: Campos com erro retornado pelo servidor têm `border-red-500`
-- [ ] AC13: Campos sem erro têm `border-gray-600`
+- [x] AC12: Campos com erro retornado pelo servidor têm `border-red-500`
+- [x] AC13: Campos sem erro têm `border-gray-600`
 
 ### Regressão
-- [ ] AC14: Testes existentes passando sem regressão
+- [x] AC14: Testes existentes passando sem regressão
 
 ---
 
@@ -201,12 +201,25 @@ class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 text-white shadow-
 ## Dev Agent Record
 
 ### Checklist de Implementação
-- [ ] Stimulus controller `form_validation_controller.js` criado
-- [ ] Controller registrado em `index.js`
-- [ ] `companies/_form.html.erb` — melhorias 2 e 3 aplicadas
-- [ ] `projects/_form.html.erb` — melhorias 1, 2 e 3 aplicadas
-- [ ] `tasks/_form.html.erb` — melhorias 1, 2 e 3 aplicadas
-- [ ] Testes passando sem regressão
+- [x] Stimulus controller `form_validation_controller.js` criado
+- [x] Controller registrado em `index.js`
+- [x] `companies/_form.html.erb` — melhorias 2 e 3 aplicadas
+- [x] `projects/_form.html.erb` — melhorias 1, 2 e 3 aplicadas
+- [x] `tasks/_form.html.erb` — melhorias 1, 2 e 3 aplicadas
+- [x] Testes passando sem regressão
 
 ### Notas de Implementação
-_(Preencher pelo dev agent)_
+- Stimulus controller usa `connect()`/`disconnect()` com `addEventListener("submit", ..., { capture: true })` para interceptar antes do Turbo — conforme especificado na story.
+- `companies/_form` já tinha asteriscos; aplicadas melhorias 2 (novalidate + form-validation controller) e 3 (borda condicional border-red-500/border-gray-600).
+- `projects/_form` e `tasks/_form` receberam as 3 melhorias completas.
+- Em tasks, `data: { controller: "project-selector form-validation" }` — ambos controllers ativos sem conflito.
+- Campo `company_id` em tasks manteve `change->project-selector#loadProjects` e adicionou `change->form-validation#clearError`.
+- Campo `:notes` em tasks permanece opcional (sem asterisco, sem aria-required, sem validação client-side).
+- Suite completa: 583 examples, 0 failures, 1 pending (pending pré-existente, não relacionado).
+
+### Arquivos Modificados
+- `app/javascript/controllers/form_validation_controller.js` (novo)
+- `app/javascript/controllers/index.js`
+- `app/views/companies/_form.html.erb`
+- `app/views/projects/_form.html.erb`
+- `app/views/tasks/_form.html.erb`

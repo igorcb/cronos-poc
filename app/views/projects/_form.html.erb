@@ -1,4 +1,6 @@
-<%= form_with(model: project, class: "space-y-6") do |form| %>
+<%= form_with(model: project, class: "space-y-6",
+    data: { controller: "form-validation" },
+    html: { novalidate: true }) do |form| %>
   <% if project.errors.any? %>
     <div role="alert" style="background-color: #7f1d1d; border: 1px solid #991b1b; color: #fef3c7;" class="px-4 py-3 rounded-md">
       <h2 class="font-bold mb-2">
@@ -13,13 +15,16 @@
   <% end %>
 
   <div>
-    <%= form.label :name, "Nome do Projeto", class: "block text-sm font-medium text-gray-300 mb-1" %>
+    <%= form.label :name, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+      Nome do Projeto
+      <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+    <% end %>
     <%= form.text_field :name,
-        required: true,
         "aria-required": "true",
         "aria-describedby": project.errors[:name].any? ? "project_name_error" : nil,
         "aria-invalid": project.errors[:name].any? ? "true" : nil,
-        class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2",
+        data: { action: "input->form-validation#clearError" },
+        class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border #{project.errors[:name].any? ? 'border-red-500' : 'border-gray-600'}",
         placeholder: "Nome do projeto" %>
     <% if project.errors[:name].any? %>
       <span id="project_name_error" role="alert" class="mt-1 text-sm text-red-400">
@@ -29,21 +34,26 @@
   </div>
 
   <div>
-    <%= form.label :company_id, "Empresa", class: "block text-sm font-medium text-gray-300 mb-1", id: "company-label" %>
+    <%= form.label :company_id, class: "block text-sm font-medium text-gray-300 mb-1", id: "company-label" do %>
+      Empresa
+      <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+    <% end %>
     <%= form.collection_select :company_id, @companies, :id, :name,
         { prompt: "Selecione uma empresa" },
-        { required: true,
-          "aria-required": "true",
+        { "aria-required": "true",
           "aria-labelledby": "company-label",
           "aria-describedby": project.errors[:company_id].any? ? "project_company_error" : nil,
           "aria-invalid": project.errors[:company_id].any? ? "true" : nil,
-          class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 border-gray-600 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2" } %>
+          data: { action: "change->form-validation#clearError" },
+          class: "mt-1 block w-full min-h-[44px] rounded-md bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border #{project.errors[:company_id].any? ? 'border-red-500' : 'border-gray-600'}" } %>
     <% if project.errors[:company_id].any? %>
       <span id="project_company_error" role="alert" class="mt-1 text-sm text-red-400">
         <%= project.errors[:company_id].first %>
       </span>
     <% end %>
   </div>
+
+  <p class="text-xs text-gray-400"><span class="text-red-400">*</span> campos obrigatórios</p>
 
   <div class="flex flex-col sm:flex-row gap-3 pt-4">
     <%= form.submit "Salvar",
