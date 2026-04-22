@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: in-progress
-progress: 83%  # 5 de 6 stories concluidas
+status: done
+progress: 100%
 
 dependencies:
   requires:
@@ -49,7 +49,7 @@ stories:
     notes: broadcast_replace_to para daily_total e company_total
 
   006-exibir-lista-de-tarefas-do-mes-no-dashboard:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Exibir lista read-only de tarefas do mês no dashboard com eager loading
     notes: Criado 2026-04-21 — DashboardController + nova seção na view
@@ -59,10 +59,9 @@ retrospective:
 
 summary:
   total_stories: 6
-  done: 5
+  done: 6
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
-  next_actions:
-    - Implementar story 006 (lista de tarefas no dashboard)
+  next_actions: []
