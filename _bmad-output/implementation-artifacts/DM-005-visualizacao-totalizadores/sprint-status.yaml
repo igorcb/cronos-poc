@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 86%  # 6 de 7 stories concluidas
+progress: 67%  # 6 de 9 stories concluidas
 
 dependencies:
   requires:
@@ -60,15 +60,29 @@ stories:
     description: Remover seção "Ações Rápidas", substituir por ícone + estilo bg-blue-900 p-3
     notes: Criado 2026-04-22 — mudança cirúrgica em dashboard/index.html.erb
 
+  008-modal-nova-tarefa-no-dashboard:
+    status: ready-for-dev
+    priority: high
+    description: Modal Turbo Frame para criar nova tarefa no dashboard sem reload — lista atualiza via Turbo Stream
+    notes: Criado 2026-04-22 — requer turbo-frame#modal no layout + modal_controller.js
+
+  009-modal-computar-horas-task-item:
+    status: ready-for-dev
+    priority: high
+    description: Modal para lançar task_item ao clicar na tarefa — histórico + totalizadores em tempo real
+    notes: Criado 2026-04-22 — requer migration work_date em task_items + TaskItemsController#new
+
 retrospective:
   status: optional
 
 summary:
-  total_stories: 7
+  total_stories: 9
   done: 6
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 3
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 007 (substituir Ações Rápidas por ícone + nova tarefa)
+    - Implementar story 007 (substituir Ações Rápidas por ícone +)
+    - Implementar story 008 (modal nova tarefa no dashboard)
+    - Implementar story 009 (modal computar horas — task_item)
