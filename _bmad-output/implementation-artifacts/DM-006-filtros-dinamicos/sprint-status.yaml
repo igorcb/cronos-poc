@@ -7,8 +7,8 @@
 domain: DM-006
 domain_name: Filtros Dinamicos
 domain_type: Consumo / Interacao
-status: in-progress
-progress: 50%  # 2 de 4 stories concluidas
+status: done
+progress: 100%
 
 dependencies:
   requires:
@@ -20,7 +20,7 @@ dependencies:
 
 stories:
   001-implementar-filtros-por-empresa-e-projeto:
-    status: ready-for-dev
+    status: done
     priority: critical
     description: Filtros por empresa e projeto com query params combinaveis
     notes: URL bookmarkable - /tasks?company_id=1&project_id=5
@@ -38,7 +38,7 @@ stories:
     notes: Reutiliza calculate_totals do DM-005
 
   004-criar-stimulus-controller-para-filtros-com-turbo-frames:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Stimulus filter_controller + Turbo Frame para resultados parciais
     notes: onChange submete form, atualiza frame filtered_results
@@ -48,11 +48,9 @@ retrospective:
 
 summary:
   total_stories: 4
-  done: 2
+  done: 4
   in_progress: 0
-  ready_for_dev: 2
+  ready_for_dev: 0
   backlog: 0
   blockers: []
-  next_actions:
-    - Implementar story 001 (filtros base por empresa/projeto)
-    - Implementar story 004 (Stimulus filter_controller + Turbo Frame)
+  next_actions: []
