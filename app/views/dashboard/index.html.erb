@@ -62,26 +62,15 @@
     </div>
   </section>
 
-  <!-- Quick Actions -->
+  <!-- Ações Rápidas -->
   <section aria-labelledby="quick-actions-heading">
     <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
       <h2 id="quick-actions-heading" class="text-lg font-semibold text-white mb-4">Ações Rápidas</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <%= link_to new_task_path, class: "block border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer", aria: { label: "Nova Entrada - Registrar horas trabalhadas" } do %>
-          <h3 class="font-medium text-white mb-2" aria-hidden="true">⏱️ Nova Entrada</h3>
-          <p class="text-sm text-gray-400">Registrar horas trabalhadas</p>
-        <% end %>
-
-        <%= link_to companies_path, class: "block border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer", aria: { label: "Empresas - Gerenciar empresas" } do %>
-          <h3 class="font-medium text-white mb-2" aria-hidden="true">🏢 Empresas</h3>
-          <p class="text-sm text-gray-400">Gerenciar empresas</p>
-        <% end %>
-
-        <%= link_to projects_path, class: "block border border-gray-600 rounded-lg p-4 hover:border-blue-400 hover:shadow-md transition cursor-pointer", aria: { label: "Projetos - Gerenciar projetos" } do %>
-          <h3 class="font-medium text-white mb-2" aria-hidden="true">📁 Projetos</h3>
-          <p class="text-sm text-gray-400">Gerenciar projetos</p>
-        <% end %>
-      </div>
+      <%= link_to new_task_path,
+          class: "inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition min-h-[44px]",
+          aria: { label: "Nova Tarefa - Registrar nova tarefa" } do %>
+        ⏱️ Nova Tarefa
+      <% end %>
     </div>
   </section>
 </div>

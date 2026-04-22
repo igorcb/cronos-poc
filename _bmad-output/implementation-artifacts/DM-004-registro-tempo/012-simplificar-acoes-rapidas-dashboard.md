@@ -1,6 +1,6 @@
 # Story 4.12: Simplificar Ações Rápidas no Dashboard
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-004-registro-tempo
 **Data:** 2026-04-21
 **Epic:** Epic 4 — Task Management System
@@ -50,12 +50,12 @@
 
 ## Acceptance Criteria
 
-- [ ] AC1: Seção "Ações Rápidas" exibe apenas 1 botão: "Nova Tarefa"
-- [ ] AC2: Cards de "Empresas" e "Projetos" removidos do dashboard
-- [ ] AC3: Botão "Nova Tarefa" aponta para `new_task_path`
-- [ ] AC4: Layout simplificado (não usa grid de 3 colunas para 1 item)
-- [ ] AC5: Texto do botão atualizado de "Nova Entrada" para "Nova Tarefa"
-- [ ] AC6: `aria-label` atualizado para "Nova Tarefa - Registrar nova tarefa"
+- [x] AC1: Seção "Ações Rápidas" exibe apenas 1 botão: "Nova Tarefa"
+- [x] AC2: Cards de "Empresas" e "Projetos" removidos do dashboard
+- [x] AC3: Botão "Nova Tarefa" aponta para `new_task_path`
+- [x] AC4: Layout simplificado (não usa grid de 3 colunas para 1 item)
+- [x] AC5: Texto do botão atualizado de "Nova Entrada" para "Nova Tarefa"
+- [x] AC6: `aria-label` atualizado para "Nova Tarefa - Registrar nova tarefa"
 
 ---
 
@@ -93,10 +93,16 @@
 ## Dev Agent Record
 
 ### Checklist de Implementação
-- [ ] Cards Empresas e Projetos removidos
-- [ ] Botão "Nova Tarefa" mantido e atualizado
-- [ ] Layout simplificado (sem grid desnecessário)
-- [ ] aria-label atualizado
+- [x] Cards Empresas e Projetos removidos
+- [x] Botão "Nova Tarefa" mantido e atualizado
+- [x] Layout simplificado (sem grid desnecessário)
+- [x] aria-label atualizado
 
 ### Notas de Implementação
-_(Preencher pelo dev agent)_
+- Modificado: `app/views/dashboard/index.html.erb` — seção Quick Actions substituída conforme Dev Notes da story
+- Criado: `spec/requests/dashboard_quick_actions_spec.rb` — 12 examples, 0 failures (todos os ACs cobertos)
+- Rota `new_task_path` → `/tasks/new` confirmada
+
+### File List
+- `app/views/dashboard/index.html.erb`
+- `spec/requests/dashboard_quick_actions_spec.rb`
