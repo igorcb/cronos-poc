@@ -139,6 +139,11 @@ O Cronos POC será considerado bem-sucedido do ponto de vista do usuário quando
 - Campos obrigatórios: Data, Início, Fim, Empresa, Projeto, Atividade, Status
 - Status disponíveis: Pendente, Finalizado, Reaberto, Entregue
 - Interface de entrada rápida e intuitiva
+- **Código da Tarefa:** campo numérico opcional inserido manualmente pelo usuário
+  - Aceita apenas números (validação backend + frontend)
+  - A combinação código + nome deve ser única (não podem existir duas tasks com o mesmo código E mesmo nome)
+  - Exibido nas listagens como "Código - Nome da Tarefa" (ex: `14335 - Fix Agreement Cancellation`)
+  - Sem formato fixo — input de texto com validação numérica
 
 **2. Cálculos Automáticos**
 - Tempo trabalhado calculado automaticamente (Fim - Início)

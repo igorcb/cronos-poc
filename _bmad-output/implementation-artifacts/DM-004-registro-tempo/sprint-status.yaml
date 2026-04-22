@@ -7,8 +7,8 @@
 domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
-status: done
-progress: 100%
+status: in-progress
+progress: 92%  # 12 de 13 stories concluidas
 
 dependencies:
   requires:
@@ -97,6 +97,12 @@ stories:
     epic: 4
     notes: "161 testes passando, 0 blockers, Epic 5 ready to start"
 
+  013-adicionar-campo-codigo-na-task:
+    status: ready-for-dev
+    priority: medium
+    description: Adicionar campo código numérico opcional na Task — exibir como "Código - Nome" nas listagens
+    notes: Criado 2026-04-22 — migration + validação + display_name + views
+
 retrospective:
   status: done
   date: 2026-01-26
@@ -106,10 +112,11 @@ retrospective:
     - Epic 5 pronto para iniciar
 
 summary:
-  total_stories: 12
+  total_stories: 13
   done: 12
   in_progress: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
-  next_actions: []
+  next_actions:
+    - Implementar story 013 (campo código numérico na Task)
