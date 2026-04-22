@@ -483,28 +483,16 @@ RSpec.describe TasksController, type: :controller do
         expect(Task.last.status).to eq("pending")
       end
 
-      it "redirects to root_path with notice" do
+      it "redirects to tasks_path with notice" do
         post :create, params: valid_params
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(tasks_path)
         expect(flash[:notice]).to eq("Tarefa criada com sucesso")
       end
 
       context "with format turbo_stream" do
-        it "returns turbo_stream response with daily_total target" do
+        it "redirects to tasks_path" do
           post :create, params: valid_params, format: :turbo_stream
-          expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-          expect(response.body).to include("daily_total")
-        end
-
-        it "returns turbo_stream response with company_monthly_totals target" do
-          post :create, params: valid_params, format: :turbo_stream
-          expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-          expect(response.body).to include("company_monthly_totals")
-        end
-
-        it "returns replace turbo_stream actions" do
-          post :create, params: valid_params, format: :turbo_stream
-          expect(response.body).to include("action=\"replace\"")
+          expect(response).to redirect_to(tasks_path)
         end
       end
     end
