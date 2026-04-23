@@ -7,6 +7,9 @@ class TaskItem < ApplicationRecord
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :status, presence: true, inclusion: { in: %w[pending completed] }
+  validates :work_date, presence: true
+
+  before_validation :set_work_date_default
 
   validate :end_time_after_start_time
   validate :task_must_not_be_delivered, on: [ :create, :update ]
@@ -66,6 +69,10 @@ class TaskItem < ApplicationRecord
   def notify_totals_changed
     # Hook observável — o controller responde com Turbo Stream após commit.
     # Mantido no modelo para garantir execução somente após persistência confirmada.
+  end
+
+  def set_work_date_default
+    self.work_date ||= Date.current
   end
 
   # Callback: previne deleção se task foi delivered

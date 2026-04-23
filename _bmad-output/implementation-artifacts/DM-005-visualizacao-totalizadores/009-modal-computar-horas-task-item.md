@@ -1,6 +1,6 @@
 # Story 5.9: Modal Computar Horas (TaskItem) ao Clicar na Tarefa
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-005-visualizacao-totalizadores
 **Data:** 2026-04-22
 **Epic:** Epic 5 — Visualização & Dashboard
@@ -172,18 +172,44 @@ end
 ## Dev Agent Record
 
 ### Checklist de Implementação
-- [ ] Migration: `add_column :task_items, :work_date, :date`
-- [ ] Model `TaskItem`: incluir `work_date` nas validações (presence, default hoje)
-- [ ] Rota: adicionar `new` em `task_items` nested em tasks
-- [ ] `TaskItemsController#new`: carregar task, build task_item, carregar histórico
-- [ ] `task_items/new.html.erb`: modal com form + histórico dentro de turbo-frame
-- [ ] `task_items/_list.html.erb`: partial do histórico (turbo-frame atualizável)
-- [ ] `tasks_controller#create` turbo stream: atualizar histórico dentro do modal + totalizadores dashboard
-- [ ] `dashboard/index.html.erb`: linhas da tabela clicáveis com `data-turbo-frame="modal"`
-- [ ] `modal_controller.js`: reutilizar da story 5.8 (fechar com Escape e overlay click)
-- [ ] Strong params: incluir `work_date`
-- [ ] Spec: lançar task_item via modal atualiza histórico e totalizadores
-- [ ] Testes passando sem regressão
+- [x] Migration: `add_column :task_items, :work_date, :date`
+- [x] Model `TaskItem`: incluir `work_date` nas validações (presence, default hoje)
+- [x] Rota: adicionar `new` em `task_items` nested em tasks
+- [x] `TaskItemsController#new`: carregar task, build task_item, carregar histórico
+- [x] `task_items/new.html.erb`: modal com form + histórico dentro de turbo-frame
+- [x] `task_items/_list.html.erb`: partial do histórico (turbo-frame atualizável)
+- [x] `task_items_controller#create` turbo stream: atualizar histórico dentro do modal + totalizadores dashboard
+- [x] `dashboard/_task_row.html.erb`: linhas da tabela clicáveis com `data-turbo-frame="modal"`
+- [x] `modal_controller.js`: reutilizado da story 5.8 (fechar com Escape e overlay click)
+- [x] Strong params: incluir `work_date`
+- [x] Spec: lançar task_item via modal atualiza histórico e totalizadores
+- [x] Testes passando sem regressão (707 examples, 0 failures)
 
 ### Notas de Implementação
-_(Preencher pelo dev agent)_
+
+**2026-04-23 — Amelia (Dev Agent)**
+
+- Migration com `default: -> { "CURRENT_DATE" }` aplicada com sucesso
+- Model: `before_validation :set_work_date_default` para garantir Date.current quando nil
+- Rota `new` adicionada em task_items nested em tasks
+- `TaskItemsController#new` retorna @task, @task_item (com work_date=hoje) e @task_items
+- View `new.html.erb` usa `turbo-frame#modal` com form + `turbo-frame#task-items-list-{task.id}` para histórico
+- Partial `_modal_form.html.erb` criado para re-renderizar modal em caso de erro de validação via Turbo Stream
+- Partial `_list.html.erb` exibe histórico com data, horários, horas e status badge
+- `create` em caso de sucesso: update do histórico no modal + totalizadores; em caso de erro: replace do modal completo com erros
+- Dashboard `_task_row.html.erb`: link com `data-turbo-frame="modal"` + onclick para clicar em qualquer parte da linha
+- `modal_controller.js` reutilizado sem alterações (fechar via Escape e overlay click já funcionavam)
+- Factory `:task_item` atualizada com `work_date { Date.current }`
+- Specs novos: GET #new (autenticação, template, work_date padrão, ordenação), turbo_stream create (task-items-list target), work_date params
+
+### File List
+- `db/migrate/20260423193749_add_work_date_to_task_items.rb` — nova migration
+- `app/models/task_item.rb` — validação work_date + set_work_date_default
+- `config/routes.rb` — :new adicionado em task_items
+- `app/controllers/task_items_controller.rb` — #new + #create atualizado + strong params
+- `app/views/task_items/new.html.erb` — nova view do modal
+- `app/views/task_items/_list.html.erb` — novo partial do histórico
+- `app/views/task_items/_modal_form.html.erb` — novo partial para re-render em erro
+- `app/views/dashboard/_task_row.html.erb` — linhas clicáveis
+- `spec/factories/task_items.rb` — work_date adicionado
+- `spec/controllers/task_items_controller_spec.rb` — specs GET #new e work_date

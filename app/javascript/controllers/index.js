@@ -21,3 +21,9 @@ application.register("form-validation", FormValidationController)
 
 import ModalController from "./modal_controller"
 application.register("modal", ModalController)
+
+import RowLinkController from "./row_link_controller"
+application.register("row-link", RowLinkController)
+
+import TaskItemHoursController from "./task_item_hours_controller"
+application.register("task-item-hours", TaskItemHoursController)
