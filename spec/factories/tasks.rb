@@ -31,6 +31,7 @@
 
 FactoryBot.define do
   factory :task do
+    code { Faker::Number.number(digits: 5).to_s }
     name { Faker::Lorem.sentence(word_count: 3) }
     company
     project { association :project, company: company }

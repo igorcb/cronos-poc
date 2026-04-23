@@ -25,7 +25,7 @@ RSpec.describe "Tasks", type: :system do
       it "shows Editar and Excluir links for each task" do
         visit tasks_path
         expect(page).to have_link("Editar", href: edit_task_path(task))
-        expect(page).to have_css("a[aria-label='Excluir tarefa #{task.name}']")
+        expect(page).to have_css("a[aria-label='Excluir tarefa #{task.display_name}']")
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe "Tasks", type: :system do
       visit tasks_path
       expect(page).to have_content(task.name)
       # Verificar que o link de excluir existe com aria-label correto
-      expect(page).to have_css("a[aria-label='Excluir tarefa #{task.name}']")
+      expect(page).to have_css("a[aria-label='Excluir tarefa #{task.display_name}']")
       # Executar destroy via driver rack_test
       page.driver.delete task_path(task)
       expect(Task.find_by(id: task.id)).to be_nil
@@ -82,7 +82,7 @@ RSpec.describe "Tasks", type: :system do
     it "shows Excluir link with correct aria-label" do
       visit tasks_path
       expect(page).to have_css(
-        "a[aria-label='Excluir tarefa #{task.name}'][data-turbo-method='delete']"
+        "a[aria-label='Excluir tarefa #{task.display_name}'][data-turbo-method='delete']"
       )
     end
   end

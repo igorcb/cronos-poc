@@ -66,6 +66,7 @@ RSpec.describe "Tasks", type: :request do
       let(:valid_params) do
         {
           task: {
+            code: "10001",
             name: "Nova Tarefa",
             company_id: company.id,
             project_id: project.id,
@@ -174,6 +175,90 @@ RSpec.describe "Tasks", type: :request do
         get tasks_path
         expect(response).to redirect_to(new_session_path)
       end
+    end
+  end
+
+  describe "POST /tasks — campo code (AC3, AC6)" do
+    before { sign_in(user) }
+
+    let!(:company) { create(:company, name: "Code Company") }
+    let!(:project) { create(:project, company: company, name: "Code Project") }
+
+    def base_params(overrides = {})
+      {
+        task: {
+          name: "Tarefa com Código",
+          company_id: company.id,
+          project_id: project.id,
+          start_date: Date.today,
+          estimated_hours_hm: "02:00"
+        }.merge(overrides)
+      }
+    end
+
+    context "with valid numeric code" do
+      it "creates the task with the given code" do
+        post tasks_path, params: base_params(code: "14335")
+        expect(Task.last.code).to eq("14335")
+      end
+
+      it "redirects to tasks path" do
+        post tasks_path, params: base_params(code: "14335")
+        expect(response).to redirect_to(tasks_path)
+      end
+    end
+
+    context "without code (required field)" do
+      it "does not create the task" do
+        expect {
+          post tasks_path, params: base_params(code: "")
+        }.not_to change(Task, :count)
+      end
+
+      it "returns unprocessable entity" do
+        post tasks_path, params: base_params(code: "")
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context "with invalid (non-numeric) code" do
+      it "does not create the task" do
+        expect {
+          post tasks_path, params: base_params(code: "ABC")
+        }.not_to change(Task, :count)
+      end
+
+      it "returns unprocessable entity" do
+        post tasks_path, params: base_params(code: "ABC")
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context "with duplicate code+name combination" do
+      before { create(:task, code: "999", name: "Tarefa com Código", company: company, project: project) }
+
+      it "does not create the task" do
+        expect {
+          post tasks_path, params: base_params(code: "999")
+        }.not_to change(Task, :count)
+      end
+
+      it "returns unprocessable entity" do
+        post tasks_path, params: base_params(code: "999")
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+  end
+
+  describe "GET /tasks/new — exibe campo Código (AC3)" do
+    before { sign_in(user) }
+
+    let!(:company) { create(:company) }
+
+    it "displays the Código field" do
+      get new_task_path
+      expect(response.body).to include("Código")
+      expect(response.body).to include("Ex: 14335")
     end
   end
 end

@@ -455,6 +455,7 @@ RSpec.describe TasksController, type: :controller do
     let(:valid_params) {
       {
         task: {
+          code: "20001",
           name: "Test Task",
           company_id: company.id,
           project_id: project.id,

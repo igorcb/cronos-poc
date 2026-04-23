@@ -1,6 +1,6 @@
 # Story 4.13: Adicionar Campo Código na Task
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-004-registro-tempo
 **Data:** 2026-04-22
 **Epic:** Epic 4 — Task Management System
@@ -131,16 +131,41 @@ end
 ## Dev Agent Record
 
 ### Checklist de Implementação
-- [ ] Migration: `add_column :tasks, :code, :string`
-- [ ] Model: validação de formato numérico e unicidade `[code, name]`
-- [ ] Model: método `display_name`
-- [ ] Strong params: incluir `code`
-- [ ] `tasks/new.html.erb`: campo `code` adicionado
-- [ ] `tasks/edit.html.erb`: campo `code` adicionado
-- [ ] `tasks/index.html.erb`: exibe `task.display_name`
-- [ ] `dashboard/index.html.erb`: exibe `task.display_name`
-- [ ] Specs: model + request/controller
-- [ ] Testes passando sem regressão
+- [x] Migration: `add_column :tasks, :code, :string`
+- [x] Model: validação de formato numérico e unicidade `[code, name]`
+- [x] Model: método `display_name`
+- [x] Strong params: incluir `code`
+- [x] `tasks/new.html.erb`: campo `code` adicionado
+- [x] `tasks/edit.html.erb`: campo `code` adicionado
+- [x] `tasks/index.html.erb`: exibe `task.display_name` (via TaskCardComponent)
+- [x] `dashboard/index.html.erb`: exibe `task.display_name`
+- [x] Specs: model + request/controller
+- [x] Testes passando sem regressão
 
 ### Notas de Implementação
-_(Preencher pelo dev agent)_
+
+**Data:** 2026-04-22
+
+**Implementado:**
+- Migration `20260422000001_add_code_to_tasks.rb` aplicada com sucesso
+- `Task#code` com validações `allow_blank: true`, formato `/\A\d+\z/`, unicidade por `[code, name]`
+- `Task#display_name`: retorna `"#{code} - #{name}"` quando code presente, ou apenas `name`
+- Strong params em `TasksController#task_params` atualizado com `:code`
+- `tasks/new.html.erb` e `tasks/edit.html.erb`: campo Código adicionado antes de Nome, com `inputmode: "numeric"`, `pattern: "[0-9]*"`, placeholder "Ex: 14335", sem asterisco (opcional)
+- `app/components/task_card_component.html.erb`: `task.name` → `task.display_name`
+- `app/views/dashboard/index.html.erb`: `task.name` → `task.display_name`
+- Model spec: 16 novos exemplos cobrindo validações de formato, unicidade e `display_name`
+- Request spec: 10 novos exemplos cobrindo create com código válido, sem código, inválido, duplicata, e exibição do campo
+
+**Suite:** 667 examples, 0 failures
+
+### File List
+- `db/migrate/20260422000001_add_code_to_tasks.rb` (novo)
+- `app/models/task.rb` (modificado — validações + display_name)
+- `app/controllers/tasks_controller.rb` (modificado — strong params)
+- `app/views/tasks/new.html.erb` (modificado — campo code)
+- `app/views/tasks/edit.html.erb` (modificado — campo code)
+- `app/components/task_card_component.html.erb` (modificado — display_name)
+- `app/views/dashboard/index.html.erb` (modificado — display_name)
+- `spec/models/task_spec.rb` (modificado — specs de code)
+- `spec/requests/tasks_spec.rb` (modificado — specs de code)
