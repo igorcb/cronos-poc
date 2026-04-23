@@ -42,6 +42,10 @@ class Task < ApplicationRecord
   enum :status, { pending: "pending", completed: "completed", delivered: "delivered" }
 
   # Validações
+  validates :code,
+            presence: { message: "não pode ficar em branco" },
+            format: { with: /\A\d+\z/, message: "deve conter apenas números", allow_blank: true },
+            uniqueness: { scope: :name, message: "já existe uma tarefa com este código e nome", allow_blank: true }
   validates :name, presence: true
   validates :company_id, presence: true
   validates :project_id, presence: true
@@ -63,6 +67,10 @@ class Task < ApplicationRecord
   before_save :convert_estimated_hours_from_hm
   after_save :recalculate_validated_hours
   after_find :convert_estimated_hours_to_hm
+
+  def display_name
+    code.present? ? "#{code} - #{name}" : name
+  end
 
   # Métodos públicos de cálculo
   def total_hours

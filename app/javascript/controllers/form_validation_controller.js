@@ -16,8 +16,7 @@ export default class extends Controller {
 
     required.forEach(field => {
       if (!field.value || field.value.trim() === "") {
-        field.classList.add("border-red-500")
-        field.classList.remove("border-gray-600")
+        this._showError(field)
         if (!firstInvalid) firstInvalid = field
       }
     })
@@ -33,6 +32,29 @@ export default class extends Controller {
     if (field.value && field.value.trim() !== "") {
       field.classList.remove("border-red-500")
       field.classList.add("border-gray-600")
+      field.removeAttribute("aria-invalid")
+      const errorId = field.getAttribute("data-error-id")
+      if (errorId) {
+        document.getElementById(errorId)?.remove()
+        field.removeAttribute("data-error-id")
+      }
     }
+  }
+
+  _showError(field) {
+    field.classList.add("border-red-500")
+    field.classList.remove("border-gray-600")
+    field.setAttribute("aria-invalid", "true")
+
+    const errorId = `js_error_${field.id || field.name.replace(/[\[\]]/g, "_")}`
+    if (document.getElementById(errorId)) return
+
+    field.setAttribute("data-error-id", errorId)
+    const msg = document.createElement("span")
+    msg.id = errorId
+    msg.setAttribute("role", "alert")
+    msg.className = "mt-1 text-sm text-red-400"
+    msg.textContent = "não pode ficar em branco"
+    field.insertAdjacentElement("afterend", msg)
   }
 }

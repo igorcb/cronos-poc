@@ -396,4 +396,85 @@ RSpec.describe Task, type: :model do
       end
     end
   end
+
+  describe "code field" do
+    let(:company) { create(:company) }
+    let(:project) { create(:project, company: company) }
+
+    describe "validations" do
+      it "is invalid without a code (required field)" do
+        task = build(:task, code: nil, company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("não pode ficar em branco")
+      end
+
+      it "is invalid with an empty string code" do
+        task = build(:task, code: "", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("não pode ficar em branco")
+      end
+
+      it "is valid with a numeric code" do
+        task = build(:task, code: "14335", company: company, project: project)
+        expect(task).to be_valid
+      end
+
+      it "is valid with a code that has leading zeros" do
+        task = build(:task, code: "007", company: company, project: project)
+        expect(task).to be_valid
+      end
+
+      it "is invalid with non-numeric code" do
+        task = build(:task, code: "ABC123", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("deve conter apenas números")
+      end
+
+      it "is invalid with code containing special characters" do
+        task = build(:task, code: "123-456", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("deve conter apenas números")
+      end
+
+      it "is invalid when code+name combination already exists" do
+        create(:task, code: "100", name: "Fix Bug", company: company, project: project)
+        task = build(:task, code: "100", name: "Fix Bug", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("já existe uma tarefa com este código e nome")
+      end
+
+      it "is valid when same code exists with a different name" do
+        create(:task, code: "100", name: "Fix Bug", company: company, project: project)
+        task = build(:task, code: "100", name: "Add Feature", company: company, project: project)
+        expect(task).to be_valid
+      end
+
+      it "is invalid when same name exists with no code (both blank)" do
+        task = build(:task, code: nil, name: "Fix Bug", company: company, project: project)
+        expect(task).not_to be_valid
+      end
+    end
+
+    describe "#display_name" do
+      it "returns only name when code is nil" do
+        task = build(:task, code: nil, name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("Fix Bug")
+      end
+
+      it "returns only name when code is blank" do
+        task = build(:task, code: "", name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("Fix Bug")
+      end
+
+      it "returns code - name when code is present" do
+        task = build(:task, code: "14335", name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("14335 - Fix Bug")
+      end
+
+      it "preserves leading zeros in code" do
+        task = build(:task, code: "007", name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("007 - Fix Bug")
+      end
+    end
+  end
 end

@@ -103,7 +103,7 @@
               <% @tasks.each do |task| %>
                 <tr class="hover:bg-gray-700 transition-colors">
                   <td class="px-4 py-3 text-sm text-gray-300"><%= task.start_date&.strftime("%d/%m/%Y") %></td>
-                  <td class="px-4 py-3 text-sm text-white font-medium"><%= task.name %></td>
+                  <td class="px-4 py-3 text-sm text-white font-medium"><%= task.display_name %></td>
                   <td class="px-4 py-3 text-sm text-gray-300"><%= task.company&.name %></td>
                   <td class="px-4 py-3 text-sm text-gray-300"><%= task.project&.name %></td>
                   <td class="px-4 py-3"><%= render StatusBadgeComponent.new(status: task.status.to_s) %></td>
