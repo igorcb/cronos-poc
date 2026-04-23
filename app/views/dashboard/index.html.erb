@@ -62,16 +62,15 @@
     </div>
   </section>
 
-  <!-- Ações Rápidas -->
-  <section aria-labelledby="quick-actions-heading">
-    <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
-      <h2 id="quick-actions-heading" class="text-lg font-semibold text-white mb-4">Ações Rápidas</h2>
-      <%= link_to new_task_path,
-          class: "inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition min-h-[44px]",
-          aria: { label: "Nova Tarefa - Registrar nova tarefa" } do %>
-        ⏱️ Nova Tarefa
-      <% end %>
-    </div>
+  <!-- Ação Rápida: Nova Tarefa -->
+  <section aria-label="Ação rápida">
+    <%= link_to new_task_path, aria: { label: "Nova Tarefa" } do %>
+      <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
+        <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </div>
+    <% end %>
   </section>
 
   <!-- Tarefas do Mês -->

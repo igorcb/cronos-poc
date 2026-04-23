@@ -1,6 +1,6 @@
 # Story 5.7: Substituir Seção "Ações Rápidas" por Ícone de Nova Tarefa
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-005-visualizacao-totalizadores
 **Data:** 2026-04-22
 **Epic:** Epic 5 — Visualização & Dashboard
@@ -83,12 +83,24 @@ A seção "Ações Rápidas" com o botão textual "⏱️ Nova Tarefa" ocupa esp
 ## Dev Agent Record
 
 ### Checklist de Implementação
-- [ ] Remover `<section aria-labelledby="quick-actions-heading">` completo do `dashboard/index.html.erb`
-- [ ] Adicionar ícone `+` link no lugar, com estilo `bg-blue-900 rounded-md p-3`
-- [ ] Verificar que `new_task_path` resolve corretamente
-- [ ] Spec: verificar que seção "Ações Rápidas" não existe mais no response
-- [ ] Spec: verificar que link para `new_task_path` existe com ícone `+`
-- [ ] Testes passando sem regressão
+- [x] Remover `<section aria-labelledby="quick-actions-heading">` completo do `dashboard/index.html.erb`
+- [x] Adicionar ícone `+` link no lugar, com estilo `bg-blue-900 rounded-md p-3`
+- [x] Verificar que `new_task_path` resolve corretamente
+- [x] Spec: verificar que seção "Ações Rápidas" não existe mais no response
+- [x] Spec: verificar que link para `new_task_path` existe com ícone `+`
+- [x] Testes passando sem regressão
 
 ### Notas de Implementação
-_(Preencher pelo dev agent)_
+- Removida seção `<section aria-labelledby="quick-actions-heading">` com card wrapper `bg-gray-800 rounded-lg shadow-sm p-6`
+- Adicionado `<section aria-label="Ação rápida">` com link standalone para `new_task_path`
+- Ícone SVG `+` com path `M12 4v16m8-8H4`, classes `h-6 w-6 text-blue-400`, dentro de `div bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition`
+- `aria-label="Nova Tarefa"` no link para acessibilidade
+- Spec atualizado: `spec/requests/dashboard_quick_actions_spec.rb` — 13 exemplos, 0 falhas
+- Sem regressões em `dashboard_tasks_month_spec.rb` — 21 exemplos, 0 falhas
+
+### File List
+- `app/views/dashboard/index.html.erb` — seção Ações Rápidas substituída por ícone `+`
+- `spec/requests/dashboard_quick_actions_spec.rb` — specs atualizados para story 5.7
+
+### Change Log
+- 2026-04-23: Story 5.7 implementada — seção "Ações Rápidas" removida, ícone `+` adicionado com estilo `bg-blue-900 rounded-md p-3`, 13 specs passando
