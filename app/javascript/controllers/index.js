@@ -18,3 +18,6 @@ application.register("navbar", NavbarController)
 
 import FormValidationController from "./form_validation_controller"
 application.register("form-validation", FormValidationController)
+
+import ModalController from "./modal_controller"
+application.register("modal", ModalController)

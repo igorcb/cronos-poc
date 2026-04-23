@@ -135,10 +135,10 @@ RSpec.describe "Accessibility WCAG Level A", type: :request do
         expect(response.body).to include('id="dashboard-heading"')
       end
 
-      it "contém seção de ações rápidas com aria-labelledby" do
+      it "contém seção de ação rápida acessível" do
         get root_path
-        expect(response.body).to include('aria-labelledby="quick-actions-heading"')
-        expect(response.body).to include('id="quick-actions-heading"')
+        expect(response.body).to include('aria-label="Ação rápida"')
+        expect(response.body).to include('aria-label="Nova Tarefa"')
       end
 
       it "SVGs decorativos têm aria-hidden" do

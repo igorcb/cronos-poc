@@ -18,6 +18,12 @@ pt-BR:
       not_a_number: "não é um número"
       greater_than: "deve ser maior que %{count}"
 
+  task:
+    status:
+      pending: "Pendente"
+      completed: "Concluído"
+      delivered: "Entregue"
+
   activerecord:
     errors:
       messages:

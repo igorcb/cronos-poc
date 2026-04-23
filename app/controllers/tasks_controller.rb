@@ -37,12 +37,22 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(task_params)
-    @task.status = "pending"
+    @task.status = "pending" unless @task.status.in?(Task.statuses.keys)
 
     if @task.save
-      respond_to do |format|
-        format.turbo_stream { redirect_to tasks_path, notice: "Tarefa criada com sucesso" }
-        format.html { redirect_to tasks_path, notice: "Tarefa criada com sucesso" }
+      if request.headers["Turbo-Frame"] == "modal"
+        daily_hours   = calculate_dashboard_daily_hours
+        monthly_hours = calculate_dashboard_monthly_hours
+        monthly_value = calculate_dashboard_monthly_value
+        render turbo_stream: [
+          turbo_stream.update("modal", ""),
+          turbo_stream.prepend("tasks-list", partial: "dashboard/task_row", locals: { task: @task }),
+          turbo_stream.replace("dashboard_daily_hours", partial: "dashboard/daily_hours", locals: { daily_hours: daily_hours }),
+          turbo_stream.replace("dashboard_monthly_hours", partial: "dashboard/monthly_hours", locals: { monthly_hours: monthly_hours }),
+          turbo_stream.replace("dashboard_monthly_value", partial: "dashboard/monthly_value", locals: { monthly_value: monthly_value })
+        ]
+      else
+        redirect_to tasks_path, notice: "Tarefa criada com sucesso"
       end
     else
       @companies = Company.active.order(:name)
@@ -144,7 +154,22 @@ class TasksController < ApplicationController
     end
   end
 
+  def calculate_dashboard_daily_hours
+    TaskItem.joins(:task).where(tasks: { start_date: Date.current }).sum(:hours_worked)
+  end
+
+  def calculate_dashboard_monthly_hours
+    TaskItem.joins(:task).where(tasks: { start_date: Date.current.all_month }).sum(:hours_worked)
+  end
+
+  def calculate_dashboard_monthly_value
+    Company
+      .joins(tasks: :task_items)
+      .where(tasks: { start_date: Date.current.all_month })
+      .sum("task_items.hours_worked * companies.hourly_rate")
+  end
+
   def task_params
-    params.require(:task).permit(:code, :name, :company_id, :project_id, :start_date, :estimated_hours_hm, :notes)
+    params.require(:task).permit(:code, :name, :company_id, :project_id, :start_date, :estimated_hours_hm, :notes, :status)
   end
 end
