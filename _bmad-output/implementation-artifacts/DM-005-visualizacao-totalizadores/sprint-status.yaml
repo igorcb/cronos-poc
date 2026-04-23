@@ -55,7 +55,7 @@ stories:
     notes: Criado 2026-04-21 — DashboardController + nova seção na view
 
   007-substituir-acoes-rapidas-por-icone-nova-tarefa:
-    status: ready-for-dev
+    status: done
     priority: low
     description: Remover seção "Ações Rápidas", substituir por ícone + estilo bg-blue-900 p-3
     notes: Criado 2026-04-22 — mudança cirúrgica em dashboard/index.html.erb
