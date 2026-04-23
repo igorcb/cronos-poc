@@ -15,56 +15,15 @@
   <section aria-labelledby="stats-heading">
     <h2 id="stats-heading" class="sr-only">Resumo de horas</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Total Horas Hoje -->
-      <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3">
-            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-400">Horas Hoje</p>
-            <p class="text-2xl font-semibold text-white">0.0h</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Total Horas Mês -->
-      <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 bg-green-900 rounded-md p-3">
-            <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-            </svg>
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-400">Horas Mês</p>
-            <p class="text-2xl font-semibold text-white">0.0h</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Total Valor Mês -->
-      <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 bg-yellow-900 rounded-md p-3">
-            <svg class="h-6 w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-400">Valor Mês</p>
-            <p class="text-2xl font-semibold text-white">R$ 0,00</p>
-          </div>
-        </div>
-      </div>
+      <%= render "dashboard/daily_hours", daily_hours: @daily_hours %>
+      <%= render "dashboard/monthly_hours", monthly_hours: @monthly_hours %>
+      <%= render "dashboard/monthly_value", monthly_value: @monthly_value %>
     </div>
   </section>
 
   <!-- Ação Rápida: Nova Tarefa -->
   <section aria-label="Ação rápida">
-    <%= link_to new_task_path, aria: { label: "Nova Tarefa" } do %>
+    <%= link_to new_task_path, data: { turbo_frame: "modal" }, aria: { label: "Nova Tarefa" } do %>
       <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
         <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -81,38 +40,30 @@
         <%= link_to "Ver todas", tasks_path, class: "text-sm text-blue-400 hover:text-blue-300" %>
       </div>
 
-      <% if @tasks.empty? %>
-        <div class="px-6 py-12 text-center text-gray-400" role="status">
-          <p>Nenhuma tarefa este mês.</p>
-        </div>
-      <% else %>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-700" aria-label="Tarefas do mês">
-            <thead class="bg-gray-900">
-              <tr>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Tarefa</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Empresa</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Projeto</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Estimado</th>
-              </tr>
-            </thead>
-            <tbody class="bg-gray-800 divide-y divide-gray-700">
-              <% @tasks.each do |task| %>
-                <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-4 py-3 text-sm text-gray-300"><%= task.start_date&.strftime("%d/%m/%Y") %></td>
-                  <td class="px-4 py-3 text-sm text-white font-medium"><%= task.display_name %></td>
-                  <td class="px-4 py-3 text-sm text-gray-300"><%= task.company&.name %></td>
-                  <td class="px-4 py-3 text-sm text-gray-300"><%= task.project&.name %></td>
-                  <td class="px-4 py-3"><%= render StatusBadgeComponent.new(status: task.status.to_s) %></td>
-                  <td class="px-4 py-3 text-sm text-gray-300"><%= task.estimated_hours_hm %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% end %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-700" aria-label="Tarefas do mês">
+          <thead class="bg-gray-900">
+            <tr>
+              <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data</th>
+              <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Tarefa</th>
+              <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Empresa</th>
+              <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Projeto</th>
+              <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+              <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Estimado</th>
+            </tr>
+          </thead>
+          <tbody id="tasks-list" class="bg-gray-800 divide-y divide-gray-700">
+            <% @tasks.each do |task| %>
+              <%= render "dashboard/task_row", task: task %>
+            <% end %>
+          </tbody>
+        </table>
+        <% if @tasks.empty? %>
+          <div class="px-6 py-12 text-center text-gray-400" role="status">
+            <p>Nenhuma tarefa este mês.</p>
+          </div>
+        <% end %>
+      </div>
     </div>
   </section>
 </div>
