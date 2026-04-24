@@ -154,10 +154,15 @@ O Cronos POC será considerado bem-sucedido do ponto de vista do usuário quando
 - Lista de entradas do mês atual
 - Exibição clara de todas as informações: data, horários, tempo, empresa, projeto, atividade, status, valor
 
-**4. Totais e Agregações**
-- Total de horas do dia (soma de todas as entradas do mesmo dia)
-- Total de horas por empresa no mês (soma filtrada por empresa)
-- Total de valor por empresa no mês
+**4. Totais e Agregações — Dashboard (6 KPIs globais, não afetados por filtros)**
+- Qtde de Tasks do mês corrente (total global)
+- Qtde de Tasks lançadas hoje (total global)
+- Total de horas do dia (soma global do dia corrente)
+- Valor monetário do dia (horas do dia × R$/hora por empresa, soma global)
+- Total de horas do mês corrente (soma global)
+- Total de valor do mês corrente (soma global em R$)
+
+> Todos os KPIs são calculados sobre o conjunto global de dados (independente dos filtros aplicados na listagem).
 
 **5. Filtros**
 - Filtrar por empresa

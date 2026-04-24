@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 100%  # 9 de 9 stories concluidas
+progress: 90%  # 9 de 10 stories concluidas
 
 dependencies:
   requires:
@@ -72,15 +72,28 @@ stories:
     description: Modal para lançar task_item ao clicar na tarefa — histórico + totalizadores em tempo real
     notes: Criado 2026-04-22 — requer migration work_date em task_items + TaskItemsController#new
 
+  010-expandir-kpis-dashboard-6-metricas:
+    status: ready-for-dev
+    priority: high
+    description: Expandir dashboard de 3 para 6 KPIs globais — qtde tasks mês, qtde tasks hoje, valor horas dia
+    notes: Criado 2026-04-24 — adicionar 3 novos cards ao grid; KPIs não afetados por filtros
+
+  011-botao-entregar-task-no-dashboard:
+    status: ready-for-dev
+    priority: high
+    description: Botão check ao lado do relógio — marcar task como delivered via PATCH Turbo Stream; habilitado só quando completed
+    notes: Criado 2026-04-24 — action deliver no TasksController + remoção da linha via Turbo Stream
+
 retrospective:
   status: optional
 
 summary:
-  total_stories: 9
-  done: 8
+  total_stories: 11
+  done: 9
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 2
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 009 (modal computar horas — task_item)
+    - Implementar story 010 (expandir KPIs dashboard — 6 métricas globais)
+    - Implementar story 011 (botão entregar task no dashboard)
