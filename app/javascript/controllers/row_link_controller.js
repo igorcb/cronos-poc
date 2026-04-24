@@ -5,6 +5,9 @@ export default class extends Controller {
 
   navigate(event) {
     if (event.target.closest("a, button")) return
-    Turbo.visit(this.urlValue, { frame: this.frameValue })
+    const frame = document.querySelector(`turbo-frame#${this.frameValue}`)
+    if (frame) {
+      frame.src = this.urlValue
+    }
   }
 }

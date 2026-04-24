@@ -1,6 +1,6 @@
 <tr id="<%= dom_id(task) %>" class="hover:bg-gray-700 transition-colors border-b border-gray-700">
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.start_date&.strftime("%d/%m/%Y") %></td>
-  <td class="px-4 py-3 text-sm text-white font-medium"><%= task.display_name %></td>
+  <td class="px-4 py-3 text-sm text-white font-medium max-w-[240px] truncate"><%= task.display_name %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.company&.name %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.project&.name %></td>
   <td class="px-4 py-3"><%= render StatusBadgeComponent.new(status: task.status.to_s) %></td>
@@ -11,16 +11,32 @@
   <td class="px-4 py-3 text-sm text-gray-300">
     <%= task.calculated_value.present? ? number_to_currency(task.calculated_value, unit: "R$", separator: ",", delimiter: ".") : "-" %>
   </td>
-  <td class="px-4 py-3 text-sm">
-    <div class="flex gap-3">
-      <%= link_to "Editar", edit_task_path(task),
+  <td class="px-4 py-3 text-sm whitespace-nowrap">
+    <div class="flex gap-3 items-center">
+      <%= link_to new_task_task_item_path(task),
+          data: { turbo_frame: "modal" },
+          class: "inline-flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-500 text-white rounded transition",
+          aria: { label: "Lançar horas para #{task.display_name}" } do %>
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      <% end %>
+      <%= link_to edit_task_path(task),
           data: { turbo_frame: "_top" },
-          class: "text-blue-400 hover:text-blue-300 font-medium transition",
-          aria: { label: "Editar tarefa #{task.display_name}" } %>
-      <%= link_to "Excluir", task_path(task),
+          class: "inline-flex items-center justify-center w-8 h-8 bg-gray-600 hover:bg-gray-500 text-white rounded transition",
+          aria: { label: "Editar tarefa #{task.display_name}" } do %>
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+      <% end %>
+      <%= link_to task_path(task),
           data: { turbo_method: :delete, turbo_confirm: "Tem certeza que deseja remover \"#{task.display_name}\"?" },
-          class: "text-red-400 hover:text-red-300 font-medium transition",
-          aria: { label: "Excluir tarefa #{task.display_name}" } %>
+          class: "inline-flex items-center justify-center w-8 h-8 bg-red-700 hover:bg-red-600 text-white rounded transition",
+          aria: { label: "Excluir tarefa #{task.display_name}" } do %>
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+      <% end %>
     </div>
   </td>
 </tr>

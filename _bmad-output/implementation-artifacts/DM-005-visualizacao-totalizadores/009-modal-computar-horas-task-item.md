@@ -179,7 +179,7 @@ end
 - [x] `task_items/new.html.erb`: modal com form + histórico dentro de turbo-frame
 - [x] `task_items/_list.html.erb`: partial do histórico (turbo-frame atualizável)
 - [x] `task_items_controller#create` turbo stream: atualizar histórico dentro do modal + totalizadores dashboard
-- [x] `dashboard/_task_row.html.erb`: linhas da tabela clicáveis com `data-turbo-frame="modal"`
+- [x] `dashboard/_task_row.html.erb`: botão "Lançar" por linha com `data-turbo-frame="modal"` abre modal com 1 clique
 - [x] `modal_controller.js`: reutilizado da story 5.8 (fechar com Escape e overlay click)
 - [x] Strong params: incluir `work_date`
 - [x] Spec: lançar task_item via modal atualiza histórico e totalizadores
@@ -197,7 +197,7 @@ end
 - Partial `_modal_form.html.erb` criado para re-renderizar modal em caso de erro de validação via Turbo Stream
 - Partial `_list.html.erb` exibe histórico com data, horários, horas e status badge
 - `create` em caso de sucesso: update do histórico no modal + totalizadores; em caso de erro: replace do modal completo com erros
-- Dashboard `_task_row.html.erb`: link com `data-turbo-frame="modal"` + onclick para clicar em qualquer parte da linha
+- Dashboard `_task_row.html.erb`: botão "Lançar" (azul, com ícone +) por linha; `link_to` com `data-turbo-frame="modal"` — 1 clique abre o modal. Abordagem de linha clicável via Stimulus `row-link` descartada (comportamento inconsistente com Turbo Frame)
 - `modal_controller.js` reutilizado sem alterações (fechar via Escape e overlay click já funcionavam)
 - Factory `:task_item` atualizada com `work_date { Date.current }`
 - Specs novos: GET #new (autenticação, template, work_date padrão, ordenação), turbo_stream create (task-items-list target), work_date params
@@ -210,6 +210,9 @@ end
 - `app/views/task_items/new.html.erb` — nova view do modal
 - `app/views/task_items/_list.html.erb` — novo partial do histórico
 - `app/views/task_items/_modal_form.html.erb` — novo partial para re-render em erro
-- `app/views/dashboard/_task_row.html.erb` — linhas clicáveis
+- `app/views/dashboard/_task_row.html.erb` — botão "Lançar" por linha
+- `app/views/dashboard/index.html.erb` — coluna de ação adicionada no thead
+- `app/javascript/controllers/row_link_controller.js` — criado (não usado na solução final; mantido para uso futuro)
+- `app/javascript/controllers/task_item_hours_controller.js` — cálculo automático de horas no modal
 - `spec/factories/task_items.rb` — work_date adicionado
 - `spec/controllers/task_items_controller_spec.rb` — specs GET #new e work_date

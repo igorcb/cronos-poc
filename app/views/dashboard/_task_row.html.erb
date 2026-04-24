@@ -1,19 +1,18 @@
-<tr class="hover:bg-gray-700 transition-colors cursor-pointer"
-    data-controller="row-link"
-    data-row-link-url-value="<%= new_task_task_item_path(task) %>"
-    data-row-link-frame-value="modal"
-    data-action="click->row-link#navigate keydown.enter->row-link#navigate"
-    tabindex="0"
-    role="row"
-    aria-label="Lançar horas para <%= task.display_name %>">
+<tr class="hover:bg-gray-700 transition-colors">
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.start_date&.strftime("%d/%m/%Y") %></td>
-  <td class="px-4 py-3 text-sm text-white font-medium">
-    <%= link_to task.display_name, new_task_task_item_path(task),
-                data: { turbo_frame: "modal" },
-                class: "hover:text-blue-400 transition" %>
-  </td>
+  <td class="px-4 py-3 text-sm text-white font-medium"><%= task.display_name %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.company&.name %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.project&.name %></td>
   <td class="px-4 py-3"><%= render StatusBadgeComponent.new(status: task.status.to_s) %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.estimated_hours_hm %></td>
+  <td class="px-4 py-3 text-right">
+    <%= link_to new_task_task_item_path(task),
+                data: { turbo_frame: "modal" },
+                class: "inline-flex items-center justify-center w-8 h-8 bg-blue-600 hover:bg-blue-500 text-white rounded transition",
+                aria: { label: "Lançar horas para #{task.display_name}" } do %>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    <% end %>
+  </td>
 </tr>
