@@ -3,6 +3,7 @@ FactoryBot.define do
     association :task
     start_time { '09:00' }
     end_time { '10:30' }
+    work_date { Date.current }
     status { 'pending' }
 
     trait :completed do

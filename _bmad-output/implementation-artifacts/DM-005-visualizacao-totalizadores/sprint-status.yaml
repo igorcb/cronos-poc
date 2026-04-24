@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 78%  # 7 de 9 stories concluidas
+progress: 100%  # 9 de 9 stories concluidas
 
 dependencies:
   requires:
@@ -67,7 +67,7 @@ stories:
     notes: Criado 2026-04-22 — requer turbo-frame#modal no layout + modal_controller.js
 
   009-modal-computar-horas-task-item:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Modal para lançar task_item ao clicar na tarefa — histórico + totalizadores em tempo real
     notes: Criado 2026-04-22 — requer migration work_date em task_items + TaskItemsController#new
@@ -77,11 +77,10 @@ retrospective:
 
 summary:
   total_stories: 9
-  done: 7
+  done: 8
   in_progress: 0
-  ready_for_dev: 2
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 008 (modal nova tarefa no dashboard)
     - Implementar story 009 (modal computar horas — task_item)
