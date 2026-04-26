@@ -25,5 +25,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
+  get "dashboard/refresh", to: "dashboard_events#refresh", as: :dashboard_refresh
+  get "dashboard/events",  to: "dashboard_events#events",  as: :dashboard_events
   root "dashboard#index"
 end

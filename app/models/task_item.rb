@@ -67,8 +67,7 @@ class TaskItem < ApplicationRecord
   # Callback: sinaliza que os totalizadores precisam ser atualizados.
   # A entrega do Turbo Stream é responsabilidade do TaskItemsController.
   def notify_totals_changed
-    # Hook observável — o controller responde com Turbo Stream após commit.
-    # Mantido no modelo para garantir execução somente após persistência confirmada.
+    # Hook observável — atualização via SSE detecta mudança pelo fingerprint do banco
   end
 
   def set_work_date_default
