@@ -87,6 +87,68 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
       end
     end
 
+    # Story 5.11: Botão entregar task — renderização por status
+    context "when task has status completed" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_completed) do
+        create(:task, :completed, company: company, project: project,
+               start_date: Date.current)
+      end
+
+      before { get root_path }
+
+      it "exibe botão verde de entregar (button_to deliver_task_path)" do
+        expect(response.body).to include("task_row_#{task_completed.id}")
+        expect(response.body).to include("/tasks/#{task_completed.id}/deliver")
+        expect(response.body).to include("bg-green-600")
+      end
+
+      it "exibe id correto na linha da task" do
+        expect(response.body).to include("task_row_#{task_completed.id}")
+      end
+    end
+
+    context "when task has status pending" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_pending) do
+        create(:task, :pending, company: company, project: project,
+               start_date: Date.current)
+      end
+
+      before { get root_path }
+
+      it "não exibe button_to de entregar para task pending" do
+        expect(response.body).not_to include("/tasks/#{task_pending.id}/deliver")
+      end
+
+      it "exibe span desabilitado com role=button e aria-disabled" do
+        expect(response.body).to include('role="button"')
+        expect(response.body).to include('aria-disabled="true"')
+        expect(response.body).to include("bg-gray-700")
+      end
+    end
+
+    context "when task has status delivered" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_delivered) do
+        create(:task, :delivered, company: company, project: project,
+               start_date: Date.current, delivery_date: Date.current)
+      end
+
+      before { get root_path }
+
+      it "não exibe button_to de entregar para task delivered" do
+        expect(response.body).not_to include("/tasks/#{task_delivered.id}/deliver")
+      end
+
+      it "exibe span desabilitado com aria-disabled" do
+        expect(response.body).to include('aria-disabled="true"')
+      end
+    end
+
     # AC2: NÃO exibe tarefas de outros meses
     context "when task is from previous month" do
       let(:company) { create(:company) }
