@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :require_authentication
-  before_action :set_task, only: [ :edit, :update, :destroy ]
+  before_action :set_task, only: [ :edit, :update, :destroy, :deliver ]
 
   def index
     @tasks = Task
@@ -84,6 +84,20 @@ class TasksController < ApplicationController
     else
       @companies = Company.active.order(:name)
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def deliver
+    unless @task.completed?
+      head :unprocessable_entity
+      return
+    end
+
+    @task.update!(status: "delivered")
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.remove("task_row_#{@task.id}")
+      end
     end
   end
 

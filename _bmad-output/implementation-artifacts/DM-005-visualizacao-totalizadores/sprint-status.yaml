@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 90%  # 9 de 10 stories concluidas
+progress: 77%  # 10 de 13 stories concluidas
 
 dependencies:
   requires:
@@ -73,27 +73,40 @@ stories:
     notes: Criado 2026-04-22 — requer migration work_date em task_items + TaskItemsController#new
 
   010-expandir-kpis-dashboard-6-metricas:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Expandir dashboard de 3 para 6 KPIs globais — qtde tasks mês, qtde tasks hoje, valor horas dia
-    notes: Criado 2026-04-24 — adicionar 3 novos cards ao grid; KPIs não afetados por filtros
+    notes: Implementado — PR #90 mergeado em 2026-04-26
 
   011-botao-entregar-task-no-dashboard:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Botão check ao lado do relógio — marcar task como delivered via PATCH Turbo Stream; habilitado só quando completed
-    notes: Criado 2026-04-24 — action deliver no TasksController + remoção da linha via Turbo Stream
+    notes: Implementado 2026-04-26 — action deliver no TasksController + remoção da linha via Turbo Stream
+
+  012-remover-blur-overlay-modal:
+    status: ready-for-dev
+    priority: medium
+    description: Remover backdrop-blur-sm dos modais — tela de trás visível com escurecimento bg-black/80
+    notes: Criado 2026-04-26 — remoção cirúrgica em tasks/new.html.erb e task_items/_modal_form.html.erb
+
+  013-exibir-horas-realizadas-ao-lado-do-estimado:
+    status: ready-for-dev
+    priority: medium
+    description: Exibir horas realizadas ao lado do estimado no dashboard — formato "HH:MM / HH:MM"
+    notes: Criado 2026-04-26 — método total_hours_hm no model + ajuste em _task_row.html.erb
 
 retrospective:
   status: optional
 
 summary:
-  total_stories: 11
-  done: 9
+  total_stories: 13
+  done: 10
   in_progress: 0
-  ready_for_dev: 2
+  ready_for_dev: 3
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 010 (expandir KPIs dashboard — 6 métricas globais)
     - Implementar story 011 (botão entregar task no dashboard)
+    - Implementar story 012 (remover blur dos modais)
+    - Implementar story 013 (horas realizadas ao lado do estimado)
