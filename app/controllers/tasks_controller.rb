@@ -41,15 +41,21 @@ class TasksController < ApplicationController
 
     if @task.save
       if request.headers["Turbo-Frame"] == "modal"
-        daily_hours   = calculate_dashboard_daily_hours
-        monthly_hours = calculate_dashboard_monthly_hours
-        monthly_value = calculate_dashboard_monthly_value
+        daily_hours        = calculate_dashboard_daily_hours
+        monthly_hours      = calculate_dashboard_monthly_hours
+        monthly_value      = calculate_dashboard_monthly_value
+        daily_task_count   = calculate_dashboard_daily_task_count
+        monthly_task_count = calculate_dashboard_monthly_task_count
+        daily_value        = calculate_dashboard_daily_value
         render turbo_stream: [
           turbo_stream.update("modal", ""),
           turbo_stream.prepend("tasks-list", partial: "dashboard/task_row", locals: { task: @task }),
-          turbo_stream.replace("dashboard_daily_hours", partial: "dashboard/daily_hours", locals: { daily_hours: daily_hours }),
-          turbo_stream.replace("dashboard_monthly_hours", partial: "dashboard/monthly_hours", locals: { monthly_hours: monthly_hours }),
-          turbo_stream.replace("dashboard_monthly_value", partial: "dashboard/monthly_value", locals: { monthly_value: monthly_value })
+          turbo_stream.replace("dashboard_daily_hours",        partial: "dashboard/daily_hours",        locals: { daily_hours: daily_hours }),
+          turbo_stream.replace("dashboard_monthly_hours",      partial: "dashboard/monthly_hours",      locals: { monthly_hours: monthly_hours }),
+          turbo_stream.replace("dashboard_monthly_value",      partial: "dashboard/monthly_value",      locals: { monthly_value: monthly_value }),
+          turbo_stream.replace("dashboard_daily_task_count",   partial: "dashboard/daily_task_count",   locals: { daily_task_count: daily_task_count }),
+          turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: monthly_task_count }),
+          turbo_stream.replace("dashboard_daily_value",        partial: "dashboard/daily_value",        locals: { daily_value: daily_value })
         ]
       else
         redirect_to tasks_path, notice: "Tarefa criada com sucesso"
@@ -167,6 +173,26 @@ class TasksController < ApplicationController
       .joins(tasks: :task_items)
       .where(tasks: { start_date: Date.current.all_month })
       .sum("task_items.hours_worked * companies.hourly_rate")
+  end
+
+  def calculate_dashboard_daily_task_count
+    Task.joins(:task_items)
+        .where(task_items: { work_date: Date.current })
+        .distinct
+        .count
+  end
+
+  def calculate_dashboard_monthly_task_count
+    Task.joins(:task_items)
+        .where(task_items: { work_date: Date.current.all_month })
+        .distinct
+        .count
+  end
+
+  def calculate_dashboard_daily_value
+    TaskItem.joins(task: :company)
+            .where(work_date: Date.current)
+            .sum("task_items.hours_worked * companies.hourly_rate")
   end
 
   def task_params

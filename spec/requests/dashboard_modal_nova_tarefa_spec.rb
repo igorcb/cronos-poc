@@ -141,6 +141,21 @@ RSpec.describe "Dashboard Modal Nova Tarefa", type: :request do
       post tasks_path, params: valid_params, headers: { "Turbo-Frame" => "modal" }
       expect(response.body).to include('target="dashboard_monthly_value"')
     end
+
+    it "Story5.10: responde com turbo-stream para atualizar tasks hoje" do
+      post tasks_path, params: valid_params, headers: { "Turbo-Frame" => "modal" }
+      expect(response.body).to include('target="dashboard_daily_task_count"')
+    end
+
+    it "Story5.10: responde com turbo-stream para atualizar tasks mês" do
+      post tasks_path, params: valid_params, headers: { "Turbo-Frame" => "modal" }
+      expect(response.body).to include('target="dashboard_monthly_task_count"')
+    end
+
+    it "Story5.10: responde com turbo-stream para atualizar valor hoje" do
+      post tasks_path, params: valid_params, headers: { "Turbo-Frame" => "modal" }
+      expect(response.body).to include('target="dashboard_daily_value"')
+    end
   end
 
   # AC4: Validação — modal permanece aberto com erros
@@ -190,6 +205,21 @@ RSpec.describe "Dashboard Modal Nova Tarefa", type: :request do
     it "HIGH-1: exibe card Valor Mês com id turbo stream" do
       get root_path
       expect(response.body).to include('id="dashboard_monthly_value"')
+    end
+
+    it "Story5.10: exibe card Tasks Hoje com id turbo stream" do
+      get root_path
+      expect(response.body).to include('id="dashboard_daily_task_count"')
+    end
+
+    it "Story5.10: exibe card Tasks Mês com id turbo stream" do
+      get root_path
+      expect(response.body).to include('id="dashboard_monthly_task_count"')
+    end
+
+    it "Story5.10: exibe card Valor Hoje com id turbo stream" do
+      get root_path
+      expect(response.body).to include('id="dashboard_daily_value"')
     end
   end
 end
