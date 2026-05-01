@@ -25,6 +25,7 @@ class TaskItem < ApplicationRecord
   after_save :update_task_status
   after_destroy :update_task_status
   after_commit :notify_totals_changed
+  after_commit :broadcast_dashboard_update
 
   # SCOPES
   scope :by_task, ->(task_id) { where(task_id:) }
@@ -64,10 +65,11 @@ class TaskItem < ApplicationRecord
     task&.recalculate_validated_hours
   end
 
-  # Callback: sinaliza que os totalizadores precisam ser atualizados.
-  # A entrega do Turbo Stream é responsabilidade do TaskItemsController.
   def notify_totals_changed
-    # Hook observável — atualização via SSE detecta mudança pelo fingerprint do banco
+  end
+
+  def broadcast_dashboard_update
+    DashboardBroadcastJob.perform_later
   end
 
   def set_work_date_default
