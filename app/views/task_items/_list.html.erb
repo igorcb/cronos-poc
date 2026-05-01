@@ -8,7 +8,21 @@
             <span><%= item.start_time&.strftime("%H:%M") %> – <%= item.end_time&.strftime("%H:%M") %></span>
             <span class="text-blue-400 font-medium"><%= hours_to_hm(item.hours_worked) %></span>
           </div>
-          <%= render StatusBadgeComponent.new(status: item.status.to_s) %>
+          <div class="flex items-center gap-2">
+            <%= render StatusBadgeComponent.new(status: item.status.to_s) %>
+            <button type="button"
+                    aria-label="Editar lançamento"
+                    data-edit-start="<%= item.start_time&.strftime("%H:%M") %>"
+                    data-edit-end="<%= item.end_time&.strftime("%H:%M") %>"
+                    data-edit-date="<%= item.work_date %>"
+                    data-edit-status="<%= item.status %>"
+                    data-edit-url="<%= task_task_item_path(item.task, item) %>"
+                    class="inline-flex items-center justify-center w-6 h-6 bg-gray-600 hover:bg-gray-500 text-white rounded transition">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </li>
     <% end %>

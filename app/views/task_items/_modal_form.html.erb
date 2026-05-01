@@ -91,6 +91,33 @@
         </div>
       </div>
 
+      <script>
+        (function() {
+          var modal = document.querySelector('[data-controller~="modal"]');
+          if (!modal) return;
+          modal.addEventListener('click', function(e) {
+            var btn = e.target.closest('button[data-edit-start]');
+            if (!btn) return;
+            var form = modal.querySelector('form');
+            if (!form) return;
+            form.querySelector("input[name$='[start_time]']").value = btn.dataset.editStart;
+            form.querySelector("input[name$='[end_time]']").value   = btn.dataset.editEnd;
+            form.querySelector("input[name$='[work_date]']").value  = btn.dataset.editDate;
+            form.querySelector("select[name$='[status]']").value    = btn.dataset.editStatus;
+            form.action = btn.dataset.editUrl;
+            var old = form.querySelector("input[name='_method']");
+            if (old) old.remove();
+            var m = document.createElement('input');
+            m.type = 'hidden'; m.name = '_method'; m.value = 'patch';
+            form.prepend(m);
+            var sub = form.querySelector("[type='submit']");
+            if (sub) sub.value = 'Salvar Alterações';
+            form.querySelector("input[name$='[start_time]']").dispatchEvent(new Event('change'));
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          });
+        })();
+      </script>
+
       <!-- Footer com botão Fechar -->
       <div class="flex justify-end p-4 border-t border-gray-700">
         <button type="button"
