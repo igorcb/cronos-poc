@@ -1,7 +1,5 @@
-<div class="space-y-6"
-     data-controller="dashboard-polling"
-     data-dashboard-polling-url-value="<%= dashboard_refresh_path %>"
-     data-dashboard-polling-events-url-value="<%= dashboard_events_path %>">
+<%= turbo_stream_from "dashboard" %>
+<div class="space-y-6">
   <!-- Welcome Section -->
   <section aria-labelledby="dashboard-heading">
     <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
@@ -18,11 +16,11 @@
   <section aria-labelledby="stats-heading">
     <h2 id="stats-heading" class="sr-only">Resumo de métricas</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <%= render "dashboard/daily_hours",        daily_hours: @daily_hours %>
+      <%= render "dashboard/monthly_task_count", monthly_task_count: @monthly_task_count %>
       <%= render "dashboard/monthly_hours",      monthly_hours: @monthly_hours %>
       <%= render "dashboard/monthly_value",      monthly_value: @monthly_value %>
       <%= render "dashboard/daily_task_count",   daily_task_count: @daily_task_count %>
-      <%= render "dashboard/monthly_task_count", monthly_task_count: @monthly_task_count %>
+      <%= render "dashboard/daily_hours",        daily_hours: @daily_hours %>
       <%= render "dashboard/daily_value",        daily_value: @daily_value %>
     </div>
   </section>

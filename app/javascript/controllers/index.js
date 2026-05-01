@@ -28,5 +28,5 @@ application.register("row-link", RowLinkController)
 import TaskItemHoursController from "./task_item_hours_controller"
 application.register("task-item-hours", TaskItemHoursController)
 
-import DashboardPollingController from "./dashboard_polling_controller"
-application.register("dashboard-polling", DashboardPollingController)
+import TaskItemEditController from "./task_item_edit_controller"
+application.register("task-item-edit", TaskItemEditController)
