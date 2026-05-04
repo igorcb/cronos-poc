@@ -7,7 +7,7 @@
 domain: DM-001
 domain_name: Autenticacao & Infraestrutura
 domain_type: Transversal / Tecnico
-status: in-progress
+status: done
 progress: 100%  # 11 de 11 stories concluidas
 
 stories:
@@ -85,5 +85,4 @@ summary:
   ready_for_dev: 0
   backlog: 0
   blockers: []
-  next_actions:
-    - Implementar story 011 (alterar senha — página Minha Conta)
+  next_actions: []

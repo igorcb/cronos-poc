@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 82%  # 14 de 17 stories concluidas
+progress: 88%  # 15 de 17 stories concluidas
 
 dependencies:
   requires:
@@ -79,10 +79,10 @@ stories:
     notes: PR #90 mergeado
 
   011-botao-entregar-task-no-dashboard:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Botão check ao lado do relógio — marcar task como delivered via PATCH Turbo Stream; habilitado só quando completed
-    notes: Criado 2026-04-24 — action deliver no TasksController + remoção da linha via Turbo Stream
+    notes: PR #98 mergeado em 2026-05-04
 
   012-remover-blur-overlay-modal:
     status: ready-for-dev
@@ -125,12 +125,11 @@ retrospective:
 
 summary:
   total_stories: 17
-  done: 14
+  done: 15
   in_progress: 0
-  ready_for_dev: 3
+  ready_for_dev: 2
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 011 (botão entregar task no dashboard)
     - Implementar story 012 (remover blur dos modais)
     - Implementar story 013 (horas realizadas ao lado do estimado)
