@@ -57,8 +57,8 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
         expect(response.body).to include("Status")
       end
 
-      it "AC3: exibe coluna Estimado" do
-        expect(response.body).to include("Estimado")
+      it "AC3: exibe coluna Est / Real" do
+        expect(response.body).to include("Est / Real")
       end
 
       # AC4: Coluna Ações não aparece no dashboard
@@ -205,6 +205,51 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
         pos_newer = response.body.index("Tarefa Mais Recente")
         pos_older = response.body.index("Tarefa Mais Antiga")
         expect(pos_newer).to be < pos_older
+      end
+    end
+
+    # Story 5.13: Exibir Horas Realizadas ao Lado do Estimado
+    context "when task has task_items with hours worked (AC1, AC2)" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_with_hours) do
+        create(:task, company: company, project: project, start_date: Date.current,
+               estimated_hours_hm: "04:00")
+      end
+      let!(:task_item) do
+        create(:task_item, task: task_with_hours, start_time: "09:00", end_time: "11:30")
+      end
+
+      before { get root_path }
+
+      it "AC1: exibe separador / entre estimado e realizado" do
+        expect(response.body).to include('text-gray-500 mx-1">/</span>')
+      end
+
+      it "AC2: exibe horas realizadas em formato HH:MM usando total_hours_hm" do
+        expect(response.body).to include("02:30")
+      end
+
+      it "AC1: exibe horas estimadas fixas no formato HH:MM" do
+        expect(response.body).to include('class="text-gray-300">04:00</span>')
+      end
+
+      it "M1: exibe horas realizadas com classe text-green-400 quando total_hours > 0" do
+        expect(response.body).to include('class="text-green-400">02:30</span>')
+      end
+    end
+
+    context "when task has no task_items (AC3)" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_no_hours) do
+        create(:task, company: company, project: project, start_date: Date.current)
+      end
+
+      before { get root_path }
+
+      it "AC3: exibe 00:00 com classe text-gray-500 quando não há horas lançadas" do
+        expect(response.body).to include('class="text-gray-500">00:00</span>')
       end
     end
 

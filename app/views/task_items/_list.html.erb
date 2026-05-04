@@ -27,6 +27,10 @@
       </li>
     <% end %>
   </ul>
+  <div class="flex justify-end items-center mt-3 pt-3 border-t border-gray-700">
+    <span class="text-gray-400 text-sm mr-2">Total:</span>
+    <span class="text-blue-400 font-semibold text-sm"><%= minutes_to_hm((task_items.sum { |i| ((i.end_time - i.start_time) / 60).floor })) %></span>
+  </div>
 <% else %>
   <p class="text-gray-500 text-sm italic" role="status">Nenhum lançamento ainda</p>
 <% end %>

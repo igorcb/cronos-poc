@@ -294,11 +294,40 @@ RSpec.describe Task, type: :model do
     end
 
     it "sums hours_worked from all task_items" do
-      create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
-      create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
-      create(:task_item, task: task, start_time: "16:00", end_time: "18:30", hours_worked: 2.5)
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00")
+      create(:task_item, task: task, start_time: "16:00", end_time: "18:30")
 
       expect(task.total_hours).to eq(6.0)
+    end
+  end
+
+  describe "#total_hours_hm" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "returns '00:00' when no task_items exist" do
+      expect(task.total_hours_hm).to eq("00:00")
+    end
+
+    it "returns formatted HH:MM for 2.5 hours worked" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "11:30")
+      task.reload
+      expect(task.total_hours_hm).to eq("02:30")
+    end
+
+    it "returns formatted HH:MM for 1.0 hour worked" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      task.reload
+      expect(task.total_hours_hm).to eq("01:00")
+    end
+
+    it "returns formatted HH:MM for multiple task_items summed" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00")
+      task.reload
+      expect(task.total_hours_hm).to eq("03:30")
     end
   end
 
@@ -308,8 +337,8 @@ RSpec.describe Task, type: :model do
     let(:task) { create(:task, company: company, project: project) }
 
     it "calculates total_hours * hourly_rate" do
-      create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
-      create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00")
 
       expect(task.calculated_value).to eq(350.0) # 3.5 hours * 100
     end

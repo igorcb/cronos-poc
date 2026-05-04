@@ -77,6 +77,10 @@ class Task < ApplicationRecord
     task_items.sum(:hours_worked)
   end
 
+  def total_hours_hm
+    decimal_to_hm(total_hours)
+  end
+
   def calculated_value
     return 0 unless company&.hourly_rate
 
@@ -148,15 +152,13 @@ class Task < ApplicationRecord
   end
 
   def decimal_to_hm(decimal)
-    return "00:00" unless decimal.present?
+    return "00:00" if decimal.nil? || decimal.to_f <= 0
 
     total_minutes = (decimal.to_f * 60).floor
     h = total_minutes / 60
     m = total_minutes % 60
     sprintf("%02d:%02d", h, m)
   end
-
-  private
 
   def project_must_belong_to_company
     return unless project && company
