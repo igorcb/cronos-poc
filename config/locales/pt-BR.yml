@@ -17,6 +17,8 @@ pt-BR:
       invalid: "não é válido"
       not_a_number: "não é um número"
       greater_than: "deve ser maior que %{count}"
+      too_short: "é muito curto (mínimo %{count} caracteres)"
+      confirmation: "não é igual a %{attribute}"
 
   task:
     status:
@@ -39,6 +41,7 @@ pt-BR:
       user:
         email: Email
         password: Senha
+        password_confirmation: Confirmação de senha
     errors:
       models:
         company:

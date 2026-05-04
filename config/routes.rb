@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resource :session
+  resource :profile, only: [ :show, :update ]
   resources :passwords, param: :token
   resources :companies, only: [ :index, :new, :create, :edit, :update, :destroy ]
   resources :tasks, only: [ :index, :new, :create, :edit, :update, :destroy ] do

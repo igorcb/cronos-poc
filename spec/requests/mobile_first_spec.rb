@@ -201,4 +201,25 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
       expect(response.body).to include("min-h-[44px] bg-red-600")
     end
   end
+
+  # Story 1.11: Página de perfil — responsividade mobile-first
+  describe "GET /profile" do
+    before { sign_in }
+
+    it "renders wrapper com mobile-first (w-full sm:max-w-lg sm:mx-auto)" do
+      get profile_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("w-full sm:max-w-lg sm:mx-auto")
+    end
+
+    it "renders campos de senha com min-h-[44px]" do
+      get profile_path
+      expect(response.body).to include("min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600")
+    end
+
+    it "renders botão submit com min-h-[44px]" do
+      get profile_path
+      expect(response.body).to include("min-h-[44px] cursor-pointer")
+    end
+  end
 end

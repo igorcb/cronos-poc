@@ -8,7 +8,7 @@ domain: DM-001
 domain_name: Autenticacao & Infraestrutura
 domain_type: Transversal / Tecnico
 status: in-progress
-progress: 91%  # 10 de 11 stories concluidas
+progress: 100%  # 11 de 11 stories concluidas
 
 stories:
   001-inicializar-projeto-rails-com-starter-template:
@@ -69,7 +69,7 @@ stories:
     notes: Padrão aprovado em companies/_form — aplicar nos 2 formulários restantes
 
   011-alterar-senha-perfil-usuario:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Página "Minha Conta" no menu — alterar senha sem email, sem senha atual, nova senha + confirmação
     notes: Criado 2026-05-04 — ProfilesController + view + link no menu desktop/mobile
@@ -80,9 +80,9 @@ retrospective:
 
 summary:
   total_stories: 11
-  done: 10
+  done: 11
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
   next_actions:

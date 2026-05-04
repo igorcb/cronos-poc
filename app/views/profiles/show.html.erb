@@ -1,0 +1,51 @@
+<% content_for :title, "Minha Conta — Cronos POC" %>
+
+<div class="w-full sm:max-w-lg sm:mx-auto">
+  <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
+    <h1 class="text-2xl font-bold text-white mb-2">Minha Conta</h1>
+    <p class="text-sm text-gray-400 mb-6"><%= Current.user.email %></p>
+
+    <h2 class="text-lg font-semibold text-gray-200 mb-4">Alterar Senha</h2>
+
+    <%= form_with url: profile_path, method: :patch, html: { novalidate: true } do |f| %>
+      <% if Current.user.errors.any? %>
+        <div role="alert" class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md mb-4">
+          <h3 class="font-bold mb-2">
+            <%= pluralize(Current.user.errors.count, "erro encontrado:", "erros encontrados:") %>
+          </h3>
+          <ul class="list-disc list-inside space-y-1">
+            <% Current.user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="space-y-4">
+        <div>
+          <%= f.label :password, "Nova senha", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= f.password_field :password,
+              autocomplete: "new-password",
+              placeholder: "Mínimo 8 caracteres",
+              "aria-describedby": "password-hint",
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+          <p id="password-hint" class="mt-1 text-xs text-gray-400">Mínimo de 8 caracteres</p>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, "Confirmar nova senha", class: "block text-sm font-medium text-gray-300 mb-1" %>
+          <%= f.password_field :password_confirmation,
+              autocomplete: "new-password",
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <%= f.submit "Alterar senha",
+              class: "w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-base font-semibold transition min-h-[44px] cursor-pointer" %>
+          <%= link_to "Cancelar", root_path,
+              class: "bg-gray-600 hover:bg-gray-500 text-white px-6 py-2 rounded-md text-sm font-medium transition min-h-[44px] inline-flex items-center justify-center" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

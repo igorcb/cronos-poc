@@ -382,5 +382,33 @@ RSpec.describe "Accessibility WCAG Level A", type: :request do
         expect(response.body).to include('id="projects-heading"')
       end
     end
+
+    # Story 1.11: Página de perfil — acessibilidade
+    describe "GET /profile (minha conta)" do
+      before { sign_in }
+
+      it "tem h1 semântico com texto Minha Conta" do
+        get profile_path
+        expect(response.body).to include("<h1")
+        expect(response.body).to include("Minha Conta")
+      end
+
+      it "tem labels associados aos campos de senha" do
+        get profile_path
+        expect(response.body).to include('for="password"')
+        expect(response.body).to include('for="password_confirmation"')
+      end
+
+      it "tem aria-describedby no campo nova senha" do
+        get profile_path
+        expect(response.body).to include('aria-describedby="password-hint"')
+        expect(response.body).to include('id="password-hint"')
+      end
+
+      it "tem role=alert no bloco de erros quando há erros" do
+        patch profile_path, params: { password: "short", password_confirmation: "short" }
+        expect(response.body).to include('role="alert"')
+      end
+    end
   end
 end
