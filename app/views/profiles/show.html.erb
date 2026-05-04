@@ -5,7 +5,7 @@
     <h1 class="text-2xl font-bold text-white mb-2">Minha Conta</h1>
     <p class="text-sm text-gray-400 mb-6"><%= Current.user.email %></p>
 
-    <h2 class="text-lg font-semibold text-gray-200 mb-4">Alterar Senha</h2>
+    <h2 class="text-lg font-semibold text-white border-t border-gray-600 pt-4 mb-4">Alterar Senha</h2>
 
     <%= form_with url: profile_path, method: :patch, html: { novalidate: true } do |f| %>
       <% if Current.user.errors.any? %>
