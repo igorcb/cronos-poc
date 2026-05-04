@@ -5,25 +5,33 @@ RSpec.describe 'CreateProjects migration', type: :migration do
 
   describe 'rollback' do
     it 'successfully rolls back the migration' do
-      # Skip if tasks table exists (due to foreign key dependency)
-      skip "Cannot rollback projects when tasks table exists with foreign key" if ActiveRecord::Base.connection.table_exists?(:tasks)
+      conn = ActiveRecord::Base.connection
 
-      # Simulate migration up
-      migration.create_table :projects, if_not_exists: true do |t|
-        t.string :name, null: false
-        t.references :company, null: false, foreign_key: true, if_not_exists: true
-        t.timestamps
+      # Temporarily remove FK from tasks so we can drop projects
+      tasks_fk = conn.foreign_keys(:tasks).find { |fk| fk.to_table == 'projects' }
+      conn.remove_foreign_key(:tasks, :projects) if tasks_fk
+
+      begin
+        expect(conn.table_exists?(:projects)).to be true
+
+        conn.drop_table :projects, if_exists: true
+
+        expect(conn.table_exists?(:projects)).to be false
+      ensure
+        # Restore projects table if it was dropped
+        unless conn.table_exists?(:projects)
+          conn.create_table :projects do |t|
+            t.string :name, null: false
+            t.references :company, null: false, foreign_key: true
+            t.timestamps
+          end
+        end
+
+        # Restore FK on tasks if it was removed
+        if tasks_fk && conn.foreign_keys(:tasks).none? { |fk| fk.to_table == 'projects' }
+          conn.add_foreign_key :tasks, :projects
+        end
       end
-      migration.add_index :projects, :company_id, if_not_exists: true
-
-      # Verify table exists
-      expect(ActiveRecord::Base.connection.table_exists?(:projects)).to be true
-
-      # Rollback
-      migration.drop_table :projects, if_exists: true
-
-      # Verify table is removed
-      expect(ActiveRecord::Base.connection.table_exists?(:projects)).to be false
     end
   end
 

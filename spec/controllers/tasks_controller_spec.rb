@@ -284,7 +284,7 @@ RSpec.describe TasksController, type: :controller do
       context "AC2 - total geral exibe soma apenas das entradas visíveis" do
         it "daily_total não inclui horas de tasks excluídas pelo filtro de projeto" do
           get :index, params: { project_id: proj1.id }
-          expect(assigns(:daily_total)).to eq(1.0)
+          expect(assigns(:daily_total)).to eq(60)
         end
       end
 
@@ -423,7 +423,7 @@ RSpec.describe TasksController, type: :controller do
       it "retorna apenas horas das tasks da empresa filtrada" do
         get :index, params: { company_id: company1.id }
         expect(assigns(:daily_total)).to be > 0
-        expect(assigns(:daily_total)).to be < 3
+        expect(assigns(:daily_total)).to be < 180
       end
     end
   end

@@ -4,7 +4,10 @@ class CompanyMonthlyTotalComponent < ViewComponent::Base
   end
 
   def formatted_hours(row)
-    "#{sprintf('%.2f', row.total_hours.to_f)} h"
+    total_minutes = row.total_minutes.to_i
+    h = total_minutes / 60
+    m = total_minutes % 60
+    sprintf("%02d:%02d", h, m)
   end
 
   def formatted_value(row)
