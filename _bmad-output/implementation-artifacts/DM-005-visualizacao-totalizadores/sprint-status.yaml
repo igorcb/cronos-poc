@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 88%  # 15 de 17 stories concluidas
+progress: 94%  # 16 de 17 stories concluidas
 
 dependencies:
   requires:
@@ -85,10 +85,10 @@ stories:
     notes: PR #98 mergeado em 2026-05-04
 
   012-remover-blur-overlay-modal:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Remover backdrop-blur-sm dos modais — tela de trás visível com escurecimento bg-black/80
-    notes: Criado 2026-04-26
+    notes: Criado 2026-04-26 — implementado e validado 2026-05-04
 
   013-exibir-horas-realizadas-ao-lado-do-estimado:
     status: ready-for-dev
