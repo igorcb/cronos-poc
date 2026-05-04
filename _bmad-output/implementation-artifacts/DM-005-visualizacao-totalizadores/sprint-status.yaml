@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 90%  # 9 de 10 stories concluidas
+progress: 82%  # 14 de 17 stories concluidas
 
 dependencies:
   requires:
@@ -58,25 +58,25 @@ stories:
     status: done
     priority: low
     description: Remover seção "Ações Rápidas", substituir por ícone + estilo bg-blue-900 p-3
-    notes: Criado 2026-04-22 — mudança cirúrgica em dashboard/index.html.erb
+    notes: PR #86 mergeado
 
   008-modal-nova-tarefa-no-dashboard:
     status: done
     priority: high
-    description: Modal Turbo Frame para criar nova tarefa no dashboard sem reload — lista atualiza via Turbo Stream
-    notes: Criado 2026-04-22 — requer turbo-frame#modal no layout + modal_controller.js
+    description: Modal Turbo Frame para criar nova tarefa no dashboard sem reload
+    notes: PR #87 mergeado
 
   009-modal-computar-horas-task-item:
     status: done
     priority: high
     description: Modal para lançar task_item ao clicar na tarefa — histórico + totalizadores em tempo real
-    notes: Criado 2026-04-22 — requer migration work_date em task_items + TaskItemsController#new
+    notes: PR #88 mergeado
 
   010-expandir-kpis-dashboard-6-metricas:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Expandir dashboard de 3 para 6 KPIs globais — qtde tasks mês, qtde tasks hoje, valor horas dia
-    notes: Criado 2026-04-24 — adicionar 3 novos cards ao grid; KPIs não afetados por filtros
+    notes: PR #90 mergeado
 
   011-botao-entregar-task-no-dashboard:
     status: ready-for-dev
@@ -84,16 +84,53 @@ stories:
     description: Botão check ao lado do relógio — marcar task como delivered via PATCH Turbo Stream; habilitado só quando completed
     notes: Criado 2026-04-24 — action deliver no TasksController + remoção da linha via Turbo Stream
 
+  012-remover-blur-overlay-modal:
+    status: ready-for-dev
+    priority: medium
+    description: Remover backdrop-blur-sm dos modais — tela de trás visível com escurecimento bg-black/80
+    notes: Criado 2026-04-26
+
+  013-exibir-horas-realizadas-ao-lado-do-estimado:
+    status: ready-for-dev
+    priority: medium
+    description: Exibir horas realizadas ao lado do estimado no dashboard — formato "HH:MM / HH:MM"
+    notes: Criado 2026-04-26
+
+  014-migrar-sse-para-actioncable-broadcast:
+    status: done
+    priority: high
+    description: Migrar SSE para ActionCable broadcast — atualização cross-tab em tempo real
+    notes: PR #92 mergeado
+
+  015-corrigir-fuso-horario-brasilia:
+    status: done
+    priority: high
+    description: Corrigir fuso horário para Brasília (UTC-3)
+    notes: PR #93 mergeado
+
+  016-ajustes-visuais-dashboard-badges-kpis-botoes:
+    status: done
+    priority: medium
+    description: Ajustes visuais dashboard — badges, botões e task_row
+    notes: PR #94 mergeado
+
+  017-edicao-task-item-no-modal:
+    status: done
+    priority: high
+    description: Edição de task_item no mesmo formulário modal
+    notes: PR #95 mergeado
+
 retrospective:
   status: optional
 
 summary:
-  total_stories: 11
-  done: 9
+  total_stories: 17
+  done: 14
   in_progress: 0
-  ready_for_dev: 2
+  ready_for_dev: 3
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 010 (expandir KPIs dashboard — 6 métricas globais)
     - Implementar story 011 (botão entregar task no dashboard)
+    - Implementar story 012 (remover blur dos modais)
+    - Implementar story 013 (horas realizadas ao lado do estimado)
