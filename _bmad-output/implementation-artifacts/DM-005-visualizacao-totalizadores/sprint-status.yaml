@@ -125,11 +125,10 @@ retrospective:
 
 summary:
   total_stories: 17
-  done: 15
+  done: 16
   in_progress: 0
-  ready_for_dev: 2
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 012 (remover blur dos modais)
     - Implementar story 013 (horas realizadas ao lado do estimado)
