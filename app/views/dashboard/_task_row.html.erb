@@ -4,7 +4,11 @@
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.company&.name %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.project&.name %></td>
   <td class="px-4 py-3"><%= render StatusBadgeComponent.new(status: task.status.to_s) %></td>
-  <td class="px-4 py-3 text-sm text-gray-300"><%= task.estimated_hours_hm %></td>
+  <td class="px-4 py-3 text-sm text-gray-300">
+    <span class="text-gray-300"><%= task.estimated_hours_hm %></span>
+    <span class="text-gray-500 mx-1">/</span>
+    <span class="<%= task.total_hours > 0 ? 'text-green-400' : 'text-gray-500' %>"><%= task.total_hours_hm %></span>
+  </td>
   <td class="px-4 py-3 flex items-center justify-end gap-1">
     <% if task.delivered? %>
       <span role="button"
