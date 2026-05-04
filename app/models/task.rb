@@ -150,9 +150,10 @@ class Task < ApplicationRecord
   def decimal_to_hm(decimal)
     return "00:00" unless decimal.present?
 
-    hours = decimal.to_i
-    minutes = ((decimal - hours) * 60).round
-    format("%02d:%02d", hours, minutes)
+    total_minutes = (decimal.to_f * 60).floor
+    h = total_minutes / 60
+    m = total_minutes % 60
+    sprintf("%02d:%02d", h, m)
   end
 
   private

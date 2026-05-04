@@ -31,6 +31,11 @@ class TaskItem < ApplicationRecord
   scope :by_task, ->(task_id) { where(task_id:) }
   scope :recent_first, -> { order(created_at: :desc) }
 
+  def self.total_minutes(relation = all)
+    seconds = relation.sum("EXTRACT(EPOCH FROM (end_time - start_time))")
+    (seconds / 60).floor
+  end
+
   private
 
   # Validação: end_time deve ser posterior à start_time
@@ -56,7 +61,7 @@ class TaskItem < ApplicationRecord
     return unless start_time.present? && end_time.present?
 
     duration_in_seconds = (end_time - start_time)
-    self.hours_worked = (duration_in_seconds / 3600.0).round(2)
+    self.hours_worked = (duration_in_seconds / 3600.0).round(4)
   end
 
   # Callback: atualiza status e horas da Task pai

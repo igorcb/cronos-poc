@@ -7,17 +7,17 @@ module DashboardCalculations
   end
 
   def calculate_daily_hours
-    TaskItem.joins(:task).where(tasks: { start_date: Date.current }).sum(:hours_worked)
+    TaskItem.total_minutes(TaskItem.joins(:task).where(tasks: { start_date: Date.current }))
   end
 
   def calculate_monthly_hours
-    TaskItem.joins(:task).where(tasks: { start_date: Date.current.all_month }).sum(:hours_worked)
+    TaskItem.total_minutes(TaskItem.joins(:task).where(tasks: { start_date: Date.current.all_month }))
   end
 
   def calculate_monthly_value
     Company.joins(tasks: :task_items)
            .where(tasks: { start_date: Date.current.all_month })
-           .sum("task_items.hours_worked * companies.hourly_rate")
+           .sum("EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time)) / 3600.0 * companies.hourly_rate")
   end
 
   def calculate_daily_task_count
@@ -31,6 +31,6 @@ module DashboardCalculations
   def calculate_daily_value
     TaskItem.joins(task: :company)
             .where(work_date: Date.current)
-            .sum("task_items.hours_worked * companies.hourly_rate")
+            .sum("EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time)) / 3600.0 * companies.hourly_rate")
   end
 end

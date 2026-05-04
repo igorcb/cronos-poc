@@ -116,7 +116,8 @@ class TasksController < ApplicationController
     else
       Task.where(start_date: Date.current).select(:id)
     end
-    TaskItem.joins(:task).where(tasks: { id: base_ids }).sum(:hours_worked)
+    relation = TaskItem.joins(:task).where(tasks: { id: base_ids })
+    TaskItem.total_minutes(relation)
   end
 
   def calculate_company_totals(filtered_tasks = nil)
@@ -130,7 +131,8 @@ class TasksController < ApplicationController
         "companies.id",
         "companies.name",
         "companies.hourly_rate",
-        "SUM(task_items.hours_worked) as total_hours"
+        "FLOOR(SUM(EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time))) / 60) as total_minutes",
+        "SUM(EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time))) / 3600.0 as total_hours"
       )
       .order("companies.name")
   end
@@ -161,18 +163,18 @@ class TasksController < ApplicationController
   end
 
   def calculate_dashboard_daily_hours
-    TaskItem.joins(:task).where(tasks: { start_date: Date.current }).sum(:hours_worked)
+    TaskItem.total_minutes(TaskItem.joins(:task).where(tasks: { start_date: Date.current }))
   end
 
   def calculate_dashboard_monthly_hours
-    TaskItem.joins(:task).where(tasks: { start_date: Date.current.all_month }).sum(:hours_worked)
+    TaskItem.total_minutes(TaskItem.joins(:task).where(tasks: { start_date: Date.current.all_month }))
   end
 
   def calculate_dashboard_monthly_value
     Company
       .joins(tasks: :task_items)
       .where(tasks: { start_date: Date.current.all_month })
-      .sum("task_items.hours_worked * companies.hourly_rate")
+      .sum("EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time)) / 3600.0 * companies.hourly_rate")
   end
 
   def calculate_dashboard_daily_task_count
@@ -192,7 +194,7 @@ class TasksController < ApplicationController
   def calculate_dashboard_daily_value
     TaskItem.joins(task: :company)
             .where(work_date: Date.current)
-            .sum("task_items.hours_worked * companies.hourly_rate")
+            .sum("EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time)) / 3600.0 * companies.hourly_rate")
   end
 
   def task_params

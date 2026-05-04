@@ -107,10 +107,8 @@ class TaskItemsController < ApplicationController
   end
 
   def calculate_daily_total
-    TaskItem
-      .joins(:task)
-      .where(tasks: { start_date: Date.current })
-      .sum(:hours_worked)
+    relation = TaskItem.joins(:task).where(tasks: { start_date: Date.current })
+    TaskItem.total_minutes(relation)
   end
 
   def calculate_company_totals
@@ -122,7 +120,8 @@ class TaskItemsController < ApplicationController
         "companies.id",
         "companies.name",
         "companies.hourly_rate",
-        "SUM(task_items.hours_worked) as total_hours"
+        "FLOOR(SUM(EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time))) / 60) as total_minutes",
+        "SUM(EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time))) / 3600.0 as total_hours"
       )
       .order("companies.name")
   end
