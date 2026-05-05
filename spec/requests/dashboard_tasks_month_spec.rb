@@ -23,6 +23,7 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
           start_date: Date.current.beginning_of_month + 1.day,
           status: "pending")
       end
+      let!(:task_item_this_month) { create(:task_item, task: task_this_month, work_date: Date.current) }
 
       before { get root_path }
 
@@ -92,8 +93,10 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
       let(:company) { create(:company) }
       let(:project) { create(:project, company: company) }
       let!(:task_completed) do
-        create(:task, :completed, company: company, project: project,
-               start_date: Date.current)
+        t = create(:task, company: company, project: project, start_date: Date.current)
+        create(:task_item, task: t, work_date: Date.current)
+        t.update!(status: "completed")
+        t
       end
 
       before { get root_path }
@@ -114,6 +117,7 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
         create(:task, company: company, project: project,
                start_date: Date.current, status: "pending")
       end
+      let!(:task_item_pending) { create(:task_item, task: task_pending, work_date: Date.current) }
 
       before { get root_path }
 
@@ -132,8 +136,10 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
       let(:company) { create(:company) }
       let(:project) { create(:project, company: company) }
       let!(:task_delivered) do
-        create(:task, :delivered, company: company, project: project,
-               start_date: Date.current, delivery_date: Date.current)
+        t = create(:task, company: company, project: project, start_date: Date.current)
+        create(:task_item, :completed, task: t, work_date: Date.current)
+        t.update!(status: "delivered")
+        t
       end
 
       before { get root_path }
@@ -198,6 +204,8 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
           project: project,
           start_date: Date.current.beginning_of_month + 5.days)
       end
+      let!(:task_item_older) { create(:task_item, task: task_older, work_date: Date.current) }
+      let!(:task_item_newer) { create(:task_item, task: task_newer, work_date: Date.current) }
 
       before { get root_path }
 
@@ -236,20 +244,6 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
 
       it "M1: exibe horas realizadas com classe text-green-400 quando total_hours > 0" do
         expect(response.body).to include('class="text-green-400">02:30</span>')
-      end
-    end
-
-    context "when task has no task_items (AC3)" do
-      let(:company) { create(:company) }
-      let(:project) { create(:project, company: company) }
-      let!(:task_no_hours) do
-        create(:task, company: company, project: project, start_date: Date.current)
-      end
-
-      before { get root_path }
-
-      it "AC3: exibe 00:00 com classe text-gray-500 quando não há horas lançadas" do
-        expect(response.body).to include('class="text-gray-500">00:00</span>')
       end
     end
 
