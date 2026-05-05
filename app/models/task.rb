@@ -67,6 +67,7 @@ class Task < ApplicationRecord
   before_save :convert_estimated_hours_from_hm
   after_save :recalculate_validated_hours
   after_find :convert_estimated_hours_to_hm
+  after_commit :broadcast_dashboard_update
 
   def display_name
     code.present? ? "#{code} - #{name}" : name
@@ -109,6 +110,10 @@ class Task < ApplicationRecord
   end
 
   private
+
+  def broadcast_dashboard_update
+    DashboardBroadcastJob.perform_later
+  end
 
   def estimated_hours_hm_must_be_valid
     if estimated_hours_hm.blank?
