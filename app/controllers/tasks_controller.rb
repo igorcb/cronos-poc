@@ -131,8 +131,8 @@ class TasksController < ApplicationController
         "companies.id",
         "companies.name",
         "companies.hourly_rate",
-        "FLOOR(SUM(EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time))) / 60) as total_minutes",
-        "SUM(EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time))) / 3600.0 as total_hours"
+        "FLOOR(SUM(#{TaskItem::DURATION_SECONDS_SQL_PREFIXED}) / 60) as total_minutes",
+        "SUM(#{TaskItem::DURATION_SECONDS_SQL_PREFIXED}) / 3600.0 as total_hours"
       )
       .order("companies.name")
   end
@@ -174,7 +174,7 @@ class TasksController < ApplicationController
     Company
       .joins(tasks: :task_items)
       .where(tasks: { start_date: Date.current.all_month })
-      .sum("EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time)) / 3600.0 * companies.hourly_rate")
+      .sum("(#{TaskItem::DURATION_SECONDS_SQL_PREFIXED}) / 3600.0 * companies.hourly_rate")
   end
 
   def calculate_dashboard_daily_task_count
@@ -194,7 +194,7 @@ class TasksController < ApplicationController
   def calculate_dashboard_daily_value
     TaskItem.joins(task: :company)
             .where(work_date: Date.current)
-            .sum("EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time)) / 3600.0 * companies.hourly_rate")
+            .sum("(#{TaskItem::DURATION_SECONDS_SQL_PREFIXED}) / 3600.0 * companies.hourly_rate")
   end
 
   def task_params

@@ -49,19 +49,18 @@ RSpec.describe TaskItem, type: :model do
       it "adds error when end_time equals start_time" do
         task_item = build(:task_item, task: task, start_time: '09:00', end_time: '09:00')
         expect(task_item).not_to be_valid
-        expect(task_item.errors[:end_time]).to include("deve ser posterior à hora inicial")
+        expect(task_item.errors[:end_time]).to include("deve ser diferente da hora inicial")
       end
 
-      it "adds error when end_time is before start_time" do
-        task_item = build(:task_item, task: task, start_time: '10:30', end_time: '09:00')
-        expect(task_item).not_to be_valid
-        expect(task_item.errors[:end_time]).to include("deve ser posterior à hora inicial")
+      it "is valid when end_time is before start_time (virada de meia-noite)" do
+        task_item = build(:task_item, task: task, start_time: '22:30', end_time: '00:15')
+        expect(task_item).to be_valid
       end
 
       it "skips validation when times are missing" do
         task_item = build(:task_item, task: task, start_time: nil, end_time: nil)
         task_item.valid?
-        expect(task_item.errors[:end_time]).not_to include("deve ser posterior à hora inicial")
+        expect(task_item.errors[:end_time]).not_to include("deve ser diferente da hora inicial")
       end
     end
 
