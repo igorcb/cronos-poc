@@ -111,13 +111,12 @@ class TasksController < ApplicationController
   end
 
   def calculate_daily_total(filtered_tasks = nil)
-    base_ids = if filtered_tasks
-      filtered_tasks.unscope(:includes).where(start_date: Date.current).select(:id)
+    if filtered_tasks
+      task_ids = filtered_tasks.unscope(:includes).select(:id)
+      TaskItem.total_minutes(TaskItem.where(work_date: Date.current, task_id: task_ids))
     else
-      Task.where(start_date: Date.current).select(:id)
+      TaskItem.total_minutes(TaskItem.where(work_date: Date.current))
     end
-    relation = TaskItem.joins(:task).where(tasks: { id: base_ids })
-    TaskItem.total_minutes(relation)
   end
 
   def calculate_company_totals(filtered_tasks = nil)
@@ -173,7 +172,7 @@ class TasksController < ApplicationController
   def calculate_dashboard_monthly_value
     Company
       .joins(tasks: :task_items)
-      .where(tasks: { start_date: Date.current.all_month })
+      .where(task_items: { work_date: Date.current.all_month })
       .sum("(#{TaskItem::DURATION_SECONDS_SQL_PREFIXED}) / 3600.0 * companies.hourly_rate")
   end
 
