@@ -11,19 +11,23 @@ export default class extends Controller {
 
     const [sh, sm] = startInput.value.split(":").map(Number)
     const [eh, em] = endInput.value.split(":").map(Number)
-    const diffMinutes = (eh * 60 + em) - (sh * 60 + sm)
+    let diffMinutes = (eh * 60 + em) - (sh * 60 + sm)
 
-    if (diffMinutes <= 0) {
+    // virada de meia-noite
+    if (diffMinutes < 0) diffMinutes += 24 * 60
+
+    if (diffMinutes === 0) {
       document.getElementById(this.previewIdValue)?.classList.add("hidden")
       return
     }
 
-    const hours = (diffMinutes / 60).toFixed(2)
+    const hh = Math.floor(diffMinutes / 60).toString().padStart(2, "0")
+    const mm = (diffMinutes % 60).toString().padStart(2, "0")
     const previewEl = document.getElementById(this.previewIdValue)
     const valueEl = document.getElementById(this.valueIdValue)
 
     if (previewEl && valueEl) {
-      valueEl.textContent = `${hours}h`
+      valueEl.textContent = `${hh}:${mm}`
       previewEl.classList.remove("hidden")
     }
   }
