@@ -59,22 +59,20 @@ RSpec.describe TaskCardComponent, type: :component do
     expect(page).to have_text(task.estimated_hours_hm)
   end
 
-  it "displays 0.00 for validated_hours when task has no task_items" do
+  it "displays 00:00 for validated_hours when task has no task_items" do
     task = create(:task, code: "99999")
     task.reload
     render_inline(described_class.new(task: task))
-    # after_save :recalculate_validated_hours sets validated_hours to 0.0 (not nil)
-    # so .present? is truthy and we get "0.00", not "-"
-    expect(page).to have_text("0.00")
+    expect(page).to have_text("00:00")
     expect(page).not_to have_css("td", text: "-", exact_text: true)
   end
 
-  it "displays validated_hours value when task has task_items" do
+  it "displays validated_hours in HH:MM format when task has task_items" do
     task = create(:task)
     create(:task_item, :completed, task: task)
     task.reload
     render_inline(described_class.new(task: task))
-    expect(page).to have_text(number_with_precision(task.validated_hours, precision: 2))
+    expect(page).to have_text(task.validated_hours_hm)
   end
 
   it "displays calculated_value with R$ currency" do

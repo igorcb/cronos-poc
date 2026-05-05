@@ -6,7 +6,7 @@
   <td class="px-4 py-3"><%= render StatusBadgeComponent.new(status: task.status.to_s) %></td>
   <td class="px-4 py-3 text-sm text-gray-300"><%= task.estimated_hours_hm %></td>
   <td class="px-4 py-3 text-sm text-gray-300">
-    <%= task.validated_hours.present? ? number_with_precision(task.validated_hours, precision: 2) : "-" %>
+    <%= task.validated_hours.present? ? task.validated_hours_hm : "-" %>
   </td>
   <td class="px-4 py-3 text-sm text-gray-300">
     <%= task.calculated_value.present? ? number_to_currency(task.calculated_value, unit: "R$", separator: ",", delimiter: ".") : "-" %>

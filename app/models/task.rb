@@ -82,6 +82,10 @@ class Task < ApplicationRecord
     decimal_to_hm(total_hours)
   end
 
+  def validated_hours_hm
+    decimal_to_hm(validated_hours)
+  end
+
   def calculated_value
     return 0 unless company&.hourly_rate
 
