@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :require_authentication
-  before_action :set_task, only: [ :edit, :update, :destroy ]
+  before_action :set_task, only: [ :edit, :update, :destroy, :deliver ]
 
   def index
     @tasks = Task
@@ -84,6 +84,27 @@ class TasksController < ApplicationController
     else
       @companies = Company.active.order(:name)
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def deliver
+    if @task.update(status: "delivered")
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("task_row_#{@task.id}", partial: "dashboard/task_row", locals: { task: @task }),
+            turbo_stream.replace("dashboard_daily_task_count", partial: "dashboard/daily_task_count", locals: { daily_task_count: calculate_dashboard_daily_task_count }),
+            turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: calculate_dashboard_monthly_task_count }),
+            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks })
+          ]
+        end
+        format.html { redirect_to tasks_path, notice: "Tarefa entregue com sucesso" }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream { head :unprocessable_entity }
+        format.html { redirect_to tasks_path, alert: "Não foi possível entregar a tarefa" }
+      end
     end
   end
 
