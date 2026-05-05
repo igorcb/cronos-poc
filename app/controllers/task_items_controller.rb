@@ -17,17 +17,17 @@ class TaskItemsController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           @task_items = @task.task_items.recent_first
-          daily = calculate_daily_total
-          totals = calculate_company_totals
-          monthly_hours = calculate_monthly_hours
-          monthly_value = calculate_monthly_value
           render turbo_stream: [
             turbo_stream.update("task-items-list-#{@task.id}", partial: "task_items/list", locals: { task_items: @task_items }),
-            turbo_stream.replace("daily_total", partial: "tasks/daily_total", locals: { daily_total: daily }),
-            turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: totals }),
-            turbo_stream.replace("dashboard_daily_hours", partial: "dashboard/daily_hours", locals: { daily_hours: daily }),
-            turbo_stream.replace("dashboard_monthly_hours", partial: "dashboard/monthly_hours", locals: { monthly_hours: monthly_hours }),
-            turbo_stream.replace("dashboard_monthly_value", partial: "dashboard/monthly_value", locals: { monthly_value: monthly_value })
+            turbo_stream.replace("daily_total", partial: "tasks/daily_total", locals: { daily_total: calculate_daily_total }),
+            turbo_stream.replace("company_monthly_totals", partial: "tasks/company_monthly_totals", locals: { totals: calculate_company_totals }),
+            turbo_stream.replace("dashboard_daily_hours", partial: "dashboard/daily_hours", locals: { daily_hours: calculate_daily_hours }),
+            turbo_stream.replace("dashboard_monthly_hours", partial: "dashboard/monthly_hours", locals: { monthly_hours: calculate_monthly_hours }),
+            turbo_stream.replace("dashboard_monthly_value", partial: "dashboard/monthly_value", locals: { monthly_value: calculate_monthly_value }),
+            turbo_stream.replace("dashboard_daily_value", partial: "dashboard/daily_value", locals: { daily_value: calculate_daily_value }),
+            turbo_stream.replace("dashboard_daily_task_count", partial: "dashboard/daily_task_count", locals: { daily_task_count: calculate_daily_task_count }),
+            turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: calculate_monthly_task_count }),
+            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks })
           ]
         end
         format.html { redirect_to tasks_path, notice: "Item criado com sucesso" }
