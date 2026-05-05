@@ -107,8 +107,7 @@ class TaskItemsController < ApplicationController
   end
 
   def calculate_daily_total
-    relation = TaskItem.joins(:task).where(tasks: { start_date: Date.current })
-    TaskItem.total_minutes(relation)
+    TaskItem.total_minutes(TaskItem.where(work_date: Date.current))
   end
 
   def calculate_company_totals

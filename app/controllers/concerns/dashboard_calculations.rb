@@ -7,11 +7,11 @@ module DashboardCalculations
   end
 
   def calculate_daily_hours
-    TaskItem.total_minutes(TaskItem.joins(:task).where(tasks: { start_date: Date.current }))
+    TaskItem.total_minutes(TaskItem.where(work_date: Date.current))
   end
 
   def calculate_monthly_hours
-    TaskItem.total_minutes(TaskItem.joins(:task).where(tasks: { start_date: Date.current.all_month }))
+    TaskItem.total_minutes(TaskItem.where(work_date: Date.current.all_month))
   end
 
   def calculate_monthly_value
