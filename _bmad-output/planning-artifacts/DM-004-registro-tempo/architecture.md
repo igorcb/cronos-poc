@@ -2,7 +2,7 @@
 
 **Domínio:** DM-004-registro-tempo
 **Tipo:** Core / Principal
-**Data:** 2026-01-19 (atualizado 2026-03-27)
+**Data:** 2026-01-19 (atualizado 2026-05-05)
 
 ## Visão Geral
 
@@ -157,7 +157,37 @@ end
 
 **Justificativa:** Dados entregues ao cliente são base de faturamento. Modificá-los comprometeria a confiabilidade do sistema — o pilar #1 do produto.
 
-### DA-035: Project Selector Dinâmico
+### DA-035: Exclusão de TaskItem Individual no Modal de Histórico
+
+**Contexto:** Lançamentos duplicados ou incorretos distorcem totais de horas e valores de faturamento. A exclusão deve ser disponível diretamente no modal de histórico, onde o problema é identificado.
+
+**Decisão:** Botão de exclusão (ícone lixeira) por linha do histórico no modal, com confirmação via `data-turbo-confirm`, executando `DELETE /tasks/:task_id/task_items/:id` via Turbo Stream.
+
+**Fluxo de exclusão:**
+```
+Usuário clica lixeira no modal
+  │
+  ├── Turbo confirm: "Tem certeza que deseja remover este lançamento?"
+  │
+  ├── DELETE /tasks/:task_id/task_items/:id
+  │
+  └── TaskItemsController#destroy
+        ├── task_item.destroy
+        │     └── after_destroy: task.recalculate_validated_hours
+        │                         └── validated_hours = total_hours
+        └── Turbo Stream response
+              ├── remove("task_item_#{id}")         — remove linha do histórico
+              ├── replace("task-items-list-#{task_id}") — atualiza lista + Total: HH:MM
+              ├── replace("task_row_#{task_id}")    — atualiza Est/Real no dashboard
+              ├── replace("dashboard_daily_hours")  — atualiza Horas Hoje
+              └── replace("dashboard_monthly_hours")— atualiza Horas Mês
+```
+
+**Restrição:** TaskItem de Task `delivered` não pode ser excluído (validação `task_must_not_be_delivered` — DA-034). O botão de lixeira não é exibido quando `task.delivered?`.
+
+**Justificativa:** Exclusão sem recálculo imediato comprometeria a confiabilidade — pilar #1 do produto. Turbo Stream garante consistência visual sem refresh.
+
+### DA-037: Project Selector Dinâmico
 
 ```
 ┌────────────┐  onChange   ┌──────────────────┐   fetch    ┌─────────────┐
