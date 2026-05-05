@@ -47,8 +47,8 @@ RSpec.describe TasksController, type: :controller do
     end
 
     it "does not include hours from other days in @daily_total" do
-      task_yesterday = create(:task, company: company, project: project, start_date: Date.current - 1)
-      create(:task_item, task: task_yesterday, start_time: "09:00", end_time: "10:30")
+      task = create(:task, company: company, project: project)
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30", work_date: Date.current - 1)
       get :index
       expect(assigns(:daily_total)).to eq(0)
     end

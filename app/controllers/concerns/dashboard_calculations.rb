@@ -2,7 +2,9 @@ module DashboardCalculations
   def monthly_tasks
     Task
       .includes(:company, :project, :task_items)
-      .where(start_date: Date.current.all_month)
+      .joins(:task_items)
+      .where(task_items: { work_date: Date.current.all_month })
+      .distinct
       .order(start_date: :desc, created_at: :desc)
   end
 
@@ -16,7 +18,7 @@ module DashboardCalculations
 
   def calculate_monthly_value
     Company.joins(tasks: :task_items)
-           .where(tasks: { start_date: Date.current.all_month })
+           .where(task_items: { work_date: Date.current.all_month })
            .sum("(#{TaskItem::DURATION_SECONDS_SQL_PREFIXED}) / 3600.0 * companies.hourly_rate")
   end
 
