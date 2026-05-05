@@ -23,7 +23,7 @@ module DashboardCalculations
   end
 
   def calculate_daily_task_count
-    Task.joins(:task_items).where(task_items: { work_date: Date.current }).distinct.count
+    Task.where(start_date: Date.current).count
   end
 
   def calculate_monthly_task_count
