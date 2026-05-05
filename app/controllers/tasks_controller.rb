@@ -1,4 +1,6 @@
 class TasksController < ApplicationController
+  include DashboardCalculations
+
   before_action :require_authentication
   before_action :set_task, only: [ :edit, :update, :destroy, :deliver ]
 
