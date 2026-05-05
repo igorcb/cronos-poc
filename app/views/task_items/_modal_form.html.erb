@@ -84,7 +84,13 @@
 
         <!-- Histórico -->
         <div>
-          <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">Histórico de Horas</h3>
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Histórico de Horas</h3>
+            <% if task_items.any? %>
+              <span class="text-gray-400 text-sm mr-1">Total:</span>
+              <span class="text-blue-400 font-semibold text-sm"><%= minutes_to_hm((task_items.sum { |i| ((i.end_time - i.start_time) / 60).floor })) %></span>
+            <% end %>
+          </div>
           <turbo-frame id="task-items-list-<%= task.id %>">
             <%= render "task_items/list", task_items: task_items %>
           </turbo-frame>
