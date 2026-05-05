@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe 'CreateProjects migration', type: :migration do
+  # DDL (DROP/CREATE TABLE) quebra transações — usar truncation para limpar
+  self.use_transactional_tests = false
+
+  after(:each) do
+    [TaskItem, Task, Project, Company, User, Session].each do |model|
+      model.delete_all rescue nil
+    end
+  end
+
   let(:migration) { ActiveRecord::Migration[8.1] }
 
   describe 'rollback' do
@@ -29,6 +38,8 @@ RSpec.describe 'CreateProjects migration', type: :migration do
 
         # Restore FK on tasks if it was removed
         if tasks_fk && conn.foreign_keys(:tasks).none? { |fk| fk.to_table == 'projects' }
+          # Remove tasks que apontam para projects inexistentes antes de restaurar FK
+          conn.execute("DELETE FROM tasks WHERE project_id NOT IN (SELECT id FROM projects)")
           conn.add_foreign_key :tasks, :projects
         end
       end

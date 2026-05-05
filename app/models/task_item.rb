@@ -31,20 +31,36 @@ class TaskItem < ApplicationRecord
   scope :by_task, ->(task_id) { where(task_id:) }
   scope :recent_first, -> { order(created_at: :desc) }
 
+  # Expressão SQL que calcula a duração em segundos, tratando virada de meia-noite
+  # (end_time < start_time → adiciona 86400 segundos = 24h)
+  DURATION_SECONDS_SQL = <<~SQL.squish.freeze
+    CASE WHEN end_time < start_time
+      THEN EXTRACT(EPOCH FROM (end_time - start_time)) + 86400
+      ELSE EXTRACT(EPOCH FROM (end_time - start_time))
+    END
+  SQL
+
+  DURATION_SECONDS_SQL_PREFIXED = <<~SQL.squish.freeze
+    CASE WHEN task_items.end_time < task_items.start_time
+      THEN EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time)) + 86400
+      ELSE EXTRACT(EPOCH FROM (task_items.end_time - task_items.start_time))
+    END
+  SQL
+
   def self.total_minutes(relation = all)
-    seconds = relation.sum("EXTRACT(EPOCH FROM (end_time - start_time))")
+    seconds = relation.sum(DURATION_SECONDS_SQL)
     (seconds / 60).floor
   end
 
   private
 
-  # Validação: end_time deve ser posterior à start_time
+  # Validação: duração deve ser positiva (permite virada de meia-noite)
   def end_time_after_start_time
     return unless start_time.present? && end_time.present?
 
-    if end_time <= start_time
-      errors.add(:end_time, "deve ser posterior à hora inicial")
-    end
+    duration = end_time - start_time
+    duration += 86400 if duration < 0
+    errors.add(:end_time, "deve ser diferente da hora inicial") if duration == 0
   end
 
   # Validação: não pode modificar TaskItem de Task delivered
@@ -56,11 +72,12 @@ class TaskItem < ApplicationRecord
     end
   end
 
-  # Callback: calcula hours_worked automaticamente
+  # Callback: calcula hours_worked automaticamente, tratando virada de meia-noite
   def calculate_hours_worked
     return unless start_time.present? && end_time.present?
 
-    duration_in_seconds = (end_time - start_time)
+    duration_in_seconds = end_time - start_time
+    duration_in_seconds += 86400 if duration_in_seconds < 0
     self.hours_worked = (duration_in_seconds / 3600.0).round(4)
   end
 
