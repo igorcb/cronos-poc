@@ -28,7 +28,10 @@ class TaskItemsController < ApplicationController
             turbo_stream.replace("dashboard_daily_value", partial: "dashboard/daily_value", locals: { daily_value: calculate_daily_value }),
             turbo_stream.replace("dashboard_daily_task_count", partial: "dashboard/daily_task_count", locals: { daily_task_count: calculate_daily_task_count }),
             turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: calculate_monthly_task_count }),
-            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks })
+            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks }),
+            turbo_stream.replace("kpi-entregas-mes",    partial: "dashboard/delivered_count", locals: { monthly_delivered_count: calculate_monthly_delivered_count }),
+            turbo_stream.replace("kpi-horas-entregues", partial: "dashboard/delivered_hours", locals: { monthly_delivered_hours: calculate_monthly_delivered_hours }),
+            turbo_stream.replace("kpi-valor-entregue",  partial: "dashboard/delivered_value", locals: { monthly_delivered_value: calculate_monthly_delivered_value })
           ]
         end
         format.html { redirect_to tasks_path, notice: "Item criado com sucesso" }
@@ -64,7 +67,10 @@ class TaskItemsController < ApplicationController
             turbo_stream.replace("dashboard_daily_value", partial: "dashboard/daily_value", locals: { daily_value: calculate_daily_value }),
             turbo_stream.replace("dashboard_daily_task_count", partial: "dashboard/daily_task_count", locals: { daily_task_count: calculate_daily_task_count }),
             turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: calculate_monthly_task_count }),
-            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks })
+            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks }),
+            turbo_stream.replace("kpi-entregas-mes",    partial: "dashboard/delivered_count", locals: { monthly_delivered_count: calculate_monthly_delivered_count }),
+            turbo_stream.replace("kpi-horas-entregues", partial: "dashboard/delivered_hours", locals: { monthly_delivered_hours: calculate_monthly_delivered_hours }),
+            turbo_stream.replace("kpi-valor-entregue",  partial: "dashboard/delivered_value", locals: { monthly_delivered_value: calculate_monthly_delivered_value })
           ]
         end
         format.html { redirect_to tasks_path, notice: "Item atualizado com sucesso" }
@@ -94,7 +100,10 @@ class TaskItemsController < ApplicationController
             turbo_stream.replace("dashboard_daily_task_count", partial: "dashboard/daily_task_count", locals: { daily_task_count: calculate_daily_task_count }),
             turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: calculate_monthly_task_count }),
             turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks }),
-            turbo_stream.replace("task_row_#{@task.id}", partial: "dashboard/task_row", locals: { task: @task.reload })
+            turbo_stream.replace("task_row_#{@task.id}", partial: "dashboard/task_row", locals: { task: @task.reload }),
+            turbo_stream.replace("kpi-entregas-mes",    partial: "dashboard/delivered_count", locals: { monthly_delivered_count: calculate_monthly_delivered_count }),
+            turbo_stream.replace("kpi-horas-entregues", partial: "dashboard/delivered_hours", locals: { monthly_delivered_hours: calculate_monthly_delivered_hours }),
+            turbo_stream.replace("kpi-valor-entregue",  partial: "dashboard/delivered_value", locals: { monthly_delivered_value: calculate_monthly_delivered_value })
           ]
         end
         format.html { redirect_to tasks_path, notice: "Item removido com sucesso" }

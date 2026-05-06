@@ -156,5 +156,94 @@ RSpec.describe "Dashboard KPIs", type: :request do
         expect(response.body).to include("Valor Hoje")
       end
     end
+
+    # Story 5.19 — Novos KPIs de Entregues
+    describe "KPIs de tasks delivered (Story 5.19)" do
+      context "sem tasks delivered no mês" do
+        before { get root_path }
+
+        it "AC2: @monthly_delivered_count = 0" do
+          expect(controller.instance_variable_get(:@monthly_delivered_count)).to eq(0)
+        end
+
+        it "AC3: @monthly_delivered_hours = 0" do
+          expect(controller.instance_variable_get(:@monthly_delivered_hours)).to eq(0)
+        end
+
+        it "AC4: @monthly_delivered_value = 0" do
+          expect(controller.instance_variable_get(:@monthly_delivered_value)).to eq(0)
+        end
+
+        it "AC1: exibe o card Entregas do Mês" do
+          expect(response.body).to include("Entregas do Mês")
+        end
+
+        it "AC1: exibe o card Horas Entregues" do
+          expect(response.body).to include("Horas Entregues")
+        end
+
+        it "AC1: exibe o card Valor Entregue" do
+          expect(response.body).to include("Valor Entregue")
+        end
+      end
+
+      context "com tasks delivered no mês" do
+        let!(:task_delivered) do
+          create(:task, company: company, project: project, start_date: Date.current)
+        end
+        let!(:task_pending) do
+          create(:task, company: company, project: project, start_date: Date.current)
+        end
+
+        before do
+          create(:task_item, task: task_delivered, work_date: Date.current,
+                 start_time: "09:00", end_time: "11:00")
+          create(:task_item, task: task_pending, work_date: Date.current,
+                 start_time: "14:00", end_time: "15:00")
+          task_delivered.update_columns(status: "delivered")
+          task_delivered.reload
+          get root_path
+        end
+
+        it "AC2: @monthly_delivered_count conta apenas tasks delivered" do
+          expect(controller.instance_variable_get(:@monthly_delivered_count)).to eq(1)
+        end
+
+        it "AC5: task pending não entra na contagem de delivered" do
+          count = controller.instance_variable_get(:@monthly_delivered_count)
+          expect(count).to eq(1)
+        end
+
+        it "AC3: @monthly_delivered_hours soma validated_hours das tasks delivered" do
+          hours = controller.instance_variable_get(:@monthly_delivered_hours)
+          expect(hours).to eq(task_delivered.validated_hours)
+        end
+
+        it "AC4: @monthly_delivered_value calcula valor das tasks delivered" do
+          value = controller.instance_variable_get(:@monthly_delivered_value)
+          expected = task_delivered.validated_hours * company.hourly_rate
+          expect(value).to be_within(0.01).of(expected)
+        end
+      end
+
+      context "com tasks delivered de outros meses" do
+        let!(:task_old_delivered) do
+          create(:task, company: company, project: project,
+                 start_date: 1.month.ago.to_date)
+        end
+
+        before do
+          create(:task_item, task: task_old_delivered,
+                 work_date: 1.month.ago.to_date,
+                 start_time: "09:00", end_time: "11:00")
+          task_old_delivered.update_columns(status: "delivered")
+          get root_path
+        end
+
+        it "AC5: tasks delivered de outros meses não entram no KPI do mês atual" do
+          expect(controller.instance_variable_get(:@monthly_delivered_count)).to eq(0)
+        end
+      end
+    end
   end
 end
