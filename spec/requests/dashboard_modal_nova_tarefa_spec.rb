@@ -164,7 +164,7 @@ RSpec.describe "Dashboard Modal Nova Tarefa", type: :request do
       post tasks_path,
            params: { task: { name: "", code: "" } },
            headers: { "Turbo-Frame" => "modal" }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Nova Tarefa")
     end
   end
