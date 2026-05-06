@@ -57,6 +57,7 @@ Registrar dados é necessário, mas o valor real está em **consumir** esses dad
 | 005 | `005-configurar-turbo-streams-para-atualizacao-em-tempo-real.md` | Configurar Turbo Streams para Atualização Real-Time |
 | 006–017 | *(ver sprint-status.yaml)* | Dashboard KPIs, modal, edição, broadcast, mobile, ajustes visuais |
 | 018 | `018-exclusao-task-item-no-modal.md` | Exclusão de Lançamento Individual no Modal de Histórico |
+| 019 | `019-novos-kpis-dashboard.md` | Novos KPIs: Entregas do Mês, Horas Entregues, Valor Entregue |
 
 ## Requisitos Rastreados
 
