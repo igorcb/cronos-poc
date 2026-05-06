@@ -145,6 +145,13 @@ RSpec.describe "Accessibility WCAG Level A", type: :request do
         get root_path
         expect(response.body).to include('aria-hidden="true"')
       end
+
+      it "KPIs de entregas do mês têm aria-label acessível (Story 5.19)" do
+        get root_path
+        expect(response.body).to include('aria-label="Entregas do Mês:')
+        expect(response.body).to include('aria-label="Horas Entregues:')
+        expect(response.body).to include('aria-label="Valor Entregue:')
+      end
     end
 
     # AC1 + AC6: Labels e semântica nos formulários de tarefa

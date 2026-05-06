@@ -45,17 +45,22 @@ module DashboardCalculations
   end
 
   def calculate_monthly_delivered_hours
-    Task.where(status: :delivered)
-        .joins(:task_items)
-        .where(task_items: { work_date: Date.current.all_month })
-        .distinct
-        .sum(:validated_hours)
+    delivered_task_ids = Task.where(status: :delivered)
+                             .joins(:task_items)
+                             .where(task_items: { work_date: Date.current.all_month })
+                             .distinct
+                             .pluck(:id)
+    Task.where(id: delivered_task_ids).sum(:validated_hours)
   end
 
   def calculate_monthly_delivered_value
-    Task.where(status: :delivered)
-        .joins(:task_items, :company)
-        .where(task_items: { work_date: Date.current.all_month })
+    delivered_task_ids = Task.where(status: :delivered)
+                             .joins(:task_items)
+                             .where(task_items: { work_date: Date.current.all_month })
+                             .distinct
+                             .pluck(:id)
+    Task.where(id: delivered_task_ids)
+        .joins(:company)
         .sum("tasks.validated_hours * companies.hourly_rate")
   end
 end

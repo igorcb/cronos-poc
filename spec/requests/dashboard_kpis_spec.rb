@@ -226,6 +226,36 @@ RSpec.describe "Dashboard KPIs", type: :request do
         end
       end
 
+      context "com task delivered com múltiplos task_items no mês" do
+        let!(:task_multi) do
+          create(:task, company: company, project: project, start_date: Date.current)
+        end
+
+        before do
+          create(:task_item, task: task_multi, work_date: Date.current,
+                 start_time: "09:00", end_time: "11:00")
+          create(:task_item, task: task_multi, work_date: Date.current,
+                 start_time: "14:00", end_time: "16:00")
+          task_multi.update_columns(status: "delivered")
+          task_multi.reload
+          get root_path
+        end
+
+        it "não duplica validated_hours quando há múltiplos task_items" do
+          hours = controller.instance_variable_get(:@monthly_delivered_hours)
+          expect(hours).to eq(task_multi.validated_hours)
+        end
+
+        it "não duplica valor quando há múltiplos task_items" do
+          value = controller.instance_variable_get(:@monthly_delivered_value)
+          expect(value).to be_within(0.01).of(task_multi.validated_hours * company.hourly_rate)
+        end
+
+        it "conta task apenas uma vez mesmo com múltiplos task_items" do
+          expect(controller.instance_variable_get(:@monthly_delivered_count)).to eq(1)
+        end
+      end
+
       context "com tasks delivered de outros meses" do
         let!(:task_old_delivered) do
           create(:task, company: company, project: project,
