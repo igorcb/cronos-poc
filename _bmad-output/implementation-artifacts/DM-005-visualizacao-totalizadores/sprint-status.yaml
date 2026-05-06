@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: in_progress
-progress: 94%  # 17 de 18 stories concluidas
+status: in-progress
+progress: 85%  # 17 de 20 stories concluidas
 
 dependencies:
   requires:
@@ -121,23 +121,34 @@ stories:
     notes: PR #95 mergeado
 
   018-exclusao-task-item-no-modal:
-    status: ready_for_dev
+    status: ready-for-dev
     priority: high
     description: Botão excluir (lixeira) por linha do histórico no modal — DELETE com confirmação, recalcula validated_hours e atualiza Turbo Streams
-    notes: |
-      DA-035 — motivado por lançamento duplicado em produção distorcendo totais.
-      Restrição: ocultar lixeira quando task.delivered?
-      Turbo Streams: remove linha + atualiza lista/Total + Est/Real + Horas Hoje + Horas Mês
+    notes: DA-035 — motivado por lançamento duplicado em produção distorcendo totais
+
+  019-novos-kpis-dashboard:
+    status: ready-for-dev
+    priority: high
+    description: Novos KPIs — Entregas do Mês, Horas Entregues, Valor Entregue (linha topo do grid 3×3)
+    notes: Criado 2026-05-06 — 3 cards focados em tasks delivered; depende de validated_hours
+
+  020-kpi-media-por-entrega:
+    status: ready-for-dev
+    priority: high
+    description: KPI Média por Entrega (R$) no grid de KPIs e ao lado do botão +
+    notes: Criado 2026-05-06 — fórmula planilha =horas_entregues/qtde_entregues×hourly_rate; depende da story 5.19
 
 retrospective:
   status: optional
 
 summary:
-  total_stories: 18
+  total_stories: 20
   done: 17
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 3
   backlog: 0
   blockers: []
   next_actions:
     - Implementar story 018 — exclusão de TaskItem no modal (DA-035)
+    - Implementar story 019 — novos KPIs de entregas (Entregas Mês, Horas Entregues, Valor Entregue)
+    - Implementar story 020 — KPI Média por Entrega no grid e ao lado do botão +
