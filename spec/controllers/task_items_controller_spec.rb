@@ -229,6 +229,74 @@ RSpec.describe TaskItemsController, type: :controller do
         delete :destroy, params: { task_id: task.id, id: task_item.id }, format: :turbo_stream
         expect(response.body).to include("action=\"replace\"")
       end
+
+      it "includes task-items-list target to update modal history" do
+        delete :destroy, params: { task_id: task.id, id: task_item.id }, format: :turbo_stream
+        expect(response.body).to include("task-items-list-#{task.id}")
+      end
+
+      it "includes task_row target to update dashboard est/real" do
+        delete :destroy, params: { task_id: task.id, id: task_item.id }, format: :turbo_stream
+        expect(response.body).to include("task_row_#{task.id}")
+      end
+
+      it "includes dashboard KPI targets in response" do
+        delete :destroy, params: { task_id: task.id, id: task_item.id }, format: :turbo_stream
+        expect(response.body).to include("dashboard_daily_hours")
+        expect(response.body).to include("dashboard_monthly_hours")
+        expect(response.body).to include("dashboard_daily_value")
+        expect(response.body).to include("dashboard_monthly_value")
+      end
+    end
+
+    context "when task is delivered" do
+      let(:pending_task) { create(:task, company: company, project: project, start_date: Date.current, status: "pending") }
+      let!(:delivered_item) { create(:task_item, task: pending_task, start_time: "08:00", end_time: "09:00") }
+
+      before do
+        pending_task.update_columns(status: "delivered")
+      end
+
+      it "returns unprocessable_entity on turbo_stream format" do
+        delete :destroy, params: { task_id: pending_task.id, id: delivered_item.id }, format: :turbo_stream
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "does not destroy the task_item" do
+        expect {
+          delete :destroy, params: { task_id: pending_task.id, id: delivered_item.id }, format: :turbo_stream
+        }.not_to change(TaskItem, :count)
+      end
+    end
+  end
+
+  describe "GET #new renders _list partial with delete button visibility" do
+    render_views
+
+    let!(:task_item) { create(:task_item, task: task, start_time: "09:00", end_time: "10:30") }
+
+    it "shows delete button when task is pending" do
+      task.update_columns(status: "pending")
+      get :new, params: { task_id: task.id }
+      expect(response.body).to include("Excluir lançamento")
+    end
+
+    it "shows delete button when task is completed" do
+      task.update_columns(status: "completed")
+      get :new, params: { task_id: task.id }
+      expect(response.body).to include("Excluir lançamento")
+    end
+
+    it "hides delete button when task is delivered" do
+      task.update_columns(status: "delivered")
+      get :new, params: { task_id: task.id }
+      expect(response.body).not_to include("Excluir lançamento")
+    end
+
+    it "hides edit button when task is delivered" do
+      task.update_columns(status: "delivered")
+      get :new, params: { task_id: task.id }
+      expect(response.body).not_to include("Editar lançamento")
     end
   end
 end
