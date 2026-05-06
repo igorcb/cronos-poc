@@ -1,6 +1,6 @@
 # Story 5.18: Exclusão de Lançamento de Horas no Modal de Histórico
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-005-visualizacao-totalizadores
 **Data:** 2026-05-05
 **Epic:** Epic 5 — Visualização & Dashboard
@@ -27,43 +27,43 @@ O modal de lançamento de horas permite editar lançamentos existentes (story 5.
 
 ## Critérios de Aceite
 
-- [ ] **AC1 — Ícone lixeira no histórico:** cada item do histórico exibe botão lixeira à direita do botão lápis, exceto quando `task.delivered?` (ocultar o botão)
-- [ ] **AC2 — Confirmação antes de excluir:** ao clicar na lixeira, exibe confirmação: `"Tem certeza que deseja remover este lançamento?"`
-- [ ] **AC3 — DELETE no item correto:** ao confirmar, envia `DELETE` para `task_task_item_path(task, item)` via Turbo Stream
-- [ ] **AC4 — Lista atualiza após exclusão:** o item removido desaparece do histórico e o `Total: HH:MM` do cabeçalho é recalculado
-- [ ] **AC5 — validated_hours da Task recalculado:** após exclusão, `task.validated_hours` é recalculado automaticamente via callback existente (`recalculate_validated_hours`)
-- [ ] **AC6 — KPIs do dashboard atualizam:** Horas Hoje, Horas Mês, Valor Hoje, Valor Mês e Est/Real são atualizados via Turbo Stream sem refresh
+- [x] **AC1 — Ícone lixeira no histórico:** cada item do histórico exibe botão lixeira à direita do botão lápis, exceto quando `task.delivered?` (ocultar o botão)
+- [x] **AC2 — Confirmação antes de excluir:** ao clicar na lixeira, exibe confirmação: `"Tem certeza que deseja remover este lançamento?"`
+- [x] **AC3 — DELETE no item correto:** ao confirmar, envia `DELETE` para `task_task_item_path(task, item)` via Turbo Stream
+- [x] **AC4 — Lista atualiza após exclusão:** o item removido desaparece do histórico e o `Total: HH:MM` do cabeçalho é recalculado
+- [x] **AC5 — validated_hours da Task recalculado:** após exclusão, `task.validated_hours` é recalculado automaticamente via callback existente (`recalculate_validated_hours`)
+- [x] **AC6 — KPIs do dashboard atualizam:** Horas Hoje, Horas Mês, Valor Hoje, Valor Mês e Est/Real são atualizados via Turbo Stream sem refresh
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **T1 — Botão lixeira em `_list.html.erb`** (AC1)
-  - [ ] Adicionar `button_to` com `method: :delete` e `data-turbo-confirm` após o botão lápis existente
-  - [ ] Condicional: ocultar quando `item.task.delivered?`
-  - [ ] Classe visual: `bg-red-700 hover:bg-red-600`, mesmas dimensões do lápis (`w-6 h-6`)
-  - [ ] SVG ícone lixeira (mesmo padrão do botão excluir na `/tasks`)
+- [x] **T1 — Botão lixeira em `_list.html.erb`** (AC1)
+  - [x] Adicionar `button_to` com `method: :delete` e `data-turbo-confirm` após o botão lápis existente
+  - [x] Condicional: ocultar quando `item.task.delivered?`
+  - [x] Classe visual: `bg-red-700 hover:bg-red-600`, mesmas dimensões do lápis (`w-6 h-6`)
+  - [x] SVG ícone lixeira (mesmo padrão do botão excluir na `/tasks`)
 
-- [ ] **T2 — `TaskItemsController#destroy`** (AC3, AC5, AC6)
-  - [ ] Verificar se action `destroy` já existe — se sim, ajustar o `respond_to` para incluir `format.turbo_stream`
-  - [ ] Após `task_item.destroy`, recarregar `@task_items = @task.task_items.recent_first`
-  - [ ] Renderizar Turbo Streams: lista do modal + KPIs do dashboard
-  - [ ] Incluir `DashboardCalculations` se necessário (padrão já estabelecido)
+- [x] **T2 — `TaskItemsController#destroy`** (AC3, AC5, AC6)
+  - [x] Verificar se action `destroy` já existe — se sim, ajustar o `respond_to` para incluir `format.turbo_stream`
+  - [x] Após `task_item.destroy`, recarregar `@task_items = @task.task_items.recent_first`
+  - [x] Renderizar Turbo Streams: lista do modal + KPIs do dashboard
+  - [x] Incluir `DashboardCalculations` se necessário (padrão já estabelecido)
 
-- [ ] **T3 — Turbo Streams no destroy** (AC4, AC6)
-  - [ ] `turbo_stream.update("task-items-list-#{@task.id}", ...)` — atualiza lista + Total no cabeçalho
-  - [ ] `turbo_stream.replace("dashboard_daily_hours", ...)`
-  - [ ] `turbo_stream.replace("dashboard_monthly_hours", ...)`
-  - [ ] `turbo_stream.replace("dashboard_daily_value", ...)`
-  - [ ] `turbo_stream.replace("dashboard_monthly_value", ...)`
-  - [ ] `turbo_stream.replace("dashboard_daily_task_count", ...)`
-  - [ ] `turbo_stream.replace("dashboard_monthly_task_count", ...)`
-  - [ ] `turbo_stream.replace("task_row_#{@task.id}", ...)` — atualiza Est/Real no dashboard (se task_row existir)
+- [x] **T3 — Turbo Streams no destroy** (AC4, AC6)
+  - [x] `turbo_stream.update("task-items-list-#{@task.id}", ...)` — atualiza lista + Total no cabeçalho
+  - [x] `turbo_stream.replace("dashboard_daily_hours", ...)`
+  - [x] `turbo_stream.replace("dashboard_monthly_hours", ...)`
+  - [x] `turbo_stream.replace("dashboard_daily_value", ...)`
+  - [x] `turbo_stream.replace("dashboard_monthly_value", ...)`
+  - [x] `turbo_stream.replace("dashboard_daily_task_count", ...)`
+  - [x] `turbo_stream.replace("dashboard_monthly_task_count", ...)`
+  - [x] `turbo_stream.replace("task_row_#{@task.id}", ...)` — atualiza Est/Real no dashboard (se task_row existir)
 
-- [ ] **T4 — Testes RSpec** (todos os ACs)
-  - [ ] Request spec: `DELETE /tasks/:task_id/task_items/:id` — sucesso (turbo_stream)
-  - [ ] Request spec: `DELETE` em task `delivered` — deve retornar erro (422)
-  - [ ] Spec de componente: lixeira visível quando `pending`/`completed`, oculta quando `delivered`
+- [x] **T4 — Testes RSpec** (todos os ACs)
+  - [x] Request spec: `DELETE /tasks/:task_id/task_items/:id` — sucesso (turbo_stream)
+  - [x] Request spec: `DELETE` em task `delivered` — deve retornar erro (422)
+  - [x] Spec de componente: lixeira visível quando `pending`/`completed`, oculta quando `delivered`
 
 ---
 
@@ -176,6 +176,18 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- T1: Botão lixeira adicionado em `_list.html.erb` com `unless delivered?`. Botão lápis também protegido (QA finding MEDIUM).
+- T2: `destroy` já existia — ajustado para verificar retorno e recarregar `@task_items`.
+- T3: Todos os Turbo Streams implementados. Descoberto bug: Total estava fora do turbo-frame — extraído para partial `_total.html.erb` e stream `replace("task-items-total-#{@task.id}")` adicionado em create/update/destroy.
+- T4: 45 specs passando, incluindo specs de visibilidade por status (render_views).
+- QA findings aplicados: botão lápis oculto quando delivered, :unprocessable_content, specs de renderização.
+
 ### File List
+
+- app/views/task_items/_list.html.erb
+- app/views/task_items/_modal_form.html.erb
+- app/views/task_items/_total.html.erb (novo)
+- app/controllers/task_items_controller.rb
+- spec/controllers/task_items_controller_spec.rb
 
 ### Debug Log References
