@@ -44,3 +44,7 @@
 
 # Playwright MCP screenshots e logs
 /.playwright-mcp/
+
+# Claude Code internos
+/.claude/github-star-reminder.txt
+/lor
