@@ -1,7 +1,7 @@
 ---
 storyId: '5.19'
 epicId: 'DM-005'
-status: 'ready-for-development'
+status: 'done'
 createdAt: '2026-05-06'
 ---
 

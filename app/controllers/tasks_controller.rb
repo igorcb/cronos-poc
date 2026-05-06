@@ -43,12 +43,15 @@ class TasksController < ApplicationController
 
     if @task.save
       if request.headers["Turbo-Frame"] == "modal"
-        daily_hours        = calculate_dashboard_daily_hours
-        monthly_hours      = calculate_dashboard_monthly_hours
-        monthly_value      = calculate_dashboard_monthly_value
-        daily_task_count   = calculate_dashboard_daily_task_count
-        monthly_task_count = calculate_dashboard_monthly_task_count
-        daily_value        = calculate_dashboard_daily_value
+        daily_hours              = calculate_dashboard_daily_hours
+        monthly_hours            = calculate_dashboard_monthly_hours
+        monthly_value            = calculate_dashboard_monthly_value
+        daily_task_count         = calculate_dashboard_daily_task_count
+        monthly_task_count       = calculate_dashboard_monthly_task_count
+        daily_value              = calculate_dashboard_daily_value
+        monthly_delivered_count  = calculate_monthly_delivered_count
+        monthly_delivered_hours  = calculate_monthly_delivered_hours
+        monthly_delivered_value  = calculate_monthly_delivered_value
         render turbo_stream: [
           turbo_stream.update("modal", ""),
           turbo_stream.prepend("tasks-list", partial: "dashboard/task_row", locals: { task: @task }),
@@ -57,7 +60,10 @@ class TasksController < ApplicationController
           turbo_stream.replace("dashboard_monthly_value",      partial: "dashboard/monthly_value",      locals: { monthly_value: monthly_value }),
           turbo_stream.replace("dashboard_daily_task_count",   partial: "dashboard/daily_task_count",   locals: { daily_task_count: daily_task_count }),
           turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: monthly_task_count }),
-          turbo_stream.replace("dashboard_daily_value",        partial: "dashboard/daily_value",        locals: { daily_value: daily_value })
+          turbo_stream.replace("dashboard_daily_value",        partial: "dashboard/daily_value",        locals: { daily_value: daily_value }),
+          turbo_stream.replace("kpi-entregas-mes",   partial: "dashboard/delivered_count", locals: { monthly_delivered_count: monthly_delivered_count }),
+          turbo_stream.replace("kpi-horas-entregues", partial: "dashboard/delivered_hours", locals: { monthly_delivered_hours: monthly_delivered_hours }),
+          turbo_stream.replace("kpi-valor-entregue",  partial: "dashboard/delivered_value", locals: { monthly_delivered_value: monthly_delivered_value })
         ]
       else
         redirect_to tasks_path, notice: "Tarefa criada com sucesso"
@@ -97,7 +103,10 @@ class TasksController < ApplicationController
             turbo_stream.replace("task_row_#{@task.id}", partial: "dashboard/task_row", locals: { task: @task }),
             turbo_stream.replace("dashboard_daily_task_count", partial: "dashboard/daily_task_count", locals: { daily_task_count: calculate_dashboard_daily_task_count }),
             turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: calculate_dashboard_monthly_task_count }),
-            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks })
+            turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks }),
+            turbo_stream.replace("kpi-entregas-mes",    partial: "dashboard/delivered_count", locals: { monthly_delivered_count: calculate_monthly_delivered_count }),
+            turbo_stream.replace("kpi-horas-entregues", partial: "dashboard/delivered_hours", locals: { monthly_delivered_hours: calculate_monthly_delivered_hours }),
+            turbo_stream.replace("kpi-valor-entregue",  partial: "dashboard/delivered_value", locals: { monthly_delivered_value: calculate_monthly_delivered_value })
           ]
         end
         format.html { redirect_to tasks_path, notice: "Tarefa entregue com sucesso" }

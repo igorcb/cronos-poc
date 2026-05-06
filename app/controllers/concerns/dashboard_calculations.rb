@@ -35,4 +35,32 @@ module DashboardCalculations
             .where(work_date: Date.current)
             .sum("(#{TaskItem::DURATION_SECONDS_SQL_PREFIXED}) / 3600.0 * companies.hourly_rate")
   end
+
+  def calculate_monthly_delivered_count
+    Task.where(status: :delivered)
+        .joins(:task_items)
+        .where(task_items: { work_date: Date.current.all_month })
+        .distinct
+        .count
+  end
+
+  def calculate_monthly_delivered_hours
+    delivered_task_ids = Task.where(status: :delivered)
+                             .joins(:task_items)
+                             .where(task_items: { work_date: Date.current.all_month })
+                             .distinct
+                             .pluck(:id)
+    Task.where(id: delivered_task_ids).sum(:validated_hours)
+  end
+
+  def calculate_monthly_delivered_value
+    delivered_task_ids = Task.where(status: :delivered)
+                             .joins(:task_items)
+                             .where(task_items: { work_date: Date.current.all_month })
+                             .distinct
+                             .pluck(:id)
+    Task.where(id: delivered_task_ids)
+        .joins(:company)
+        .sum("tasks.validated_hours * companies.hourly_rate")
+  end
 end
