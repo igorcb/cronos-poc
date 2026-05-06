@@ -507,7 +507,7 @@ RSpec.describe TasksController, type: :controller do
 
       it "renders new template with unprocessable_entity status" do
         post :create, params: { task: { name: "" } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response).to render_template(:new)
       end
 
@@ -596,7 +596,7 @@ RSpec.describe TasksController, type: :controller do
     context "with invalid params" do
       it "renders edit with unprocessable_entity status" do
         patch :update, params: { id: task.id, task: { name: "" } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response).to render_template(:edit)
       end
     end

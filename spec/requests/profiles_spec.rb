@@ -51,7 +51,7 @@ RSpec.describe "Profiles", type: :request do
       context "when passwords do not match" do
         it "returns 422 and shows specific confirmation error" do
           patch profile_path, params: { password: "newpassword1", password_confirmation: "different123" }
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(response.body).to include("não é igual a")
         end
       end
@@ -59,7 +59,7 @@ RSpec.describe "Profiles", type: :request do
       context "when password is shorter than 8 characters" do
         it "returns 422 and shows specific too_short error" do
           patch profile_path, params: { password: "short", password_confirmation: "short" }
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(response.body).to include("muito curto")
         end
       end
