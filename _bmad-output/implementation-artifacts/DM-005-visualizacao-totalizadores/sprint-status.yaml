@@ -127,10 +127,10 @@ stories:
     notes: DA-035 — motivado por lançamento duplicado em produção distorcendo totais
 
   019-novos-kpis-dashboard:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Novos KPIs — Entregas do Mês, Horas Entregues, Valor Entregue (linha topo do grid 3×3)
-    notes: Criado 2026-05-06 — 3 cards focados em tasks delivered; depende de validated_hours
+    notes: Concluído 2026-05-06 — 789 specs passando; bug de duplicação corrigido (pluck+sum); QA review completo
 
   020-kpi-media-por-entrega:
     status: ready-for-dev
