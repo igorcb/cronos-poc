@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: in-progress
-progress: 94%  # 16 de 17 stories concluidas
+status: in_progress
+progress: 94%  # 17 de 18 stories concluidas
 
 dependencies:
   requires:
@@ -91,10 +91,10 @@ stories:
     notes: Criado 2026-04-26 — implementado e validado 2026-05-04
 
   013-exibir-horas-realizadas-ao-lado-do-estimado:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Exibir horas realizadas ao lado do estimado no dashboard — formato "HH:MM / HH:MM"
-    notes: Criado 2026-04-26
+    notes: PR #100 mergeado em 2026-05-05
 
   014-migrar-sse-para-actioncable-broadcast:
     status: done
@@ -120,15 +120,24 @@ stories:
     description: Edição de task_item no mesmo formulário modal
     notes: PR #95 mergeado
 
+  018-exclusao-task-item-no-modal:
+    status: ready_for_dev
+    priority: high
+    description: Botão excluir (lixeira) por linha do histórico no modal — DELETE com confirmação, recalcula validated_hours e atualiza Turbo Streams
+    notes: |
+      DA-035 — motivado por lançamento duplicado em produção distorcendo totais.
+      Restrição: ocultar lixeira quando task.delivered?
+      Turbo Streams: remove linha + atualiza lista/Total + Est/Real + Horas Hoje + Horas Mês
+
 retrospective:
   status: optional
 
 summary:
-  total_stories: 17
-  done: 16
+  total_stories: 18
+  done: 17
   in_progress: 0
   ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 013 (horas realizadas ao lado do estimado)
+    - Implementar story 018 — exclusão de TaskItem no modal (DA-035)

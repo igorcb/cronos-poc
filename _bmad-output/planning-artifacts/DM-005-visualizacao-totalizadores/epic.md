@@ -2,7 +2,7 @@
 
 **Domínio:** DM-005-visualizacao-totalizadores
 **Tipo:** Consumo / Apresentação
-**Status:** Em Progresso
+**Status:** Em Progresso (atualizado 2026-05-05)
 **Prioridade:** Alta (onde o usuário extrai valor dos dados)
 
 ## Objetivo
@@ -42,7 +42,8 @@ Registrar dados é necessário, mas o valor real está em **consumir** esses dad
 - [ ] Total de horas do dia atual exibido e atualizado em tempo real
 - [ ] Total de horas por empresa no mês calculado corretamente
 - [ ] Total de valor (R$) por empresa no mês calculado corretamente
-- [ ] Turbo Streams atualizam totalizadores após criar/editar/deletar entry
+- [ ] Turbo Streams atualizam totalizadores após criar/editar/deletar/excluir entry
+- [ ] Exclusão de lançamento individual (TaskItem) disponível no modal de histórico
 - [ ] Paginação implementada se > 200 entradas
 
 ## Stories
@@ -54,6 +55,8 @@ Registrar dados é necessário, mas o valor real está em **consumir** esses dad
 | 003 | `003-implementar-totalizadores-dinamicos-total-do-dia.md` | Implementar Totalizadores - Total do Dia |
 | 004 | `004-implementar-totalizadores-por-empresa-no-mes.md` | Implementar Totalizadores por Empresa/Mês |
 | 005 | `005-configurar-turbo-streams-para-atualizacao-em-tempo-real.md` | Configurar Turbo Streams para Atualização Real-Time |
+| 006–017 | *(ver sprint-status.yaml)* | Dashboard KPIs, modal, edição, broadcast, mobile, ajustes visuais |
+| 018 | `018-exclusao-task-item-no-modal.md` | Exclusão de Lançamento Individual no Modal de Histórico |
 
 ## Requisitos Rastreados
 
