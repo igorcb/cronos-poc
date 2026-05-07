@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: done
-progress: 100%  # 20 de 20 stories concluidas
+status: in-progress
+progress: 95%  # 20 de 21 stories concluidas
 
 dependencies:
   requires:
@@ -138,16 +138,21 @@ stories:
     description: KPI Média por Entrega (R$) inline ao lado do botão +
     notes: Concluído 2026-05-07 — 131 specs passando; inline ao lado do +; Turbo Streams em 4 actions; bug fix replace turbo-frame
 
+  021-coluna-valor-task-dashboard-e-listagem:
+    status: ready-for-dev
+    priority: medium
+    description: Exibir valor monetário (R$) de cada task ao lado de Est/Real no dashboard e na listagem
+    notes: Criado 2026-05-07 — usa calculated_value existente; mudança cirúrgica em _task_row e cabeçalho
+
 retrospective:
   status: optional
 
 summary:
-  total_stories: 20
+  total_stories: 21
   done: 20
   in_progress: 0
-  review: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - DM-005 completo — todas as 20 stories concluídas
+    - Implementar story 021 — coluna Valor da task no dashboard e listagem
