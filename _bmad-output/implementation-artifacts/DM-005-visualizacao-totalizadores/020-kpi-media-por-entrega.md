@@ -1,6 +1,6 @@
 # Story 5.20: KPI Média por Entrega (R$) no Grid e ao Lado do Botão +
 
-**Status:** ready-for-dev
+**Status:** review
 **Domínio:** DM-005-visualizacao-totalizadores
 **Data:** 2026-05-06
 **Epic:** Epic 5 — Visualização & Dashboard
@@ -58,14 +58,14 @@ Média por Entrega (R$) = Valor Entregue no Mês ÷ Qtde de Cards Entregues
 
 ## Critérios de Aceite
 
-- [ ] **AC1:** Grid de KPIs exibe card "Média por Entrega" como 4º card da linha "Entregues" com o valor em R$
-- [ ] **AC2:** Cálculo: `SUM(validated_hours × hourly_rate) / COUNT(tasks delivered)` — sem N+1 (SQL puro)
-- [ ] **AC3:** Para múltiplas empresas, usar média ponderada (cada task com o `hourly_rate` da sua empresa)
-- [ ] **AC4:** Exibe `R$ 0,00` quando não há cards entregues no mês (evitar divisão por zero)
-- [ ] **AC5:** Ao lado do botão `+`, na margem direita da mesma linha, exibe "Média por Entrega: R$ XX,XX"
-- [ ] **AC6:** Ambas as exibições respeitam os filtros ativos (empresa, projeto, período)
-- [ ] **AC7:** Ambas as exibições atualizam via Turbo Stream quando status de task muda para/de `delivered`
-- [ ] **AC8:** Specs cobrem o cálculo incluindo caso com zero entregas (sem divisão por zero)
+- [x] **AC1:** Grid de KPIs exibe card "Média por Entrega" como 4º card da linha "Entregues" com o valor em R$
+- [x] **AC2:** Cálculo: `SUM(validated_hours × hourly_rate) / COUNT(tasks delivered)` — sem N+1 (SQL puro)
+- [x] **AC3:** Para múltiplas empresas, usar média ponderada (cada task com o `hourly_rate` da sua empresa)
+- [x] **AC4:** Exibe `R$ 0,00` quando não há cards entregues no mês (evitar divisão por zero)
+- [x] **AC5:** Ao lado do botão `+`, na margem direita da mesma linha, exibe "Média por Entrega: R$ XX,XX"
+- [x] **AC6:** Ambas as exibições respeitam os filtros ativos (empresa, projeto, período)
+- [x] **AC7:** Ambas as exibições atualizam via Turbo Stream quando status de task muda para/de `delivered`
+- [x] **AC8:** Specs cobrem o cálculo incluindo caso com zero entregas (sem divisão por zero)
 
 ---
 
@@ -131,12 +131,12 @@ Esta story depende dos assigns `@monthly_delivered_count` e `@monthly_delivered_
 
 ## Testes
 
-- [ ] `GET /` — assign `@monthly_avg_per_delivery` presente
-- [ ] Renderiza `_avg_per_delivery` e `_avg_per_delivery_inline`
-- [ ] Exibe `R$ 0,00` quando `delivered_count == 0` (sem divisão por zero)
-- [ ] Exibe valor correto com tasks delivered de uma única empresa
-- [ ] Exibe valor correto com tasks delivered de múltiplas empresas (média ponderada)
-- [ ] Turbo Streams disparados no `deliver` e em `task_items#create/update/destroy`
+- [x] `GET /` — assign `@monthly_avg_per_delivery` presente
+- [x] Renderiza `_avg_per_delivery` e `_avg_per_delivery_inline`
+- [x] Exibe `R$ 0,00` quando `delivered_count == 0` (sem divisão por zero)
+- [x] Exibe valor correto com tasks delivered de uma única empresa
+- [x] Exibe valor correto com tasks delivered de múltiplas empresas (média ponderada)
+- [x] Turbo Streams disparados no `deliver` e em `task_items#create/update/destroy`
 
 ---
 
@@ -153,3 +153,36 @@ Esta story depende dos assigns `@monthly_delivered_count` e `@monthly_delivered_
 ## Estimativa
 
 **2 story points** (~3h) — 2 partials novos + assign no controller + Turbo Streams em 2 controllers + inline ao lado do botão +.
+
+---
+
+## File List
+
+- `app/controllers/concerns/dashboard_calculations.rb` — adicionado `calculate_monthly_avg_per_delivery`
+- `app/controllers/dashboard_controller.rb` — adicionado `@monthly_avg_per_delivery`
+- `app/views/dashboard/index.html.erb` — 4º card + seção inline ao lado do botão +
+- `app/views/dashboard/_avg_per_delivery.html.erb` — criado (card KPI grid)
+- `app/views/dashboard/_avg_per_delivery_inline.html.erb` — criado (inline ao lado do +)
+- `app/controllers/tasks_controller.rb` — turbo_stream.replace em deliver e create modal
+- `app/controllers/task_items_controller.rb` — turbo_stream.replace em create/update/destroy
+- `spec/requests/dashboard_kpis_spec.rb` — 12 novos specs para Story 5.20
+
+---
+
+## Dev Agent Record
+
+### Completion Notes
+
+Implementação concluída em 2026-05-07. Todos os 8 ACs satisfeitos:
+
+- `calculate_monthly_avg_per_delivery` adicionado ao concern usando pluck de IDs + SUM ponderado — sem N+1 e sem duplicação de valores com múltiplos task_items (mesmo padrão da story 5.19).
+- Retorna `0` quando `delivered_count == 0`, evitando divisão por zero (AC4).
+- Dois novos partials criados: `_avg_per_delivery.html.erb` (card no grid) e `_avg_per_delivery_inline.html.erb` (ao lado do botão +).
+- Seção do botão + reformulada com `flex items-center justify-between` para acomodar a média à direita dentro de um `turbo-frame`.
+- Turbo Streams adicionados em 4 actions: `TasksController#deliver`, `TasksController#create` (modal), `TaskItemsController#create/update/destroy`.
+- 12 novos specs em `dashboard_kpis_spec.rb`: zero entregas, uma empresa, múltiplas empresas (média ponderada), múltiplos task_items sem duplicação.
+- Suite completa: **796 specs, 0 falhas**.
+
+### Change Log
+
+- 2026-05-07: Story 5.20 implementada — KPI Média por Entrega no grid e inline ao lado do botão +. 796 specs passando.

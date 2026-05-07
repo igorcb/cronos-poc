@@ -13,5 +13,6 @@ class DashboardController < ApplicationController
     @monthly_delivered_count = calculate_monthly_delivered_count
     @monthly_delivered_hours = calculate_monthly_delivered_hours
     @monthly_delivered_value = calculate_monthly_delivered_value
+    @monthly_avg_per_delivery = calculate_monthly_avg_per_delivery
   end
 end
