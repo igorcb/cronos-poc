@@ -7,8 +7,8 @@
 domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
-status: done
-progress: 100%  # 13 de 13 stories concluidas
+status: in-progress
+progress: 93%  # 13 de 14 stories concluidas
 
 dependencies:
   requires:
@@ -103,6 +103,12 @@ stories:
     description: Adicionar campo código numérico opcional na Task — exibir como "Código - Nome" nas listagens
     notes: Implementado — PR #85 mergeado em 2026-04-23
 
+  014-campo-horas-estimadas-time-field:
+    status: ready-for-dev
+    priority: medium
+    description: Substituir text_field de horas estimadas por time_field nos formulários new/edit — consistência com lançamento de horas
+    notes: Criado 2026-05-07 — mudança cirúrgica em tasks/new.html.erb e tasks/edit.html.erb
+
 retrospective:
   status: done
   date: 2026-01-26
@@ -112,10 +118,11 @@ retrospective:
     - Epic 5 pronto para iniciar
 
 summary:
-  total_stories: 13
+  total_stories: 14
   done: 13
   in_progress: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
-  next_actions: []
+  next_actions:
+    - Implementar story 014 — substituir text_field de horas estimadas por time_field
