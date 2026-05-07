@@ -642,4 +642,69 @@ RSpec.describe TasksController, type: :controller do
       end
     end
   end
+
+  describe "PATCH #deliver" do
+    let!(:task_completed) do
+      create(:task, company: company, project: project, start_date: Date.current, status: "completed")
+    end
+
+    it "requires authentication" do
+      cookies.delete(:session_id)
+      patch :deliver, params: { id: task_completed.id }
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    context "with valid task" do
+      it "marks task as delivered" do
+        patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+        expect(task_completed.reload.status).to eq("delivered")
+      end
+
+      context "with format turbo_stream" do
+        it "returns turbo_stream response" do
+          patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+          expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        end
+
+        it "includes kpi-entregas-mes target in response" do
+          patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+          expect(response.body).to include("kpi-entregas-mes")
+        end
+
+        it "includes kpi-horas-entregues target in response" do
+          patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+          expect(response.body).to include("kpi-horas-entregues")
+        end
+
+        it "includes kpi-valor-entregue target in response" do
+          patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+          expect(response.body).to include("kpi-valor-entregue")
+        end
+
+        it "includes kpi-media-por-entrega target in response" do
+          patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+          expect(response.body).to include("kpi-media-por-entrega")
+        end
+
+        it "includes kpi-media-por-entrega-inline target in response" do
+          patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+          expect(response.body).to include("kpi-media-por-entrega-inline")
+        end
+
+        it "includes tasks-list update in response" do
+          patch :deliver, params: { id: task_completed.id }, format: :turbo_stream
+          expect(response.body).to include("tasks-list")
+        end
+      end
+    end
+
+    context "when update fails" do
+      it "returns html redirect with alert on failure" do
+        allow_any_instance_of(Task).to receive(:update).and_return(false)
+        patch :deliver, params: { id: task_completed.id }
+        expect(response).to redirect_to(tasks_path)
+        expect(flash[:alert]).to be_present
+      end
+    end
+  end
 end

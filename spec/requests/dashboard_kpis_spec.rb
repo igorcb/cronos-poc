@@ -275,5 +275,92 @@ RSpec.describe "Dashboard KPIs", type: :request do
         end
       end
     end
+
+    # Story 5.20 — KPI Média por Entrega
+    describe "KPI Média por Entrega (Story 5.20)" do
+      context "sem tasks delivered no mês" do
+        before { get root_path }
+
+        it "AC8: @monthly_avg_per_delivery = 0 sem divisão por zero" do
+          expect(controller.instance_variable_get(:@monthly_avg_per_delivery)).to eq(0)
+        end
+
+        it "AC4: exibe R$ 0,00 quando não há entregas no mês" do
+          expect(response.body).to include("kpi-media-por-entrega")
+          expect(response.body).to include("R$0,00")
+        end
+
+        it "AC5: exibe elemento inline ao lado do botão +" do
+          expect(response.body).to include("kpi-media-por-entrega-inline")
+        end
+      end
+
+      context "com uma task delivered de uma única empresa" do
+        let!(:task_delivered) do
+          create(:task, company: company, project: project, start_date: Date.current)
+        end
+
+        before do
+          create(:task_item, task: task_delivered, work_date: Date.current,
+                 start_time: "09:00", end_time: "11:00")
+          task_delivered.update_columns(status: "delivered")
+          task_delivered.reload
+          get root_path
+        end
+
+        it "AC2: calcula média = validated_hours * hourly_rate / count" do
+          avg = controller.instance_variable_get(:@monthly_avg_per_delivery)
+          expected = task_delivered.validated_hours * company.hourly_rate / 1
+          expect(avg).to be_within(0.01).of(expected)
+        end
+
+        it "AC1: exibe o card Média por Entrega no grid" do
+          expect(response.body).to include("kpi-media-por-entrega")
+        end
+      end
+
+      context "com tasks delivered de múltiplas empresas (média ponderada)" do
+        let(:company2) { create(:company, hourly_rate: 200.00) }
+        let(:project2) { create(:project, company: company2) }
+
+        let!(:task_a) { create(:task, company: company,  project: project,  start_date: Date.current) }
+        let!(:task_b) { create(:task, company: company2, project: project2, start_date: Date.current) }
+
+        before do
+          create(:task_item, task: task_a, work_date: Date.current, start_time: "09:00", end_time: "11:00")
+          create(:task_item, task: task_b, work_date: Date.current, start_time: "14:00", end_time: "16:00")
+          task_a.update_columns(status: "delivered")
+          task_b.update_columns(status: "delivered")
+          task_a.reload
+          task_b.reload
+          get root_path
+        end
+
+        it "AC3: usa média ponderada (SUM(hours*rate) / COUNT)" do
+          avg = controller.instance_variable_get(:@monthly_avg_per_delivery)
+          expected_value = (task_a.validated_hours * company.hourly_rate) + (task_b.validated_hours * company2.hourly_rate)
+          expected_avg = expected_value / 2
+          expect(avg).to be_within(0.01).of(expected_avg)
+        end
+      end
+
+      context "com task delivered com múltiplos task_items (sem duplicação)" do
+        let!(:task_multi) { create(:task, company: company, project: project, start_date: Date.current) }
+
+        before do
+          create(:task_item, task: task_multi, work_date: Date.current, start_time: "09:00", end_time: "11:00")
+          create(:task_item, task: task_multi, work_date: Date.current, start_time: "14:00", end_time: "16:00")
+          task_multi.update_columns(status: "delivered")
+          task_multi.reload
+          get root_path
+        end
+
+        it "não duplica valor quando task tem múltiplos task_items" do
+          avg = controller.instance_variable_get(:@monthly_avg_per_delivery)
+          expected = task_multi.validated_hours * company.hourly_rate / 1
+          expect(avg).to be_within(0.01).of(expected)
+        end
+      end
+    end
   end
 end

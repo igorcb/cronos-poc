@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: in-progress
-progress: 95%  # 19 de 20 stories concluidas
+status: done
+progress: 100%  # 20 de 20 stories concluidas
 
 dependencies:
   requires:
@@ -133,20 +133,21 @@ stories:
     notes: Concluído 2026-05-06 — 789 specs passando; bug de duplicação corrigido (pluck+sum); QA review completo
 
   020-kpi-media-por-entrega:
-    status: ready-for-dev
+    status: done
     priority: high
-    description: KPI Média por Entrega (R$) no grid de KPIs e ao lado do botão +
-    notes: Criado 2026-05-06 — fórmula planilha =horas_entregues/qtde_entregues×hourly_rate; depende da story 5.19
+    description: KPI Média por Entrega (R$) inline ao lado do botão +
+    notes: Concluído 2026-05-07 — 131 specs passando; inline ao lado do +; Turbo Streams em 4 actions; bug fix replace turbo-frame
 
 retrospective:
   status: optional
 
 summary:
   total_stories: 20
-  done: 19
+  done: 20
   in_progress: 0
-  ready_for_dev: 1
+  review: 0
+  ready_for_dev: 0
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 020 — KPI Média por Entrega no grid e ao lado do botão +
+    - DM-005 completo — todas as 20 stories concluídas

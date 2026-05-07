@@ -88,6 +88,16 @@ RSpec.describe TaskItemsController, type: :controller do
           post :create, params: valid_params, format: :turbo_stream
           expect(response.body).to include("task-items-list-#{task.id}")
         end
+
+        it "includes kpi-media-por-entrega target in response" do
+          post :create, params: valid_params, format: :turbo_stream
+          expect(response.body).to include("kpi-media-por-entrega")
+        end
+
+        it "includes kpi-media-por-entrega-inline target in response" do
+          post :create, params: valid_params, format: :turbo_stream
+          expect(response.body).to include("kpi-media-por-entrega-inline")
+        end
       end
     end
 
@@ -184,6 +194,16 @@ RSpec.describe TaskItemsController, type: :controller do
           patch :update, params: update_params, format: :turbo_stream
           expect(response.body).to include("action=\"replace\"")
         end
+
+        it "includes kpi-media-por-entrega target in response" do
+          patch :update, params: update_params, format: :turbo_stream
+          expect(response.body).to include("kpi-media-por-entrega")
+        end
+
+        it "includes kpi-media-por-entrega-inline target in response" do
+          patch :update, params: update_params, format: :turbo_stream
+          expect(response.body).to include("kpi-media-por-entrega-inline")
+        end
       end
     end
   end
@@ -246,6 +266,16 @@ RSpec.describe TaskItemsController, type: :controller do
         expect(response.body).to include("dashboard_monthly_hours")
         expect(response.body).to include("dashboard_daily_value")
         expect(response.body).to include("dashboard_monthly_value")
+      end
+
+      it "includes kpi-media-por-entrega target in response" do
+        delete :destroy, params: { task_id: task.id, id: task_item.id }, format: :turbo_stream
+        expect(response.body).to include("kpi-media-por-entrega")
+      end
+
+      it "includes kpi-media-por-entrega-inline target in response" do
+        delete :destroy, params: { task_id: task.id, id: task_item.id }, format: :turbo_stream
+        expect(response.body).to include("kpi-media-por-entrega-inline")
       end
     end
 

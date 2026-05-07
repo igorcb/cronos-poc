@@ -156,6 +156,16 @@ RSpec.describe "Dashboard Modal Nova Tarefa", type: :request do
       post tasks_path, params: valid_params, headers: { "Turbo-Frame" => "modal" }
       expect(response.body).to include('target="dashboard_daily_value"')
     end
+
+    it "Story5.20: responde com turbo-stream para atualizar kpi-media-por-entrega" do
+      post tasks_path, params: valid_params, headers: { "Turbo-Frame" => "modal" }
+      expect(response.body).to include('target="kpi-media-por-entrega"')
+    end
+
+    it "Story5.20: responde com turbo-stream para atualizar kpi-media-por-entrega-inline" do
+      post tasks_path, params: valid_params, headers: { "Turbo-Frame" => "modal" }
+      expect(response.body).to include('target="kpi-media-por-entrega-inline"')
+    end
   end
 
   # AC4: Validação — modal permanece aberto com erros
