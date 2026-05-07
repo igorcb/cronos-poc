@@ -8,7 +8,7 @@ domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
 status: in-progress
-progress: 93%  # 13 de 14 stories concluidas
+progress: 87%  # 13 de 15 stories concluidas
 
 dependencies:
   requires:
@@ -109,6 +109,12 @@ stories:
     description: Substituir text_field de horas estimadas por time_field nos formulários new/edit — consistência com lançamento de horas
     notes: Criado 2026-05-07 — mudança cirúrgica em tasks/new.html.erb e tasks/edit.html.erb
 
+  015-gravar-valor-lancamento-e-entrega:
+    status: ready-for-dev
+    priority: high
+    description: Gravar hourly_rate e value em task_items no lançamento; hourly_rate e delivered_value em tasks na entrega
+    notes: Criado 2026-05-07 — 2 migrations + callbacks + atualização de views
+
 retrospective:
   status: done
   date: 2026-01-26
@@ -118,11 +124,12 @@ retrospective:
     - Epic 5 pronto para iniciar
 
 summary:
-  total_stories: 14
+  total_stories: 15
   done: 13
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 2
   backlog: 0
   blockers: []
   next_actions:
     - Implementar story 014 — substituir text_field de horas estimadas por time_field
+    - Implementar story 015 — gravar valor monetário no lançamento e na entrega
