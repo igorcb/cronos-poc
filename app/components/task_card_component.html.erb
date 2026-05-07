@@ -9,7 +9,7 @@
     <%= task.validated_hours.present? ? task.validated_hours_hm : "-" %>
   </td>
   <td class="px-4 py-3 text-sm text-gray-300">
-    <%= task.calculated_value.present? ? number_to_currency(task.calculated_value, unit: "R$", separator: ",", delimiter: ".") : "-" %>
+    <%= number_to_currency(task.display_value, unit: "R$", separator: ",", delimiter: ".") %>
   </td>
   <td class="px-4 py-3 text-sm whitespace-nowrap">
     <div class="flex gap-3 items-center">

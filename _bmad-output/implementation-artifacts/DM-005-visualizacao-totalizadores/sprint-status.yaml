@@ -139,10 +139,10 @@ stories:
     notes: Concluído 2026-05-07 — 131 specs passando; inline ao lado do +; Turbo Streams em 4 actions; bug fix replace turbo-frame
 
   021-coluna-valor-task-dashboard-e-listagem:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Exibir valor monetário (R$) de cada task ao lado de Est/Real no dashboard e na listagem
-    notes: Criado 2026-05-07 — usa calculated_value existente; mudança cirúrgica em _task_row e cabeçalho
+    notes: Concluído 2026-05-07 — inclui pré-requisito 4.15 (migrations + callbacks); 835 specs passando; QA review completo
 
 retrospective:
   status: optional

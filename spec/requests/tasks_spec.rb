@@ -261,4 +261,33 @@ RSpec.describe "Tasks", type: :request do
       expect(response.body).to include("Ex: 14335")
     end
   end
+
+  describe "GET /tasks — coluna Valor (AC4 story 5.21)" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+
+    before { sign_in(user) }
+
+    it "exibe R$0,00 para task sem lançamentos" do
+      create(:task, company: company, project: project, start_date: Date.current)
+      get tasks_path
+      expect(response.body).to include("R$0,00")
+    end
+
+    it "exibe valor acumulado para task não entregue com lançamentos" do
+      task = create(:task, company: company, project: project, start_date: Date.current)
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      get tasks_path
+      expect(response.body).to include("R$100,00")
+    end
+
+    it "exibe delivered_value (snapshot) para task entregue" do
+      task = create(:task, company: company, project: project, start_date: Date.current)
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      task.update!(status: "completed")
+      task.update!(status: "delivered")
+      get tasks_path
+      expect(response.body).to include("R$100,00")
+    end
+  end
 end
