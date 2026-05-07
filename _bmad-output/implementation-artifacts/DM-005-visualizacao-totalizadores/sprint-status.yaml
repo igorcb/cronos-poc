@@ -8,7 +8,7 @@ domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
 status: in-progress
-progress: 85%  # 17 de 20 stories concluidas
+progress: 95%  # 19 de 20 stories concluidas
 
 dependencies:
   requires:
@@ -121,10 +121,10 @@ stories:
     notes: PR #95 mergeado
 
   018-exclusao-task-item-no-modal:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Botão excluir (lixeira) por linha do histórico no modal — DELETE com confirmação, recalcula validated_hours e atualiza Turbo Streams
-    notes: DA-035 — motivado por lançamento duplicado em produção distorcendo totais
+    notes: PR #113 mergeado — DA-035 implementado
 
   019-novos-kpis-dashboard:
     status: done
@@ -143,12 +143,10 @@ retrospective:
 
 summary:
   total_stories: 20
-  done: 17
+  done: 19
   in_progress: 0
-  ready_for_dev: 3
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 018 — exclusão de TaskItem no modal (DA-035)
-    - Implementar story 019 — novos KPIs de entregas (Entregas Mês, Horas Entregues, Valor Entregue)
     - Implementar story 020 — KPI Média por Entrega no grid e ao lado do botão +
