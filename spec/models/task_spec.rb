@@ -506,4 +506,73 @@ RSpec.describe Task, type: :model do
       end
     end
   end
+
+  describe "#total_value" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "returns 0 when there are no task_items" do
+      expect(task.total_value).to eq(0)
+    end
+
+    it "sums value from task_items" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      create(:task_item, task: task, start_time: "14:00", end_time: "15:30")
+      task.reload
+      expect(task.total_value).to eq(250.0)
+    end
+  end
+
+  describe "#display_value" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    context "when task is not delivered" do
+      it "returns total_value (sum of task_items.value)" do
+        create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+        task.reload
+        expect(task.display_value).to eq(task.total_value)
+      end
+
+      it "returns 0 when no task_items exist" do
+        expect(task.display_value).to eq(0)
+      end
+    end
+
+    context "when task is delivered" do
+      it "returns delivered_value (snapshot) even if delivered_value is manually changed" do
+        create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+        task.update!(status: "completed")
+        task.update!(status: "delivered")
+        task.reload
+
+        expect(task.delivered_value).to eq(100.0)
+        expect(task.display_value).to eq(task.delivered_value)
+        expect(task.display_value).to eq(100.0)
+      end
+
+      it "returns 0 when delivered_value is nil" do
+        task.update_columns(status: "delivered", delivered_value: nil)
+        expect(task.display_value).to eq(0)
+      end
+    end
+  end
+
+  describe "callbacks — #update_delivery_date" do
+    let(:company) { create(:company, hourly_rate: 150) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "snapshots hourly_rate and delivered_value when delivered" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      task.update!(status: "completed")
+      task.update!(status: "delivered")
+      task.reload
+
+      expect(task.hourly_rate).to eq(150)
+      expect(task.delivered_value).to eq(150.0)
+    end
+  end
 end

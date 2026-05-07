@@ -247,6 +247,77 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
       end
     end
 
+    # AC1 + AC6: Coluna Valor no dashboard
+    context "when verifying coluna Valor" do
+      let(:company) { create(:company, hourly_rate: 100) }
+      let(:project) { create(:project, company: company) }
+      let!(:task) do
+        create(:task,
+          name: "Task Valor Test",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day,
+          status: "pending")
+      end
+
+      before { get root_path }
+
+      it "AC6: exibe cabeçalho Valor" do
+        expect(response.body).to include("Valor")
+      end
+
+      it "AC5: exibe R$0,00 quando task sem lançamentos" do
+        expect(response.body).to include("R$0,00")
+      end
+    end
+
+    context "when task has task_items with value" do
+      let(:company) { create(:company, hourly_rate: 100) }
+      let(:project) { create(:project, company: company) }
+      let!(:task) do
+        create(:task,
+          name: "Task Com Valor",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day,
+          status: "pending")
+      end
+      let!(:task_item) { create(:task_item, task: task, start_time: "09:00", end_time: "10:00", work_date: Date.current) }
+
+      before { get root_path }
+
+      it "AC2: exibe valor acumulado dos lançamentos para task não entregue" do
+        task.reload
+        expect(task.display_value).to eq(100.0)
+        expect(response.body).to include("R$100,00")
+      end
+    end
+
+    context "when task is delivered" do
+      let(:company) { create(:company, hourly_rate: 100) }
+      let(:project) { create(:project, company: company) }
+      let!(:task) do
+        t = create(:task,
+          name: "Task Entregue",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day,
+          status: "pending")
+        create(:task_item, task: t, start_time: "09:00", end_time: "10:00", work_date: Date.current)
+        t.update!(status: "completed")
+        t.update!(status: "delivered")
+        t
+      end
+
+      before { get root_path }
+
+      it "AC3: exibe delivered_value (snapshot) para task entregue" do
+        task.reload
+        expect(task.delivered_value).to eq(100.0)
+        expect(response.body).to include("R$100,00")
+      end
+    end
+
     # Autenticação: dashboard é protegido
     context "when not authenticated" do
       before do

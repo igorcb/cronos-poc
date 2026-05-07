@@ -92,6 +92,14 @@ class Task < ApplicationRecord
     company.hourly_rate * total_hours
   end
 
+  def total_value
+    task_items.sum(:value)
+  end
+
+  def display_value
+    delivered? ? (delivered_value || 0) : total_value
+  end
+
   def recalculate_status!
     return if delivered?
 
@@ -191,5 +199,7 @@ class Task < ApplicationRecord
 
   def update_delivery_date
     self.delivery_date = Date.today
+    self.hourly_rate = company&.hourly_rate      # snapshot de auditoria — tarifa vigente na entrega
+    self.delivered_value = task_items.sum(:value) # snapshot imutável — não recalcula após entrega
   end
 end

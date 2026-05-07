@@ -22,6 +22,7 @@ class TaskItem < ApplicationRecord
 
   # CALLBACKS
   before_save :calculate_hours_worked
+  before_save :calculate_value
   after_save :update_task_status
   after_destroy :update_task_status
   after_commit :notify_totals_changed
@@ -79,6 +80,12 @@ class TaskItem < ApplicationRecord
     duration_in_seconds = end_time - start_time
     duration_in_seconds += 86400 if duration_in_seconds < 0
     self.hours_worked = (duration_in_seconds / 3600.0).round(4)
+  end
+
+  def calculate_value
+    rate = task.company&.hourly_rate || 0
+    self.hourly_rate = rate
+    self.value = (hours_worked || 0) * rate
   end
 
   # Callback: atualiza status e horas da Task pai

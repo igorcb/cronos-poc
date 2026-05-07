@@ -9,6 +9,9 @@
     <span class="text-gray-500 mx-1">/</span>
     <span class="<%= task.total_hours > 0 ? 'text-green-400' : 'text-gray-500' %>"><%= task.total_hours_hm %></span>
   </td>
+  <td class="px-4 py-3 text-sm text-gray-300">
+    <%= number_to_currency(task.display_value, unit: "R$", separator: ",", delimiter: ".") %>
+  </td>
   <td class="px-4 py-3 flex items-center justify-end gap-1">
     <% if task.delivered? %>
       <span role="button"

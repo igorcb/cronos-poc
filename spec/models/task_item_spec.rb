@@ -330,4 +330,32 @@ RSpec.describe TaskItem, type: :model do
       end
     end
   end
+
+  describe "#calculate_value callback" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "stores hourly_rate from company on create" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      expect(item.hourly_rate).to eq(100)
+    end
+
+    it "stores value = hours_worked * hourly_rate on create" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      expect(item.value).to eq(100.0)
+    end
+
+    it "stores value proportional to hours worked" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      expect(item.value).to eq(150.0)
+    end
+
+    it "recalculates value on update" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      expect(item.value).to eq(100.0)
+      item.update!(start_time: "09:00", end_time: "11:00")
+      expect(item.value).to eq(200.0)
+    end
+  end
 end
