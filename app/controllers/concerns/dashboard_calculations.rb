@@ -2,8 +2,12 @@ module DashboardCalculations
   def monthly_tasks
     Task
       .includes(:company, :project, :task_items)
-      .joins(:task_items)
-      .where(task_items: { work_date: Date.current.all_month })
+      .left_joins(:task_items)
+      .where(
+        "task_items.work_date BETWEEN ? AND ? OR (task_items.id IS NULL AND tasks.start_date BETWEEN ? AND ?)",
+        Date.current.beginning_of_month, Date.current.end_of_month,
+        Date.current.beginning_of_month, Date.current.end_of_month
+      )
       .distinct
       .order(start_date: :desc, created_at: :desc)
   end
