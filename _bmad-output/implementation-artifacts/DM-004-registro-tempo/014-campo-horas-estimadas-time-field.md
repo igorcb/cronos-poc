@@ -1,6 +1,6 @@
 # Story 4.14: Substituir Campo Horas Estimadas por time_field
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-004-registro-tempo
 **Data:** 2026-05-07
 **Epic:** Epic 4 — Task Management
@@ -27,12 +27,12 @@ O objetivo é padronizar o campo de horas estimadas para `time_field`, igual ao 
 
 ## Critérios de Aceite
 
-- [ ] **AC1:** Campo "Horas Estimadas" em `tasks/new.html.erb` (modal e versão normal) usa `time_field` no lugar de `text_field`
-- [ ] **AC2:** Campo "Horas Estimadas" em `tasks/edit.html.erb` usa `time_field` no lugar de `text_field`
-- [ ] **AC3:** O label é simplificado para "Horas Estimadas" (sem o sufixo `(HH:MM)`)
-- [ ] **AC4:** O hint de formato (`Formato: HH:MM (ex: 03:00, 02:30, 18:00)`) é removido — o `time_field` nativo dispensa instrução
-- [ ] **AC5:** Validações existentes no model (`estimated_hours_hm_must_be_valid`) continuam funcionando — o `time_field` entrega valor no formato `HH:MM` compatível com o parser atual
-- [ ] **AC6:** Testes existentes passam sem regressão
+- [x] **AC1:** Campo "Horas Estimadas" em `tasks/new.html.erb` (modal e versão normal) usa `time_field` no lugar de `text_field`
+- [x] **AC2:** Campo "Horas Estimadas" em `tasks/edit.html.erb` usa `time_field` no lugar de `text_field`
+- [x] **AC3:** O label é simplificado para "Horas Estimadas" (sem o sufixo `(HH:MM)`)
+- [x] **AC4:** O hint de formato (`Formato: HH:MM (ex: 03:00, 02:30, 18:00)`) é removido — o `time_field` nativo dispensa instrução
+- [x] **AC5:** Validações existentes no model (`estimated_hours_hm_must_be_valid`) continuam funcionando — o `time_field` entrega valor no formato `HH:MM` compatível com o parser atual
+- [x] **AC6:** Testes existentes passam sem regressão — 34 examples, 0 failures
 
 ---
 
@@ -92,3 +92,27 @@ O `time_field` espera um valor no formato `HH:MM`. O método `estimated_hours_hm
 ## Estimativa
 
 **0,5 story points** (~1h) — substituição cirúrgica em 2 arquivos de view, sem mudança de model ou controller.
+
+---
+
+## Dev Agent Record
+
+**Implementado por:** Amelia (bmad-agent-dev)
+**Data:** 2026-05-11
+**Branch:** feature-4-14-campo-horas-estimadas-time-field
+
+### Arquivos Modificados
+
+| Arquivo | Mudança |
+|---------|---------|
+| `app/views/tasks/new.html.erb` | `text_field` → `time_field` em modal e versão normal; label simplificado; hint e atributos pattern/placeholder/inputmode/title removidos |
+| `app/views/tasks/edit.html.erb` | `text_field` → `time_field`; label simplificado; hint e atributos redundantes removidos |
+
+### Testes
+
+- `spec/requests/tasks_spec.rb` — 34 examples, 0 failures
+
+### Decisões
+
+- Nenhuma mudança no model ou controller necessária — `time_field` entrega `HH:MM` compatível com `hm_to_decimal` e `estimated_hours_hm_must_be_valid`
+- `aria-describedby` apontava para `estimated-hours-hint` removido — atualizado para apontar apenas ao erro quando presente
