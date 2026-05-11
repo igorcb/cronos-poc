@@ -107,14 +107,15 @@ RSpec.describe "Mobile TimeEntry Form Optimization", type: :request do
 
   # AC6: Validações client-side funcionam em mobile
   describe "AC6 - Validações client-side para mobile" do
-    it "GET /tasks/new: campo estimated_hours_hm tem pattern para formato HH:MM" do
+    it "GET /tasks/new: campo estimated_hours_hm usa time_field (type=time) para validação nativa" do
       get new_task_path
-      expect(response.body).to match(/pattern=["']\\d\{1,2\}:\\d\{2\}["']/)
+      expect(response.body).to include('type="time"')
+      expect(response.body).to include('id="task_estimated_hours_hm"')
     end
 
-    it "GET /tasks/new: campo estimated_hours_hm tem title explicando o formato" do
+    it "GET /tasks/new: campo estimated_hours_hm não exibe hint de formato — time_field nativo dispensa" do
       get new_task_path
-      expect(response.body).to include("Formato HH:MM")
+      expect(response.body).not_to include("Formato: HH:MM")
     end
 
     it "GET /tasks/new: campo nome tem aria-required para validação Stimulus (story 1.10)" do
@@ -130,9 +131,10 @@ RSpec.describe "Mobile TimeEntry Form Optimization", type: :request do
       expect(response.body).to include('aria-required="true"')
     end
 
-    it "GET /tasks/:id/edit: campo estimated_hours_hm tem pattern HH:MM" do
+    it "GET /tasks/:id/edit: campo estimated_hours_hm usa time_field (type=time)" do
       get edit_task_path(task)
-      expect(response.body).to match(/pattern=["']\\d\{1,2\}:\\d\{2\}["']/)
+      expect(response.body).to include('type="time"')
+      expect(response.body).to include('id="task_estimated_hours_hm"')
     end
   end
 end
