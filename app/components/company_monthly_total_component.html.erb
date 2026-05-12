@@ -1,0 +1,18 @@
+<div class="bg-gray-800 border border-gray-700 rounded-lg px-6 py-4">
+  <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Totais do Mês por Empresa</p>
+  <% if @totals.any? %>
+    <div class="space-y-2">
+      <% @totals.each do |row| %>
+        <div class="flex items-center justify-between">
+          <span class="text-white font-medium"><%= row.name %></span>
+          <div class="flex gap-4 text-sm">
+            <span class="text-gray-300"><%= formatted_hours(row) %></span>
+            <span class="text-white font-bold"><%= formatted_value(row) %></span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-gray-400 text-sm">Sem registros no mês</p>
+  <% end %>
+</div>

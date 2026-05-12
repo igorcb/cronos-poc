@@ -21,6 +21,12 @@ RSpec.describe "Authentication", type: :request do
         expect(response).to have_http_status(:success)
         expect(response.body).to include("Dashboard")
       end
+
+      it "exibe link Minha Conta no navbar com href correto (desktop e mobile)" do
+        get root_path
+        expect(response.body).to include('href="/profile"')
+        expect(response.body).to include("Minha Conta")
+      end
     end
   end
 end

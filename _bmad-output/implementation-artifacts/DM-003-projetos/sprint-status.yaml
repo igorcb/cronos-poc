@@ -1,0 +1,60 @@
+# Sprint Status - DM-003: Gestao de Projetos
+# Dominio: DM-003-projetos
+# Tipo: Suporte / Cadastro
+# Epic: Epic 3
+# Gerado: 2026-03-27
+
+domain: DM-003
+domain_name: Gestao de Projetos
+domain_type: Suporte / Cadastro
+status: done
+progress: 100%
+
+dependencies:
+  requires:
+    - DM-001  # Infraestrutura base
+    - DM-002  # Company model (FK)
+
+stories:
+  001-criar-model-e-migration-de-projects-com-foreign-key:
+    status: done
+    priority: critical
+    description: Criar model Project com FK para Company
+
+  002-implementar-crud-de-projects-index-e-new-create:
+    status: done
+    priority: high
+    description: Implementar CRUD de projects - Index e New/Create
+    notes: Code reviewed and fixed
+
+  003-implementar-edit-update-e-destroy-de-projects:
+    status: done
+    priority: high
+    description: Implementar Edit/Update e Destroy de projects
+    notes: "Code reviewed: 10 issues fixed (5 HIGH, 3 MEDIUM, 2 LOW)"
+
+  004-criar-factory-e-testes-para-project:
+    status: done
+    priority: medium
+    description: Criar factory e testes para Project
+    notes: "Code reviewed: 5 issues fixed (2 HIGH, 3 MEDIUM)"
+
+  005-retro:
+    status: done
+    priority: low
+    description: Retrospectiva Epic 3
+    notes: "2026-01-19 - Mudanca arquitetural significativa proposta para Epic 4 (TimeEntries -> Tasks+TaskItems)"
+
+retrospective:
+  status: done
+  date: 2026-01-19
+  key_decision: Reformulacao do modelo de dados - TimeEntries substituido por Tasks + TaskItems
+
+summary:
+  total_stories: 5
+  done: 5
+  in_progress: 0
+  ready_for_dev: 0
+  backlog: 0
+  blockers: []
+  next_actions: []

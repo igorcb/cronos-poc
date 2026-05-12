@@ -1,0 +1,158 @@
+# Sprint Status - DM-005: Visualizacao & Totalizadores
+# Dominio: DM-005-visualizacao-totalizadores
+# Tipo: Consumo / Apresentacao
+# Epic: Epic 5
+# Gerado: 2026-03-27
+
+domain: DM-005
+domain_name: Visualizacao & Totalizadores
+domain_type: Consumo / Apresentacao
+status: done
+progress: 100%  # 21 de 21 stories concluidas
+
+dependencies:
+  requires:
+    - DM-001  # Infraestrutura base
+    - DM-002  # Company (hourly_rate, name)
+    - DM-003  # Project (name)
+    - DM-004  # Tasks + TaskItems (dados primarios)
+
+stories:
+  001-implementar-index-de-timeentries-com-eager-loading:
+    status: done
+    priority: critical
+    description: Index de Tasks com eager loading (includes company, project, task_items)
+    notes: Prevenir N+1 queries - meta 4 queries fixas
+
+  002-criar-viewcomponent-para-timeentry-card:
+    status: done
+    priority: high
+    description: ViewComponent para Task Card (status badge, horas, valor)
+    notes: TaskCardComponent, StatusBadgeComponent
+
+  003-implementar-totalizadores-dinamicos-total-do-dia:
+    status: done
+    priority: high
+    description: Totalizadores dinamicos - total de horas do dia
+    notes: TotalizerComponent, DailyTotalComponent
+
+  004-implementar-totalizadores-por-empresa-no-mes:
+    status: done
+    priority: high
+    description: Totalizadores por empresa no mes (horas e valor R$)
+    notes: CompanyMonthlyTotalComponent com queries agregadas
+
+  005-configurar-turbo-streams-para-atualizacao-em-tempo-real:
+    status: done
+    priority: medium
+    description: Turbo Streams para atualizacao de totalizadores sem reload
+    notes: broadcast_replace_to para daily_total e company_total
+
+  006-exibir-lista-de-tarefas-do-mes-no-dashboard:
+    status: done
+    priority: medium
+    description: Exibir lista read-only de tarefas do mês no dashboard com eager loading
+    notes: Criado 2026-04-21 — DashboardController + nova seção na view
+
+  007-substituir-acoes-rapidas-por-icone-nova-tarefa:
+    status: done
+    priority: low
+    description: Remover seção "Ações Rápidas", substituir por ícone + estilo bg-blue-900 p-3
+    notes: PR #86 mergeado
+
+  008-modal-nova-tarefa-no-dashboard:
+    status: done
+    priority: high
+    description: Modal Turbo Frame para criar nova tarefa no dashboard sem reload
+    notes: PR #87 mergeado
+
+  009-modal-computar-horas-task-item:
+    status: done
+    priority: high
+    description: Modal para lançar task_item ao clicar na tarefa — histórico + totalizadores em tempo real
+    notes: PR #88 mergeado
+
+  010-expandir-kpis-dashboard-6-metricas:
+    status: done
+    priority: high
+    description: Expandir dashboard de 3 para 6 KPIs globais — qtde tasks mês, qtde tasks hoje, valor horas dia
+    notes: PR #90 mergeado
+
+  011-botao-entregar-task-no-dashboard:
+    status: done
+    priority: high
+    description: Botão check ao lado do relógio — marcar task como delivered via PATCH Turbo Stream; habilitado só quando completed
+    notes: PR #98 mergeado em 2026-05-04
+
+  012-remover-blur-overlay-modal:
+    status: done
+    priority: medium
+    description: Remover backdrop-blur-sm dos modais — tela de trás visível com escurecimento bg-black/80
+    notes: Criado 2026-04-26 — implementado e validado 2026-05-04
+
+  013-exibir-horas-realizadas-ao-lado-do-estimado:
+    status: done
+    priority: medium
+    description: Exibir horas realizadas ao lado do estimado no dashboard — formato "HH:MM / HH:MM"
+    notes: PR #100 mergeado em 2026-05-05
+
+  014-migrar-sse-para-actioncable-broadcast:
+    status: done
+    priority: high
+    description: Migrar SSE para ActionCable broadcast — atualização cross-tab em tempo real
+    notes: PR #92 mergeado
+
+  015-corrigir-fuso-horario-brasilia:
+    status: done
+    priority: high
+    description: Corrigir fuso horário para Brasília (UTC-3)
+    notes: PR #93 mergeado
+
+  016-ajustes-visuais-dashboard-badges-kpis-botoes:
+    status: done
+    priority: medium
+    description: Ajustes visuais dashboard — badges, botões e task_row
+    notes: PR #94 mergeado
+
+  017-edicao-task-item-no-modal:
+    status: done
+    priority: high
+    description: Edição de task_item no mesmo formulário modal
+    notes: PR #95 mergeado
+
+  018-exclusao-task-item-no-modal:
+    status: done
+    priority: high
+    description: Botão excluir (lixeira) por linha do histórico no modal — DELETE com confirmação, recalcula validated_hours e atualiza Turbo Streams
+    notes: PR #113 mergeado — DA-035 implementado
+
+  019-novos-kpis-dashboard:
+    status: done
+    priority: high
+    description: Novos KPIs — Entregas do Mês, Horas Entregues, Valor Entregue (linha topo do grid 3×3)
+    notes: Concluído 2026-05-06 — 789 specs passando; bug de duplicação corrigido (pluck+sum); QA review completo
+
+  020-kpi-media-por-entrega:
+    status: done
+    priority: high
+    description: KPI Média por Entrega (R$) inline ao lado do botão +
+    notes: Concluído 2026-05-07 — 131 specs passando; inline ao lado do +; Turbo Streams em 4 actions; bug fix replace turbo-frame
+
+  021-coluna-valor-task-dashboard-e-listagem:
+    status: done
+    priority: medium
+    description: Exibir valor monetário (R$) de cada task ao lado de Est/Real no dashboard e na listagem
+    notes: Concluído 2026-05-07 — inclui pré-requisito 4.15 (migrations + callbacks); 835 specs passando; QA review completo
+
+retrospective:
+  status: optional
+
+summary:
+  total_stories: 21
+  done: 21
+  in_progress: 0
+  ready_for_dev: 0
+  backlog: 0
+  blockers: []
+  next_actions:
+    - DM-005 completo — todas as 21 stories concluídas
