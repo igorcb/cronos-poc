@@ -1,0 +1,62 @@
+# Sprint Status - DM-007: Experiencia Mobile & Responsividade
+# Dominio: DM-007-experiencia-mobile
+# Tipo: Transversal / Experiencia
+# Epic: Epic 8
+# Gerado: 2026-03-27
+
+domain: DM-007
+domain_name: Experiencia Mobile & Responsividade
+domain_type: Transversal / Experiencia
+status: in-progress
+progress: 80%  # 4 de 5 stories concluidas
+
+dependencies:
+  requires:
+    - DM-001  # Tailwind CSS base
+    - DM-004  # Forms de Task (prioridade maxima para mobile)
+    - DM-005  # Cards e totalizadores adaptativos
+    - DM-006  # Filtros collapsible em mobile
+
+stories:
+  001-implementar-mobile-first-com-tailwind-breakpoints:
+    status: done
+    priority: critical
+    description: Mobile-first com Tailwind breakpoints padrao (md/lg)
+    notes: Validado via Playwright 2026-04-08
+
+  002-otimizar-timeentry-form-para-mobile:
+    status: done
+    priority: critical
+    description: Otimizar form de Task/TaskItem para mobile (touch-friendly)
+    notes: Validado via Playwright 2026-04-14
+
+  003-garantir-acessibilidade-wcag-nivel-a:
+    status: done
+    priority: high
+    description: Garantir acessibilidade WCAG nivel A
+    notes: "57 testes, navbar_controller fix, Playwright validado 2026-04-14"
+
+  004-testar-responsividade-em-multiplos-dispositivos:
+    status: done
+    priority: medium
+    description: Testar responsividade em multiplos viewports
+    notes: "iPhone SE 375px, iPhone 14 390px, iPad 768px, Desktop 1440px"
+
+  005-full-width-layout-todas-paginas:
+    status: ready-for-dev
+    priority: medium
+    description: Aproveitar largura total da tela (max-w-screen-2xl) em todas as páginas mantendo mobile
+    notes: Criado 2026-05-12 — substituição cirúrgica de max-w-7xl/sm:max-w-2xl/sm:max-w-lg em 10 arquivos; auth e modal mantêm largura limitada
+
+retrospective:
+  status: optional
+
+summary:
+  total_stories: 5
+  done: 4
+  in_progress: 0
+  ready_for_dev: 1
+  backlog: 0
+  blockers: []
+  next_actions:
+    - Implementar story 005 — full-width layout em todas as páginas

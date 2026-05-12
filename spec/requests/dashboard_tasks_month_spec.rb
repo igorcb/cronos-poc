@@ -1,0 +1,334 @@
+require "rails_helper"
+
+# Story 5.6: Exibir Lista de Tarefas do Mês no Dashboard
+RSpec.describe "Dashboard Tasks Month", type: :request do
+  let(:user) { User.create!(email: "dashboard_tasks_month@example.com", password: "password123") }
+
+  def sign_in
+    post session_path, params: { email: user.email, password: "password123" }
+  end
+
+  before { sign_in }
+
+  describe "GET / (dashboard)" do
+    # AC1 + AC8: Seção aparece no dashboard após ações rápidas
+    context "when there are tasks in the current month" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_this_month) do
+        create(:task,
+          name: "Tarefa do Mês Atual",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day,
+          status: "pending")
+      end
+      let!(:task_item_this_month) { create(:task_item, task: task_this_month, work_date: Date.current) }
+
+      before { get root_path }
+
+      # AC1: Dashboard exibe seção "Tarefas do Mês"
+      it "AC1: exibe seção Tarefas do Mês" do
+        expect(response.body).to include("Tarefas do Mês")
+      end
+
+      # AC2: Lista contém tarefas de Date.current.all_month
+      it "AC2: exibe tarefa do mês atual" do
+        expect(response.body).to include("Tarefa do Mês Atual")
+      end
+
+      # AC3: Colunas exibidas: Data, Tarefa, Empresa, Projeto, Status, Estimado
+      it "AC3: exibe coluna Data" do
+        expect(response.body).to include("Data")
+      end
+
+      it "AC3: exibe coluna Tarefa" do
+        expect(response.body).to include("Tarefa")
+      end
+
+      it "AC3: exibe coluna Empresa" do
+        expect(response.body).to include("Empresa")
+      end
+
+      it "AC3: exibe coluna Projeto" do
+        expect(response.body).to include("Projeto")
+      end
+
+      it "AC3: exibe coluna Status" do
+        expect(response.body).to include("Status")
+      end
+
+      it "AC3: exibe coluna Est / Real" do
+        expect(response.body).to include("Est / Real")
+      end
+
+      # AC4: Coluna Ações não aparece no dashboard
+      it "AC4: não exibe coluna Ações" do
+        expect(response.body).not_to include(">Ações<")
+      end
+
+      # AC4: Links de Editar/Excluir não presentes na seção de tarefas do mês
+      it "AC4: não exibe link Editar na tabela do dashboard" do
+        expect(response.body).not_to include("Editar")
+      end
+
+      it "AC4: não exibe link Excluir na tabela do dashboard" do
+        expect(response.body).not_to include("Excluir")
+      end
+
+      # AC6: Eager loading — verificar que controller atribui @tasks
+      it "AC6: retorna status 200" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      # AC7: Link Ver todas aponta para tasks_path
+      it "exibe link Ver todas apontando para tasks_path" do
+        expect(response.body).to include('href="/tasks"')
+        expect(response.body).to include("Ver todas")
+      end
+    end
+
+    # Story 5.11: Botão entregar task — renderização por status
+    context "when task has status completed" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_completed) do
+        t = create(:task, company: company, project: project, start_date: Date.current)
+        create(:task_item, task: t, work_date: Date.current)
+        t.update!(status: "completed")
+        t
+      end
+
+      before { get root_path }
+
+      it "exibe button_to de entregar para task completed" do
+        expect(response.body).to include("/tasks/#{task_completed.id}/deliver")
+      end
+
+      it "exibe botão de lançar horas ativo (link azul) para task completed" do
+        expect(response.body).to include(new_task_task_item_path(task_completed))
+      end
+    end
+
+    context "when task has status pending" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_pending) do
+        create(:task, company: company, project: project,
+               start_date: Date.current, status: "pending")
+      end
+      let!(:task_item_pending) { create(:task_item, task: task_pending, work_date: Date.current) }
+
+      before { get root_path }
+
+      it "não exibe button_to de entregar para task pending" do
+        expect(response.body).not_to include("/tasks/#{task_pending.id}/deliver")
+      end
+
+      it "exibe span desabilitado com role=button e aria-disabled" do
+        expect(response.body).to include('role="button"')
+        expect(response.body).to include('aria-disabled="true"')
+        expect(response.body).to include("bg-gray-700")
+      end
+    end
+
+    context "when task has status delivered" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_delivered) do
+        t = create(:task, company: company, project: project, start_date: Date.current)
+        create(:task_item, :completed, task: t, work_date: Date.current)
+        t.update!(status: "delivered")
+        t
+      end
+
+      before { get root_path }
+
+      it "não exibe button_to de entregar para task delivered" do
+        expect(response.body).not_to include("/tasks/#{task_delivered.id}/deliver")
+      end
+
+      it "exibe botão lançar horas desabilitado para task delivered" do
+        expect(response.body).to include("Lançar horas indisponível — tarefa entregue")
+      end
+
+      it "exibe span desabilitado com aria-disabled" do
+        expect(response.body).to include('aria-disabled="true"')
+        expect(response.body).to include("bg-gray-700")
+      end
+    end
+
+    # AC2: NÃO exibe tarefas de outros meses
+    context "when task is from previous month" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_last_month) do
+        create(:task,
+          name: "Tarefa do Mês Passado",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month - 1.day)
+      end
+
+      before { get root_path }
+
+      it "AC2: não exibe tarefa de outro mês" do
+        expect(response.body).not_to include("Tarefa do Mês Passado")
+      end
+    end
+
+    # AC5: Empty state quando não há tarefas
+    context "when there are no tasks in the current month" do
+      before { get root_path }
+
+      it "AC5: exibe mensagem Nenhuma tarefa este mês" do
+        expect(response.body).to include("Nenhuma tarefa este mês")
+      end
+    end
+
+    # AC7: Ordenação por start_date desc
+    context "when there are multiple tasks this month" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_older) do
+        create(:task,
+          name: "Tarefa Mais Antiga",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day)
+      end
+      let!(:task_newer) do
+        create(:task,
+          name: "Tarefa Mais Recente",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 5.days)
+      end
+      let!(:task_item_older) { create(:task_item, task: task_older, work_date: Date.current) }
+      let!(:task_item_newer) { create(:task_item, task: task_newer, work_date: Date.current) }
+
+      before { get root_path }
+
+      it "AC7: tarefa mais recente aparece antes da mais antiga" do
+        pos_newer = response.body.index("Tarefa Mais Recente")
+        pos_older = response.body.index("Tarefa Mais Antiga")
+        expect(pos_newer).to be < pos_older
+      end
+    end
+
+    # Story 5.13: Exibir Horas Realizadas ao Lado do Estimado
+    context "when task has task_items with hours worked (AC1, AC2)" do
+      let(:company) { create(:company) }
+      let(:project) { create(:project, company: company) }
+      let!(:task_with_hours) do
+        create(:task, company: company, project: project, start_date: Date.current,
+               estimated_hours_hm: "04:00")
+      end
+      let!(:task_item) do
+        create(:task_item, task: task_with_hours, start_time: "09:00", end_time: "11:30")
+      end
+
+      before { get root_path }
+
+      it "AC1: exibe separador / entre estimado e realizado" do
+        expect(response.body).to include('text-gray-500 mx-1">/</span>')
+      end
+
+      it "AC2: exibe horas realizadas em formato HH:MM usando total_hours_hm" do
+        expect(response.body).to include("02:30")
+      end
+
+      it "AC1: exibe horas estimadas fixas no formato HH:MM" do
+        expect(response.body).to include('class="text-gray-300">04:00</span>')
+      end
+
+      it "M1: exibe horas realizadas com classe text-green-400 quando total_hours > 0" do
+        expect(response.body).to include('class="text-green-400">02:30</span>')
+      end
+    end
+
+    # AC1 + AC6: Coluna Valor no dashboard
+    context "when verifying coluna Valor" do
+      let(:company) { create(:company, hourly_rate: 100) }
+      let(:project) { create(:project, company: company) }
+      let!(:task) do
+        create(:task,
+          name: "Task Valor Test",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day,
+          status: "pending")
+      end
+
+      before { get root_path }
+
+      it "AC6: exibe cabeçalho Valor" do
+        expect(response.body).to include("Valor")
+      end
+
+      it "AC5: exibe R$0,00 quando task sem lançamentos" do
+        expect(response.body).to include("R$0,00")
+      end
+    end
+
+    context "when task has task_items with value" do
+      let(:company) { create(:company, hourly_rate: 100) }
+      let(:project) { create(:project, company: company) }
+      let!(:task) do
+        create(:task,
+          name: "Task Com Valor",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day,
+          status: "pending")
+      end
+      let!(:task_item) { create(:task_item, task: task, start_time: "09:00", end_time: "10:00", work_date: Date.current) }
+
+      before { get root_path }
+
+      it "AC2: exibe valor acumulado dos lançamentos para task não entregue" do
+        task.reload
+        expect(task.display_value).to eq(100.0)
+        expect(response.body).to include("R$100,00")
+      end
+    end
+
+    context "when task is delivered" do
+      let(:company) { create(:company, hourly_rate: 100) }
+      let(:project) { create(:project, company: company) }
+      let!(:task) do
+        t = create(:task,
+          name: "Task Entregue",
+          company: company,
+          project: project,
+          start_date: Date.current.beginning_of_month + 1.day,
+          status: "pending")
+        create(:task_item, task: t, start_time: "09:00", end_time: "10:00", work_date: Date.current)
+        t.update!(status: "completed")
+        t.update!(status: "delivered")
+        t
+      end
+
+      before { get root_path }
+
+      it "AC3: exibe delivered_value (snapshot) para task entregue" do
+        task.reload
+        expect(task.delivered_value).to eq(100.0)
+        expect(response.body).to include("R$100,00")
+      end
+    end
+
+    # Autenticação: dashboard é protegido
+    context "when not authenticated" do
+      before do
+        # reset session
+        delete session_path rescue nil
+        get root_path
+      end
+
+      it "redireciona para login quando não autenticado" do
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+end

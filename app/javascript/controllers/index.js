@@ -9,3 +9,21 @@ application.register("hello", HelloController)
 
 import ProjectSelectorController from "./project_selector_controller"
 application.register("project-selector", ProjectSelectorController)
+
+import FilterController from "./filter_controller"
+application.register("filter", FilterController)
+
+import NavbarController from "./navbar_controller"
+application.register("navbar", NavbarController)
+
+import FormValidationController from "./form_validation_controller"
+application.register("form-validation", FormValidationController)
+
+import ModalController from "./modal_controller"
+application.register("modal", ModalController)
+
+import RowLinkController from "./row_link_controller"
+application.register("row-link", RowLinkController)
+
+import TaskItemHoursController from "./task_item_hours_controller"
+application.register("task-item-hours", TaskItemHoursController)

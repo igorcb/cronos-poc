@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_20_224736) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_200222) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,25 +42,41 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_20_224736) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "solid_cable_messages", force: :cascade do |t|
+    t.binary "channel", null: false
+    t.bigint "channel_hash", null: false
+    t.datetime "created_at", null: false
+    t.binary "payload", null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
+  end
+
   create_table "task_items", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.time "end_time", null: false
+    t.decimal "hourly_rate", precision: 10, scale: 2
     t.decimal "hours_worked", precision: 10, scale: 2, null: false
     t.time "start_time", null: false
     t.string "status", default: "pending", null: false
     t.bigint "task_id", null: false
     t.datetime "updated_at", null: false
+    t.decimal "value", precision: 10, scale: 2
+    t.date "work_date", default: -> { "CURRENT_DATE" }
     t.index ["status"], name: "index_task_items_on_status"
     t.index ["task_id", "created_at"], name: "index_task_items_on_task_id_and_created_at"
     t.index ["task_id"], name: "index_task_items_on_task_id"
   end
 
   create_table "tasks", force: :cascade do |t|
+    t.string "code"
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
+    t.decimal "delivered_value", precision: 10, scale: 2
     t.date "delivery_date"
     t.date "end_date"
     t.decimal "estimated_hours", precision: 10, scale: 2, null: false
+    t.decimal "hourly_rate", precision: 10, scale: 2
     t.string "name", null: false
     t.text "notes"
     t.bigint "project_id", null: false
@@ -86,5 +102,4 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_20_224736) do
   add_foreign_key "sessions", "users"
   add_foreign_key "task_items", "tasks"
   add_foreign_key "tasks", "companies"
-  add_foreign_key "tasks", "projects"
 end
