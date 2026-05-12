@@ -7,8 +7,8 @@
 domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
-status: in-progress
-progress: 93%  # 14 de 15 stories concluidas
+status: done
+progress: 100%  # 15 de 15 stories concluidas
 
 dependencies:
   requires:
@@ -125,10 +125,10 @@ retrospective:
 
 summary:
   total_stories: 15
-  done: 14
+  done: 15
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 014 — substituir text_field de horas estimadas por time_field
+    - DM-004 completo — todas as 15 stories concluídas
