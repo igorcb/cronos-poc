@@ -41,6 +41,7 @@ gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
+gem "view_component", "~> 3.21"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -68,6 +69,7 @@ end
 group :test do
   gem "shoulda-matchers", "~> 7.0"
   gem "database_cleaner-active_record", "~> 2.1"
+  gem "rails-controller-testing", "~> 1.0"
   gem "capybara"
   gem "selenium-webdriver"
 end
@@ -77,7 +79,7 @@ group :development do
   gem "web-console"
 
   # Code Quality Tools
-  gem "rubocop", "~> 1.60", require: false
+  gem "rubocop", "~> 1.86", require: false
   gem "rubocop-rails", "~> 2.34", require: false
   gem "rubocop-rspec", "~> 3.9", require: false
   # gem "bullet", "~> 7.1"  # Disabled: Bullet 7.2.0 does not support Rails 8.1.1 yet

@@ -38,3 +38,13 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+# Notas pessoais do projeto
+/tarefas.md
+
+# Playwright MCP screenshots e logs
+/.playwright-mcp/
+
+# Claude Code internos
+/.claude/github-star-reminder.txt
+/lor

@@ -31,13 +31,14 @@
 
 FactoryBot.define do
   factory :task do
+    code { Faker::Number.number(digits: 5).to_s }
     name { Faker::Lorem.sentence(word_count: 3) }
     company
     project { association :project, company: company }
     start_date { Date.today }
     end_date { 1.week.from_now.to_date }
     status { 'pending' }
-    estimated_hours { Faker::Number.decimal(l_digits: 2, r_digits: 1) }
+    estimated_hours_hm { format("%02d:%02d", Faker::Number.between(from: 1, to: 23), Faker::Number.between(from: 0, to: 59)) }
     validated_hours { nil }
     delivery_date { 2.weeks.from_now.to_date }
     notes { Faker::Lorem.paragraph(sentence_count: 2) }

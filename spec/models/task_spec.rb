@@ -65,22 +65,22 @@ RSpec.describe Task, type: :model do
       expect(task.errors[:start_date]).to include("não pode ficar em branco")
     end
 
-    it "requires estimated_hours" do
-      task = build(:task, estimated_hours: nil, company: company, project: project)
+    it "requires estimated_hours_hm" do
+      task = build(:task, estimated_hours_hm: "00:00", company: company, project: project)
       expect(task).not_to be_valid
-      expect(task.errors[:estimated_hours]).to include("não pode ficar em branco")
+      expect(task.errors[:estimated_hours_hm]).to include("deve ser maior que zero")
     end
 
-    it "requires estimated_hours to be greater than 0" do
-      task = build(:task, estimated_hours: 0, company: company, project: project)
+    it "requires estimated_hours_hm to be greater than 0" do
+      task = build(:task, estimated_hours_hm: "00:00", company: company, project: project)
       expect(task).not_to be_valid
-      expect(task.errors[:estimated_hours]).to include("deve ser maior que 0")
+      expect(task.errors[:estimated_hours_hm]).to include("deve ser maior que zero")
     end
 
-    it "rejects negative estimated_hours" do
-      task = build(:task, estimated_hours: -10, company: company, project: project)
+    it "rejects invalid estimated_hours_hm format" do
+      task = build(:task, estimated_hours_hm: "invalid", company: company, project: project)
       expect(task).not_to be_valid
-      expect(task.errors[:estimated_hours]).to include("deve ser maior que 0")
+      expect(task.errors[:estimated_hours_hm]).to include("deve estar no formato HH:MM (ex: 03:00, 02:30)")
     end
 
     it "requires status to be valid" do
@@ -214,7 +214,7 @@ RSpec.describe Task, type: :model do
         company: company,
         project: project,
         start_date: Date.today,
-        estimated_hours: 40
+        estimated_hours_hm: "08:00"
       )
       expect(task.status).to eq('pending')
     end
@@ -225,13 +225,13 @@ RSpec.describe Task, type: :model do
     let(:project) { create(:project, company: company) }
 
     it "stores estimated_hours as BigDecimal" do
-      task = create(:task, company: company, project: project, estimated_hours: 40.50)
+      task = create(:task, company: company, project: project, estimated_hours_hm: "08:30")
       expect(task.estimated_hours).to be_a(BigDecimal)
     end
 
     it "maintains decimal precision for estimated_hours" do
-      task = create(:task, company: company, project: project, estimated_hours: 39.99)
-      expect(task.reload.estimated_hours).to eq(BigDecimal("39.99"))
+      task = create(:task, company: company, project: project, estimated_hours_hm: "08:30")
+      expect(task.reload.estimated_hours).to eq(BigDecimal("8.5"))
     end
 
     it "stores validated_hours as BigDecimal" do
@@ -294,11 +294,40 @@ RSpec.describe Task, type: :model do
     end
 
     it "sums hours_worked from all task_items" do
-      create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
-      create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
-      create(:task_item, task: task, start_time: "16:00", end_time: "18:30", hours_worked: 2.5)
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00")
+      create(:task_item, task: task, start_time: "16:00", end_time: "18:30")
 
       expect(task.total_hours).to eq(6.0)
+    end
+  end
+
+  describe "#total_hours_hm" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "returns '00:00' when no task_items exist" do
+      expect(task.total_hours_hm).to eq("00:00")
+    end
+
+    it "returns formatted HH:MM for 2.5 hours worked" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "11:30")
+      task.reload
+      expect(task.total_hours_hm).to eq("02:30")
+    end
+
+    it "returns formatted HH:MM for 1.0 hour worked" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      task.reload
+      expect(task.total_hours_hm).to eq("01:00")
+    end
+
+    it "returns formatted HH:MM for multiple task_items summed" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00")
+      task.reload
+      expect(task.total_hours_hm).to eq("03:30")
     end
   end
 
@@ -308,8 +337,8 @@ RSpec.describe Task, type: :model do
     let(:task) { create(:task, company: company, project: project) }
 
     it "calculates total_hours * hourly_rate" do
-      create(:task_item, task: task, start_time: "09:00", end_time: "10:30", hours_worked: 1.5)
-      create(:task_item, task: task, start_time: "14:00", end_time: "16:00", hours_worked: 2.0)
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      create(:task_item, task: task, start_time: "14:00", end_time: "16:00")
 
       expect(task.calculated_value).to eq(350.0) # 3.5 hours * 100
     end
@@ -394,6 +423,156 @@ RSpec.describe Task, type: :model do
         task.reload
         expect(task.validated_hours.to_f).to eq(3.5)
       end
+    end
+  end
+
+  describe "code field" do
+    let(:company) { create(:company) }
+    let(:project) { create(:project, company: company) }
+
+    describe "validations" do
+      it "is invalid without a code (required field)" do
+        task = build(:task, code: nil, company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("não pode ficar em branco")
+      end
+
+      it "is invalid with an empty string code" do
+        task = build(:task, code: "", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("não pode ficar em branco")
+      end
+
+      it "is valid with a numeric code" do
+        task = build(:task, code: "14335", company: company, project: project)
+        expect(task).to be_valid
+      end
+
+      it "is valid with a code that has leading zeros" do
+        task = build(:task, code: "007", company: company, project: project)
+        expect(task).to be_valid
+      end
+
+      it "is invalid with non-numeric code" do
+        task = build(:task, code: "ABC123", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("deve conter apenas números")
+      end
+
+      it "is invalid with code containing special characters" do
+        task = build(:task, code: "123-456", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("deve conter apenas números")
+      end
+
+      it "is invalid when code+name combination already exists" do
+        create(:task, code: "100", name: "Fix Bug", company: company, project: project)
+        task = build(:task, code: "100", name: "Fix Bug", company: company, project: project)
+        expect(task).not_to be_valid
+        expect(task.errors[:code]).to include("já existe uma tarefa com este código e nome")
+      end
+
+      it "is valid when same code exists with a different name" do
+        create(:task, code: "100", name: "Fix Bug", company: company, project: project)
+        task = build(:task, code: "100", name: "Add Feature", company: company, project: project)
+        expect(task).to be_valid
+      end
+
+      it "is invalid when same name exists with no code (both blank)" do
+        task = build(:task, code: nil, name: "Fix Bug", company: company, project: project)
+        expect(task).not_to be_valid
+      end
+    end
+
+    describe "#display_name" do
+      it "returns only name when code is nil" do
+        task = build(:task, code: nil, name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("Fix Bug")
+      end
+
+      it "returns only name when code is blank" do
+        task = build(:task, code: "", name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("Fix Bug")
+      end
+
+      it "returns code - name when code is present" do
+        task = build(:task, code: "14335", name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("14335 - Fix Bug")
+      end
+
+      it "preserves leading zeros in code" do
+        task = build(:task, code: "007", name: "Fix Bug", company: company, project: project)
+        expect(task.display_name).to eq("007 - Fix Bug")
+      end
+    end
+  end
+
+  describe "#total_value" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "returns 0 when there are no task_items" do
+      expect(task.total_value).to eq(0)
+    end
+
+    it "sums value from task_items" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      create(:task_item, task: task, start_time: "14:00", end_time: "15:30")
+      task.reload
+      expect(task.total_value).to eq(250.0)
+    end
+  end
+
+  describe "#display_value" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    context "when task is not delivered" do
+      it "returns total_value (sum of task_items.value)" do
+        create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+        task.reload
+        expect(task.display_value).to eq(task.total_value)
+      end
+
+      it "returns 0 when no task_items exist" do
+        expect(task.display_value).to eq(0)
+      end
+    end
+
+    context "when task is delivered" do
+      it "returns delivered_value (snapshot) even if delivered_value is manually changed" do
+        create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+        task.update!(status: "completed")
+        task.update!(status: "delivered")
+        task.reload
+
+        expect(task.delivered_value).to eq(100.0)
+        expect(task.display_value).to eq(task.delivered_value)
+        expect(task.display_value).to eq(100.0)
+      end
+
+      it "returns 0 when delivered_value is nil" do
+        task.update_columns(status: "delivered", delivered_value: nil)
+        expect(task.display_value).to eq(0)
+      end
+    end
+  end
+
+  describe "callbacks — #update_delivery_date" do
+    let(:company) { create(:company, hourly_rate: 150) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "snapshots hourly_rate and delivered_value when delivered" do
+      create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      task.update!(status: "completed")
+      task.update!(status: "delivered")
+      task.reload
+
+      expect(task.hourly_rate).to eq(150)
+      expect(task.delivered_value).to eq(150.0)
     end
   end
 end

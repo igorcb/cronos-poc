@@ -332,7 +332,7 @@ RSpec.describe "Projects", type: :request do
 
       it "returns unprocessable entity status" do
         patch project_path(project), params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "re-renders the edit form" do

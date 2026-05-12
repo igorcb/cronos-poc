@@ -8,6 +8,7 @@ RSpec.describe "db:seed" do
 
   before do
     User.destroy_all
+    allow($stdout).to receive(:puts)
   end
 
   it "creates admin user with ENV credentials" do
