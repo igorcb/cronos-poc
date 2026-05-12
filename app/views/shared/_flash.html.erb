@@ -8,14 +8,20 @@
                 when :warning then "background-color: #854d0e; border-color: #713f12; color: #fef08a;"
                 else "background-color: #1e40af; border-color: #1e3a8a; color: #dbeafe;"
                 end
+        flash_role = type.to_sym == :notice ? "status" : "alert"
       %>
-      <div style="<%= style %>" class="border px-4 py-3 rounded mb-4 flex justify-between items-center"
+      <div style="<%= style %>"
+           class="border px-4 py-3 rounded mb-4 flex justify-between items-center"
+           role="<%= flash_role %>"
+           aria-live="<%= flash_role == 'alert' ? 'assertive' : 'polite' %>"
+           aria-atomic="true"
            data-controller="flash"
            data-flash-target="message">
         <span><%= message %></span>
         <button data-action="click->flash#close"
-                class="text-lg font-bold leading-none hover:opacity-75">
-          &times;
+                aria-label="Fechar notificação"
+                class="text-lg font-bold leading-none hover:opacity-75 min-h-[44px] min-w-[44px] flex items-center justify-center">
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
     <% end %>

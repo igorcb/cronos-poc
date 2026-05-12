@@ -1,12 +1,12 @@
 ---
-stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-03-success', 'step-04-journeys', 'step-07-project-type']
-inputDocuments: []
 workflowType: 'prd'
-lastStep: 7
-briefCount: 0
-researchCount: 0
-brainstormingCount: 0
-projectDocsCount: 0
+workflow: 'edit'
+stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-03-success', 'step-04-journeys', 'step-07-project-type', 'step-e-01-discovery', 'step-e-02-review', 'step-e-03-edit']
+lastEdited: '2026-05-05'
+editHistory:
+  - date: '2026-05-05'
+    changes: 'Adicionado exclusão de TaskItem individual no modal de histórico — escopo MVP item 6, Jornada 3 e resumo de capacidades'
+inputDocuments: []
 ---
 
 # Product Requirements Document - cronos-poc
@@ -139,6 +139,11 @@ O Cronos POC será considerado bem-sucedido do ponto de vista do usuário quando
 - Campos obrigatórios: Data, Início, Fim, Empresa, Projeto, Atividade, Status
 - Status disponíveis: Pendente, Finalizado, Reaberto, Entregue
 - Interface de entrada rápida e intuitiva
+- **Código da Tarefa:** campo numérico opcional inserido manualmente pelo usuário
+  - Aceita apenas números (validação backend + frontend)
+  - A combinação código + nome deve ser única (não podem existir duas tasks com o mesmo código E mesmo nome)
+  - Exibido nas listagens como "Código - Nome da Tarefa" (ex: `14335 - Fix Agreement Cancellation`)
+  - Sem formato fixo — input de texto com validação numérica
 
 **2. Cálculos Automáticos**
 - Tempo trabalhado calculado automaticamente (Fim - Início)
@@ -149,10 +154,15 @@ O Cronos POC será considerado bem-sucedido do ponto de vista do usuário quando
 - Lista de entradas do mês atual
 - Exibição clara de todas as informações: data, horários, tempo, empresa, projeto, atividade, status, valor
 
-**4. Totais e Agregações**
-- Total de horas do dia (soma de todas as entradas do mesmo dia)
-- Total de horas por empresa no mês (soma filtrada por empresa)
-- Total de valor por empresa no mês
+**4. Totais e Agregações — Dashboard (6 KPIs globais, não afetados por filtros)**
+- Qtde de Tasks do mês corrente (total global)
+- Qtde de Tasks lançadas hoje (total global)
+- Total de horas do dia (soma global do dia corrente)
+- Valor monetário do dia (horas do dia × R$/hora por empresa, soma global)
+- Total de horas do mês corrente (soma global)
+- Total de valor do mês corrente (soma global em R$)
+
+> Todos os KPIs são calculados sobre o conjunto global de dados (independente dos filtros aplicados na listagem).
 
 **5. Filtros**
 - Filtrar por empresa
@@ -160,10 +170,11 @@ O Cronos POC será considerado bem-sucedido do ponto de vista do usuário quando
 - Filtrar por status
 - Filtrar por data/período
 
-**6. Edição de Entradas (prioridade secundária)**
-- Capacidade de editar entradas já registradas
-- Capacidade de deletar entradas incorretas
-- *Nota: Não é bloqueador para MVP, mas será implementado assim que possível*
+**6. Edição e Exclusão de Entradas (prioridade secundária)**
+- Editar lançamento de horas (TaskItem) existente diretamente no modal de histórico
+- Excluir lançamento de horas (TaskItem) individual no modal de histórico, com confirmação do usuário
+- Exclusão recalcula automaticamente `validated_hours` da Task e totalizadores do dashboard
+- *Nota: Não é bloqueador para MVP, mas deve ser implementado logo após registro básico*
 
 **Fora do Escopo MVP:**
 - Exportação para Excel/CSV (pós-MVP)
@@ -251,11 +262,14 @@ Na quarta-feira, Igor percebe que registrou uma tarefa do "Protocolo" com a empr
 
 No modelo da planilha, ele teria que encontrar a linha certa (scroll infinito), alterar a célula da empresa, e torcer para não ter quebrado nenhuma fórmula no processo. Sempre com aquele medo de "será que não estraguei outra coisa sem querer?".
 
-Com o Cronos POC (pós-MVP com edição implementada), Igor abre o sistema, filtra por "Empresa: Tributário", encontra rapidamente a entrada errada (visualmente destaca da lista), clica em "Editar", altera o dropdown de "Tributário" para "Protocolo", e salva. O sistema recalcula automaticamente todos os totais - o total de Tributário diminui R$ 180, o total de Protocolo aumenta R$ 200 (porque essa empresa paga R$ 50/hora, não R$ 45). Correção feita em 20 segundos, sem risco, sem medo.
+Com o Cronos POC, Igor abre o sistema, filtra por "Empresa: Tributário", encontra rapidamente a entrada errada (visualmente destaca da lista), clica em "Editar", altera o dropdown de "Tributário" para "Protocolo", e salva. O sistema recalcula automaticamente todos os totais. Correção feita em 20 segundos, sem risco, sem medo.
+
+Em outro cenário — Igor lança `18:00–18:58` para a tarefa `20182` e percebe que o botão foi clicado duas vezes, criando um lançamento duplicado. Ele abre o modal de histórico da tarefa, vê os dois registros idênticos, clica no ícone de lixeira do duplicado, confirma a exclusão, e o sistema remove o lançamento e recalcula o total: de `12:55` volta para `11:57`. Correção em 10 segundos, sem distorção nos totais de faturamento.
 
 **Capacidades Reveladas por Esta Jornada:**
-- Edição de entradas existentes (pós-MVP)
-- Recalculo automático de totais após edição
+- Edição de lançamento (TaskItem) existente no modal de histórico
+- Exclusão de lançamento individual com confirmação no modal de histórico
+- Recálculo automático de `validated_hours` e totalizadores após exclusão
 - Busca/filtro facilitando encontrar entrada específica
 - Validação que impede "quebrar" dados
 
@@ -295,7 +309,7 @@ As jornadas acima revelam que o Cronos POC precisa entregar:
 7. **Interface Sempre Disponível:** Web app responsivo acessível de qualquer lugar
 
 **Pós-MVP (Crescimento):**
-8. **Edição Segura:** Corrigir entradas sem medo de "quebrar" dados
+8. **Edição e Exclusão Segura:** Editar ou excluir lançamento individual (TaskItem) no modal de histórico, com confirmação e recálculo automático de totais
 9. **Filtros de Período Avançados:** Últimos 7 dias, semana atual, mês anterior
 10. **Dashboard de Insights:** Visão geral que facilita planejamento e decisões
 

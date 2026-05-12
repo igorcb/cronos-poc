@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+/* Turbo Frame loading state */
+turbo-frame[busy] {
+  opacity: 0.6;
+  transition: opacity 0.15s ease-in-out;
+  pointer-events: none;
+  position: relative;
+}
+
+turbo-frame[busy]::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
+  cursor: wait;
+}

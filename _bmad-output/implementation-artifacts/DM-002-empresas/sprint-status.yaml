@@ -1,0 +1,55 @@
+# Sprint Status - DM-002: Gestao de Empresas
+# Dominio: DM-002-empresas
+# Tipo: Suporte / Cadastro
+# Epic: Epic 2
+# Gerado: 2026-03-27
+
+domain: DM-002
+domain_name: Gestao de Empresas
+domain_type: Suporte / Cadastro
+status: done
+progress: 100%
+
+dependencies:
+  requires:
+    - DM-001  # Infraestrutura base
+
+stories:
+  001-criar-model-e-migration-de-companies-com-soft-delete:
+    status: done
+    priority: critical
+    description: Criar model Company com soft delete (campo active boolean)
+
+  002-implementar-crud-de-companies-index-e-new-create:
+    status: done
+    priority: high
+    description: Implementar CRUD de companies - Index e New/Create
+
+  003-implementar-edit-update-de-companies:
+    status: done
+    priority: high
+    description: Implementar Edit/Update de companies
+
+  004-implementar-soft-delete-de-companies:
+    status: done
+    priority: high
+    description: Implementar soft delete (toggle active) de companies
+    notes: dependent restrict_with_error para proteger dados
+
+  005-criar-factory-e-testes-de-model-para-company:
+    status: done
+    priority: medium
+    description: Criar factory e testes de model para Company
+
+retrospective:
+  status: optional
+  notes: Dominio concluido sem retrospectiva formal
+
+summary:
+  total_stories: 5
+  done: 5
+  in_progress: 0
+  ready_for_dev: 0
+  backlog: 0
+  blockers: []
+  next_actions: []
