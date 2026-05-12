@@ -42,6 +42,10 @@ class Task < ApplicationRecord
   enum :status, { pending: "pending", completed: "completed", delivered: "delivered" }
 
   # Validações
+  validates :code,
+            presence: { message: "não pode ficar em branco" },
+            format: { with: /\A\d+\z/, message: "deve conter apenas números", allow_blank: true },
+            uniqueness: { scope: :name, message: "já existe uma tarefa com este código e nome", allow_blank: true }
   validates :name, presence: true
   validates :company_id, presence: true
   validates :project_id, presence: true
@@ -63,16 +67,37 @@ class Task < ApplicationRecord
   before_save :convert_estimated_hours_from_hm
   after_save :recalculate_validated_hours
   after_find :convert_estimated_hours_to_hm
+  after_commit :broadcast_dashboard_update
+
+  def display_name
+    code.present? ? "#{code} - #{name}" : name
+  end
 
   # Métodos públicos de cálculo
   def total_hours
     task_items.sum(:hours_worked)
   end
 
+  def total_hours_hm
+    decimal_to_hm(total_hours)
+  end
+
+  def validated_hours_hm
+    decimal_to_hm(validated_hours)
+  end
+
   def calculated_value
     return 0 unless company&.hourly_rate
 
     company.hourly_rate * total_hours
+  end
+
+  def total_value
+    task_items.sum(:value)
+  end
+
+  def display_value
+    delivered? ? (delivered_value || 0) : total_value
   end
 
   def recalculate_status!
@@ -97,6 +122,10 @@ class Task < ApplicationRecord
   end
 
   private
+
+  def broadcast_dashboard_update
+    DashboardBroadcastJob.perform_later
+  end
 
   def estimated_hours_hm_must_be_valid
     if estimated_hours_hm.blank?
@@ -140,14 +169,13 @@ class Task < ApplicationRecord
   end
 
   def decimal_to_hm(decimal)
-    return "00:00" unless decimal.present?
+    return "00:00" if decimal.nil? || decimal.to_f <= 0
 
-    hours = decimal.to_i
-    minutes = ((decimal - hours) * 60).round
-    format("%02d:%02d", hours, minutes)
+    total_minutes = (decimal.to_f * 60).floor
+    h = total_minutes / 60
+    m = total_minutes % 60
+    sprintf("%02d:%02d", h, m)
   end
-
-  private
 
   def project_must_belong_to_company
     return unless project && company
@@ -171,5 +199,7 @@ class Task < ApplicationRecord
 
   def update_delivery_date
     self.delivery_date = Date.today
+    self.hourly_rate = company&.hourly_rate      # snapshot de auditoria — tarifa vigente na entrega
+    self.delivered_value = task_items.sum(:value) # snapshot imutável — não recalcula após entrega
   end
 end

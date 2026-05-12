@@ -80,33 +80,33 @@ development_status:
   epic-4-retrospective: done  # Retrospective completa: 161 testes, 0 blockers, Epic 5 ready to start
 
   # Epic 5: Visualização e Totalizadores
-  epic-5: backlog
-  5-1-implementar-index-de-timeentries-com-eager-loading: ready-for-dev
-  5-2-criar-viewcomponent-para-timeentry-card: ready-for-dev
-  5-3-implementar-totalizadores-dinamicos-total-do-dia: ready-for-dev
-  5-4-implementar-totalizadores-por-empresa-no-mes: ready-for-dev
-  5-5-configurar-turbo-streams-para-atualizacao-em-tempo-real: ready-for-dev
+  epic-5: done
+  5-1-implementar-index-de-timeentries-com-eager-loading: done
+  5-2-criar-viewcomponent-para-timeentry-card: done  # Code reviewed, patches applied, UI validated via Playwright 2026-03-28
+  5-3-implementar-totalizadores-dinamicos-total-do-dia: done  # Implementado 2026-03-30, validado via Playwright
+  5-4-implementar-totalizadores-por-empresa-no-mes: done  # QA reviewed, Playwright validated, fixes applied 2026-03-30
+  5-5-configurar-turbo-streams-para-atualizacao-em-tempo-real: done
   epic-5-retrospective: optional
 
   # Epic 6: Filtros Dinâmicos
-  epic-6: backlog
-  6-1-implementar-filtros-por-empresa-e-projeto: ready-for-dev
-  6-2-implementar-filtros-por-status-e-data-periodo: ready-for-dev
-  6-3-recalcular-totalizadores-conforme-filtros-aplicados: ready-for-dev
-  6-4-criar-stimulus-controller-para-filtros-com-turbo-frames: ready-for-dev
+  epic-6: done
+  6-1-implementar-filtros-por-empresa-e-projeto: done  # Playwright validated, UI polished 2026-04-02
+  6-2-implementar-filtros-por-status-e-data-periodo: done  # Implementado 2026-04-03
+  6-3-recalcular-totalizadores-conforme-filtros-aplicados: done  # Implementado 2026-04-06, QA reviewed, Playwright validated
+  6-4-criar-stimulus-controller-para-filtros-com-turbo-frames: done  # Implementado 2026-04-07
   epic-6-retrospective: optional
 
   # Epic 7: Edição e Correção de Entradas
-  epic-7: backlog
-  7-1-implementar-edit-update-de-timeentries: ready-for-dev
-  7-2-implementar-destroy-de-timeentries-com-confirmacao: ready-for-dev
-  7-3-criar-testes-de-system-para-fluxo-completo: ready-for-dev
+  epic-7: done
+  7-1-implementar-edit-update-de-timeentries: done  # Validated via Playwright 2026-04-21
+  7-2-implementar-destroy-de-timeentries-com-confirmacao: done  # Implementado na Story 7.1 (turbo_confirm + turbo_stream.remove)
+  7-3-criar-testes-de-system-para-fluxo-completo: done  # 12 specs, 0 failures 2026-04-21
   epic-7-retrospective: optional
 
   # Epic 8: Responsividade e Experiência Mobile
-  epic-8: backlog
-  8-1-implementar-mobile-first-com-tailwind-breakpoints: ready-for-dev
-  8-2-otimizar-timeentry-form-para-mobile: ready-for-dev
-  8-3-garantir-acessibilidade-wcag-nivel-a: ready-for-dev
-  8-4-testar-responsividade-em-multiplos-dispositivos: ready-for-dev
+  epic-8: done
+  8-1-implementar-mobile-first-com-tailwind-breakpoints: done  # Validated via Playwright 2026-04-08
+  8-2-otimizar-timeentry-form-para-mobile: done  # Validated via Playwright 2026-04-14
+  8-3-garantir-acessibilidade-wcag-nivel-a: done  # Implementado 2026-04-14
+  8-4-testar-responsividade-em-multiplos-dispositivos: done  # Validated via Playwright 2026-04-21
   epic-8-retrospective: optional

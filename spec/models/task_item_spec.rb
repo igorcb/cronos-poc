@@ -49,19 +49,18 @@ RSpec.describe TaskItem, type: :model do
       it "adds error when end_time equals start_time" do
         task_item = build(:task_item, task: task, start_time: '09:00', end_time: '09:00')
         expect(task_item).not_to be_valid
-        expect(task_item.errors[:end_time]).to include("deve ser posterior à hora inicial")
+        expect(task_item.errors[:end_time]).to include("deve ser diferente da hora inicial")
       end
 
-      it "adds error when end_time is before start_time" do
-        task_item = build(:task_item, task: task, start_time: '10:30', end_time: '09:00')
-        expect(task_item).not_to be_valid
-        expect(task_item.errors[:end_time]).to include("deve ser posterior à hora inicial")
+      it "is valid when end_time is before start_time (virada de meia-noite)" do
+        task_item = build(:task_item, task: task, start_time: '22:30', end_time: '00:15')
+        expect(task_item).to be_valid
       end
 
       it "skips validation when times are missing" do
         task_item = build(:task_item, task: task, start_time: nil, end_time: nil)
         task_item.valid?
-        expect(task_item.errors[:end_time]).not_to include("deve ser posterior à hora inicial")
+        expect(task_item.errors[:end_time]).not_to include("deve ser diferente da hora inicial")
       end
     end
 
@@ -239,6 +238,36 @@ RSpec.describe TaskItem, type: :model do
     end
   end
 
+  describe "#notify_totals_changed (after_commit)" do
+    let(:task) { create(:task) }
+
+    it "is called after create commit" do
+      task_item = build(:task_item, task: task)
+      expect(task_item).to receive(:notify_totals_changed)
+      task_item.save
+    end
+
+    it "is called after update commit" do
+      task_item = create(:task_item, task: task)
+      expect(task_item).to receive(:notify_totals_changed)
+      task_item.update!(status: "completed")
+    end
+
+    it "is called after destroy commit" do
+      task_item = create(:task_item, task: task)
+      expect(task_item).to receive(:notify_totals_changed)
+      task_item.destroy
+    end
+
+    it "fires only after transaction is committed" do
+      task_item = build(:task_item, task: task)
+      committed = false
+      allow(task_item).to receive(:notify_totals_changed) { committed = true }
+      task_item.save
+      expect(committed).to be true
+    end
+  end
+
   describe "#update_task_status callback" do
     let(:task) { create(:task, status: "pending") }
 
@@ -299,6 +328,34 @@ RSpec.describe TaskItem, type: :model do
           create(:task_item, :completed, task: task)
         }.to raise_error(ActiveRecord::RecordInvalid)
       end
+    end
+  end
+
+  describe "#calculate_value callback" do
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let(:task) { create(:task, company: company, project: project) }
+
+    it "stores hourly_rate from company on create" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      expect(item.hourly_rate).to eq(100)
+    end
+
+    it "stores value = hours_worked * hourly_rate on create" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      expect(item.value).to eq(100.0)
+    end
+
+    it "stores value proportional to hours worked" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:30")
+      expect(item.value).to eq(150.0)
+    end
+
+    it "recalculates value on update" do
+      item = create(:task_item, task: task, start_time: "09:00", end_time: "10:00")
+      expect(item.value).to eq(100.0)
+      item.update!(start_time: "09:00", end_time: "11:00")
+      expect(item.value).to eq(200.0)
     end
   end
 end
