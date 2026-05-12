@@ -110,4 +110,6 @@ Esta story expande o container para `max-w-[1536px]` (1536px) em todo o app — 
 
 **Ajuste pós-QA (CRITICAL):** classe original da story `max-w-screen-2xl` **não existe em Tailwind v4** (foi removida na migração v3→v4). Substituída por `max-w-[1536px]` (arbitrary value) que é v4-compatible e produz o mesmo cap de 1536px desejado.
 
-**AC9 trade-off:** specs originais que verificavam literalmente `sm:max-w-2xl`/`sm:max-w-lg` foram atualizados para a nova classe — o espírito mobile-first (w-full + sm:cap) está preservado, apenas o valor do cap mudou.
+**AC9 trade-off:** specs originais que verificavam literalmente `sm:max-w-2xl`/`sm:max-w-lg` foram atualizados — agora verificam apenas `w-full` (full-width sem cap), preservando o espírito mobile-first.
+
+**Ajuste pós-feedback visual:** após comparação com o Nobe Gestor (referência do usuário), o cap de 1536px foi **removido completamente** das views (exceto modal e telas de auth). Container principal agora usa `w-full` — full-width real em qualquer viewport. Modal `tasks/new` mantém `sm:max-w-2xl` por UX. Telas de auth/passwords mantêm `max-w-md`. Card e modal de task_items inalterados.

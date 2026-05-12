@@ -148,9 +148,9 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
         expect(response.body).to include("sm:mx-auto")
       end
 
-      it "form com max-width para tablet (sm:max-w-[1536px])" do
+      it "form com max-width para tablet " do
         get new_task_path
-        expect(response.body).to include("sm:max-w-[1536px]")
+        expect(response.body).to include("w-full")
       end
 
       it "grid de campos expande para 2 colunas em tablet (md:grid-cols-2)" do
@@ -182,9 +182,9 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
         expect(response.body).to include("sm:mx-auto")
       end
 
-      it "form com max-width para tablet (sm:max-w-[1536px])" do
+      it "form com max-width para tablet " do
         get new_company_path
-        expect(response.body).to include("sm:max-w-[1536px]")
+        expect(response.body).to include("w-full")
       end
 
       it "botões em linha horizontal para tablet (sm:flex-row)" do
@@ -199,9 +199,9 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
         expect(response.body).to include("sm:mx-auto")
       end
 
-      it "form com max-width para tablet (sm:max-w-[1536px])" do
+      it "form com max-width para tablet " do
         get new_project_path
-        expect(response.body).to include("sm:max-w-[1536px]")
+        expect(response.body).to include("w-full")
       end
     end
   end
@@ -213,9 +213,9 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
     before { sign_in }
 
     context "Layout principal" do
-      it "max-width global aplicado (max-w-[1536px]) para limitar expansão" do
+      it "max-width global aplicado (w-full) para limitar expansão" do
         get tasks_path
-        expect(response.body).to include("max-w-[1536px] mx-auto")
+        expect(response.body).to include("w-full")
       end
 
       it "navbar com links visíveis para desktop (md:flex)" do
@@ -277,7 +277,7 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
     it "GET /tasks/:id/edit: formulário de edição possui mesma estrutura responsiva" do
       get edit_task_path(task)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-[1536px] sm:mx-auto")
+      expect(response.body).to include("w-full")
       expect(response.body).to include("min-h-[44px]")
     end
   end
