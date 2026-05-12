@@ -7,8 +7,8 @@
 domain: DM-007
 domain_name: Experiencia Mobile & Responsividade
 domain_type: Transversal / Experiencia
-status: done
-progress: 100%
+status: in-progress
+progress: 80%  # 4 de 5 stories concluidas
 
 dependencies:
   requires:
@@ -42,14 +42,21 @@ stories:
     description: Testar responsividade em multiplos viewports
     notes: "iPhone SE 375px, iPhone 14 390px, iPad 768px, Desktop 1440px"
 
+  005-full-width-layout-todas-paginas:
+    status: ready-for-dev
+    priority: medium
+    description: Aproveitar largura total da tela (max-w-screen-2xl) em todas as páginas mantendo mobile
+    notes: Criado 2026-05-12 — substituição cirúrgica de max-w-7xl/sm:max-w-2xl/sm:max-w-lg em 10 arquivos; auth e modal mantêm largura limitada
+
 retrospective:
   status: optional
 
 summary:
-  total_stories: 4
+  total_stories: 5
   done: 4
   in_progress: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
-  next_actions: []
+  next_actions:
+    - Implementar story 005 — full-width layout em todas as páginas
