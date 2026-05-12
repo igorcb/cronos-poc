@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: in-progress
-progress: 95%  # 20 de 21 stories concluidas
+status: done
+progress: 100%  # 21 de 21 stories concluidas
 
 dependencies:
   requires:
@@ -149,10 +149,10 @@ retrospective:
 
 summary:
   total_stories: 21
-  done: 20
+  done: 21
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 021 — coluna Valor da task no dashboard e listagem
+    - DM-005 completo — todas as 21 stories concluídas
