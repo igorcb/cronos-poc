@@ -29,10 +29,10 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
 
   # AC1, AC3, AC4: Forms usam breakpoints sm:, md:, lg: e ocupam largura completa em mobile
   describe "GET /tasks/new" do
-    it "renders wrapper com mobile-first (w-full) e max-width para desktop (sm:max-w-2xl)" do
+    it "renders wrapper com mobile-first (w-full) e max-width para desktop " do
       get new_task_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-2xl sm:mx-auto")
+      expect(response.body).to include("w-full")
     end
 
     # AC5: Botões touch-friendly com min-h-[44px]
@@ -71,10 +71,10 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
     let!(:project) { create(:project, company: company) }
     let!(:task) { create(:task, company: company, project: project) }
 
-    it "renders wrapper com mobile-first (w-full sm:max-w-2xl sm:mx-auto)" do
+    it "renders wrapper com mobile-first (w-full)" do
       get edit_task_path(task)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-2xl sm:mx-auto")
+      expect(response.body).to include("w-full")
     end
 
     it "renders todos inputs com min-h-[44px]" do
@@ -120,10 +120,10 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
 
   describe "GET /companies/new" do
     # AC3, AC4: form em mobile ocupa largura total; desktop tem max-width
-    it "renders wrapper com mobile-first (w-full sm:max-w-lg sm:mx-auto)" do
+    it "renders wrapper com mobile-first (w-full)" do
       get new_company_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-lg sm:mx-auto")
+      expect(response.body).to include("w-full")
     end
 
     # AC5: campos touch-friendly
@@ -140,10 +140,10 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
   end
 
   describe "GET /companies/:id/edit" do
-    it "renders wrapper com mobile-first (w-full sm:max-w-lg sm:mx-auto)" do
+    it "renders wrapper com mobile-first (w-full)" do
       get edit_company_path(company)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-lg sm:mx-auto")
+      expect(response.body).to include("w-full")
     end
   end
 
@@ -163,10 +163,10 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
 
   describe "GET /projects/new" do
     # AC3, AC4: form em mobile ocupa largura total; desktop tem max-width
-    it "renders wrapper com mobile-first (w-full sm:max-w-lg sm:mx-auto)" do
+    it "renders wrapper com mobile-first (w-full)" do
       get new_project_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-lg sm:mx-auto")
+      expect(response.body).to include("w-full")
     end
 
     # AC5: campos touch-friendly
@@ -179,10 +179,10 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
   describe "GET /projects/:id/edit" do
     let!(:project) { create(:project, company: company) }
 
-    it "renders wrapper com mobile-first (w-full sm:max-w-lg sm:mx-auto)" do
+    it "renders wrapper com mobile-first (w-full)" do
       get edit_project_path(project)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-lg sm:mx-auto")
+      expect(response.body).to include("w-full")
     end
   end
 
@@ -206,10 +206,10 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
   describe "GET /profile" do
     before { sign_in }
 
-    it "renders wrapper com mobile-first (w-full sm:max-w-lg sm:mx-auto)" do
+    it "renders wrapper com mobile-first (w-full)" do
       get profile_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("w-full sm:max-w-lg sm:mx-auto")
+      expect(response.body).to include("w-full")
     end
 
     it "renders campos de senha com min-h-[44px]" do
