@@ -290,4 +290,58 @@ RSpec.describe "Tasks", type: :request do
       expect(response.body).to include("R$100,00")
     end
   end
+
+  describe "GET /tasks/:id/edit — Story 4.16 fix combobox Projeto disabled" do
+    before { sign_in(user) }
+
+    let!(:company) { create(:company, name: "Empresa Edit") }
+    let!(:project) { create(:project, company: company, name: "Projeto Edit") }
+    let!(:other_project) { create(:project, company: company, name: "Outro Projeto") }
+    let!(:task) { create(:task, company: company, project: project, start_date: Date.current) }
+
+    it "AC1: renderiza combobox Projeto SEM atributo disabled" do
+      get edit_task_path(task)
+      doc = Nokogiri::HTML(response.body)
+      select_node = doc.at_css("select#task_project_id")
+      expect(select_node).to be_present
+      expect(select_node["disabled"]).to be_nil
+    end
+
+    it "AC2: combobox Projeto vem populado com projetos da empresa do task" do
+      get edit_task_path(task)
+      expect(response.body).to include("Projeto Edit")
+      expect(response.body).to include("Outro Projeto")
+    end
+
+    it "AC3: combobox Projeto vem com projeto atual selecionado" do
+      get edit_task_path(task)
+      doc = Nokogiri::HTML(response.body)
+      selected = doc.at_css("select#task_project_id option[selected]")
+      expect(selected).to be_present
+      expect(selected["value"]).to eq(project.id.to_s)
+    end
+  end
+
+  describe "PATCH /tasks/:id — Story 4.16 fix combobox Projeto" do
+    before { sign_in(user) }
+
+    let!(:company) { create(:company, name: "Empresa PATCH") }
+    let!(:project) { create(:project, company: company, name: "Projeto PATCH") }
+    let!(:task) { create(:task, company: company, project: project, name: "Nome Antigo", start_date: Date.current) }
+
+    it "AC4: editar apenas o nome (sem mexer em empresa/projeto) salva com sucesso" do
+      patch task_path(task), params: {
+        task: {
+          name: "Nome Novo",
+          company_id: task.company_id,
+          project_id: task.project_id,
+          code: task.code,
+          estimated_hours_hm: "02:00",
+          start_date: task.start_date.to_s
+        }
+      }
+      expect(response).to redirect_to(tasks_path)
+      expect(task.reload.name).to eq("Nome Novo")
+    end
+  end
 end

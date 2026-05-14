@@ -43,14 +43,13 @@
             Projeto
             <span class="text-red-400 ml-1" aria-hidden="true">*</span>
           <% end %>
-          <%= f.select :project_id, [],
-              { prompt: "Selecione um projeto" },
+          <%= f.collection_select :project_id, @projects, :id, :name,
+              { prompt: "Selecione um projeto", selected: @task.project_id },
               "aria-required": "true",
               "aria-describedby": @task.errors[:project_id].any? ? "edit_task_project_id_error" : nil,
               "aria-invalid": @task.errors[:project_id].any? ? "true" : nil,
               data: { project_selector_target: "projectSelect", action: "change->form-validation#clearError" },
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:project_id].any? ? 'border-red-500' : 'border-gray-600'}",
-              disabled: true %>
+              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:project_id].any? ? 'border-red-500' : 'border-gray-600'}" %>
           <% if @task.errors[:project_id].any? %>
             <span id="edit_task_project_id_error" role="alert" class="mt-1 text-sm text-red-400">
               <%= @task.errors[:project_id].first %>
