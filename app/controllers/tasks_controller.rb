@@ -69,7 +69,7 @@ class TasksController < ApplicationController
   end
 
   def edit
-    @companies = Company.active.order(:name)
+    set_edit_form_collections
   end
 
   def update
@@ -84,7 +84,7 @@ class TasksController < ApplicationController
         format.html { redirect_to tasks_path, notice: "Tarefa atualizada com sucesso" }
       end
     else
-      @companies = Company.active.order(:name)
+      set_edit_form_collections
       render :edit, status: :unprocessable_entity
     end
   end
@@ -137,6 +137,11 @@ class TasksController < ApplicationController
 
   def set_task
     @task = Task.find(params[:id])
+  end
+
+  def set_edit_form_collections
+    @companies = Company.active.order(:name)
+    @projects = @task.company&.projects&.order(:name) || []
   end
 
   def calculate_daily_total(filtered_tasks = nil)
