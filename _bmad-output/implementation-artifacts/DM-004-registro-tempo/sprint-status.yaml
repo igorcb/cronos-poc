@@ -7,8 +7,8 @@
 domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
-status: done
-progress: 100%  # 15 de 15 stories concluidas
+status: in-progress
+progress: 94%  # 15 de 16 stories concluidas
 
 dependencies:
   requires:
@@ -115,6 +115,13 @@ stories:
     description: Gravar hourly_rate e value em task_items no lançamento; hourly_rate e delivered_value em tasks na entrega
     notes: Implementado junto com story 5.21 — PR #123 mergeado em 2026-05-07; 835 specs passando
 
+  016-fix-form-edit-projeto-disabled-on-load:
+    status: ready-for-dev
+    priority: high
+    description: Bug fix — combobox Projeto desabilitado ao abrir /tasks/:id/edit; obriga re-seleção manual de empresa+projeto
+    notes: Criado 2026-05-14 — reproduzido via Playwright MCP; afeta toda edição de tarefa
+    epic: 7
+
 retrospective:
   status: done
   date: 2026-01-26
@@ -124,11 +131,11 @@ retrospective:
     - Epic 5 pronto para iniciar
 
 summary:
-  total_stories: 15
+  total_stories: 16
   done: 15
   in_progress: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - DM-004 completo — todas as 15 stories concluídas
+    - Implementar story 016 — bug fix combobox Projeto desabilitado em /tasks/:id/edit
