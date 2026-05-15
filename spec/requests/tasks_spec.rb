@@ -344,4 +344,24 @@ RSpec.describe "Tasks", type: :request do
       expect(task.reload.name).to eq("Nome Novo")
     end
   end
+
+  describe "DELETE /tasks/:id" do
+    let!(:task) { create(:task) }
+
+    before { sign_in(user) }
+
+    it "destroys the task and redirects" do
+      expect {
+        delete task_path(task)
+      }.to change(Task, :count).by(-1)
+      expect(response).to redirect_to(tasks_path)
+    end
+
+    it "redirects with alert when destroy fails" do
+      allow_any_instance_of(Task).to receive(:destroy).and_return(false)
+      delete task_path(task)
+      expect(response).to redirect_to(tasks_path)
+      expect(flash[:alert]).to match(/Não foi possível remover/)
+    end
+  end
 end

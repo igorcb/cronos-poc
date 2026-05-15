@@ -36,17 +36,4 @@ class Company < ApplicationRecord
     update!(active: true)
   end
 
-  # Prevent hard delete if time_entries exist
-  before_destroy :prevent_destroy_if_has_time_entries, prepend: true
-
-  private
-
-  def prevent_destroy_if_has_time_entries
-    return true unless defined?(TimeEntry) && respond_to?(:time_entries)
-
-    if time_entries.exists?
-      errors.add(:base, "Não é possível deletar empresa com entradas de tempo associadas. Use deactivate! para desativar.")
-      throw :abort
-    end
-  end
 end

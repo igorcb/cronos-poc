@@ -143,12 +143,7 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
     before { sign_in }
 
     context "GET /tasks/new (formulário — AC2)" do
-      it "form centralizado em tablet (sm:mx-auto)" do
-        get new_task_path
-        expect(response.body).to include("sm:mx-auto")
-      end
-
-      it "form com max-width para tablet " do
+      it "form full-width em tablet (story 7.5 — sem cap)" do
         get new_task_path
         expect(response.body).to include("w-full")
       end
@@ -177,12 +172,7 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
     end
 
     context "GET /companies/new" do
-      it "form centralizado em tablet (sm:mx-auto)" do
-        get new_company_path
-        expect(response.body).to include("sm:mx-auto")
-      end
-
-      it "form com max-width para tablet " do
+      it "form full-width em tablet (story 7.5 — sem cap)" do
         get new_company_path
         expect(response.body).to include("w-full")
       end
@@ -194,12 +184,7 @@ RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
     end
 
     context "GET /projects/new" do
-      it "form centralizado em tablet (sm:mx-auto)" do
-        get new_project_path
-        expect(response.body).to include("sm:mx-auto")
-      end
-
-      it "form com max-width para tablet " do
+      it "form full-width em tablet (story 7.5 — sem cap)" do
         get new_project_path
         expect(response.body).to include("w-full")
       end

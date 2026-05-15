@@ -48,3 +48,6 @@
 # Claude Code internos
 /.claude/github-star-reminder.txt
 /lor
+
+# SimpleCov coverage reports
+/coverage/
