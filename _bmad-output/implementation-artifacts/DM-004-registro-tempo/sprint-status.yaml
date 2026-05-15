@@ -8,7 +8,7 @@ domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
 status: in-progress
-progress: 94%  # 15 de 16 stories concluidas
+progress: 88%  # 16 de 18 stories concluidas
 
 dependencies:
   requires:
@@ -116,10 +116,24 @@ stories:
     notes: Implementado junto com story 5.21 — PR #123 mergeado em 2026-05-07; 835 specs passando
 
   016-fix-form-edit-projeto-disabled-on-load:
+    status: done
+    priority: high
+    description: Bug fix — combobox Projeto desabilitado ao abrir /tasks/:id/edit
+    notes: Implementado via PR #132 mergeado em 2026-05-14 — opção A server-side
+    epic: 7
+
+  017-form-edit-completo-todos-dados-task:
     status: ready-for-dev
     priority: high
-    description: Bug fix — combobox Projeto desabilitado ao abrir /tasks/:id/edit; obriga re-seleção manual de empresa+projeto
-    notes: Criado 2026-05-14 — reproduzido via Playwright MCP; afeta toda edição de tarefa
+    description: Exibir todos os dados da tarefa na edição (status, end_date, dados de tempo e financeiro read-only)
+    notes: Criado 2026-05-14 — form expandido em 3 fieldsets; status/delivery_date disabled quando delivered
+    epic: 7
+
+  018-reabrir-tarefa-entregue:
+    status: ready-for-dev
+    priority: high
+    description: Botão Reabrir tarefa delivered com modal de confirmação (delivered → completed, limpa delivery_date)
+    notes: Criado 2026-05-14 — endpoint PATCH /tasks/:id/reopen + Turbo Streams + modal Turbo Frame
     epic: 7
 
 retrospective:
@@ -131,11 +145,12 @@ retrospective:
     - Epic 5 pronto para iniciar
 
 summary:
-  total_stories: 16
-  done: 15
+  total_stories: 18
+  done: 16
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 2
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 016 — bug fix combobox Projeto desabilitado em /tasks/:id/edit
+    - Implementar story 017 — form de edição com todos os dados da tarefa
+    - Implementar story 018 — botão Reabrir tarefa entregue com modal de confirmação
