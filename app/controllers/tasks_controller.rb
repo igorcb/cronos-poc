@@ -73,7 +73,9 @@ class TasksController < ApplicationController
   end
 
   def update
-    if @task.update(task_params)
+    permitted = task_params
+    permitted.delete(:status) if @task.delivered?
+    if @task.update(permitted)
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
@@ -196,6 +198,6 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:code, :name, :company_id, :project_id, :start_date, :estimated_hours_hm, :notes, :status)
+    params.require(:task).permit(:code, :name, :company_id, :project_id, :start_date, :end_date, :estimated_hours_hm, :notes, :status)
   end
 end

@@ -364,4 +364,129 @@ RSpec.describe "Tasks", type: :request do
       expect(flash[:alert]).to match(/Não foi possível remover/)
     end
   end
+
+  describe "Story 4.17 — Form edit completo (todos os dados)" do
+    before { sign_in(user) }
+
+    describe "GET /tasks/:id/edit" do
+      context "task pending — campos editáveis (AC1, AC5.1)" do
+        let!(:task) { create(:task, :pending, code: "12345", name: "Tarefa Demo", notes: "obs ABC") }
+
+        it "exibe todos os novos campos editáveis (AC1.1, AC1.2, AC1.3)" do
+          get edit_task_path(task)
+          expect(response).to have_http_status(:success)
+          # campo end_date (AC1.2) — verificação específica via name
+          expect(response.body).to include('name="task[end_date]"')
+          # campo status select (AC1.3)
+          expect(response.body).to include('name="task[status]"')
+          expect(response.body).to match(/<option[^>]*value="pending"/)
+          expect(response.body).to match(/<option[^>]*value="completed"/)
+          expect(response.body).to match(/<option[^>]*value="delivered"/)
+        end
+
+        it "tabs iniciam com Dados Principais ativa e demais ocultas (Story 4.17 tabs)" do
+          get edit_task_path(task)
+          expect(response.body).to match(/id="tab-dados"[^>]*aria-selected="true"/)
+          expect(response.body).to match(/id="tab-horas"[^>]*aria-selected="false"/)
+          expect(response.body).to match(/id="tab-financeiro"[^>]*aria-selected="false"/)
+          expect(response.body).to match(/id="panel-horas"[^>]*hidden/)
+          expect(response.body).to match(/id="panel-financeiro"[^>]*hidden/)
+        end
+
+        it "exibe bloco Horas read-only (AC2.1)" do
+          get edit_task_path(task)
+          expect(response.body).to include("Horas Validadas")
+          expect(response.body).to include('data-testid="edit-validated-hours"')
+          expect(response.body).to include("Total de Lançamentos")
+          expect(response.body).to include('data-testid="edit-task-items-count"')
+        end
+
+        it "exibe bloco Financeiro read-only (AC2.2)" do
+          get edit_task_path(task)
+          expect(response.body).to include("Tarifa Atual da Empresa")
+          expect(response.body).to include('data-testid="edit-company-hourly-rate"')
+          expect(response.body).to include("Valor Acumulado")
+          expect(response.body).to include('data-testid="edit-total-value"')
+        end
+
+        it "exibe timestamps no rodapé (AC2.3)" do
+          get edit_task_path(task)
+          expect(response.body).to include('data-testid="edit-created-at"')
+          expect(response.body).to include('data-testid="edit-updated-at"')
+          expect(response.body).to match(/Criado em:\s*\d{2}\/\d{2}\/\d{4}/)
+        end
+
+        it "status NÃO está disabled para task pending (AC3.1 negativo)" do
+          get edit_task_path(task)
+          # extrai o trecho do select de status
+          status_select = response.body[/name="task\[status\]"[^>]*>/]
+          expect(status_select).not_to include("disabled")
+        end
+      end
+
+      context "task delivered — campos disabled (AC3)" do
+        let!(:task) do
+          t = create(:task, :pending, code: "99999", name: "Para Entregar")
+          t.update!(status: "delivered")
+          t
+        end
+
+        it "exibe status disabled com hint (AC3.1)" do
+          get edit_task_path(task)
+          # o select está disabled
+          expect(response.body).to match(/<select[^>]*disabled[^>]*name="task\[status\]"/m)
+          # hint informa que tarefa entregue não tem status editável
+          expect(response.body).to include("Tarefa entregue")
+          expect(response.body).to include("não pode ser alterado")
+        end
+
+        it "exibe delivery_date e tarifa snapshot (AC3.2)" do
+          get edit_task_path(task)
+          expect(response.body).to include('data-testid="edit-delivery-date"')
+          # hourly_rate/delivered_value foram snapshotados no callback
+          expect(response.body).to include('data-testid="edit-snapshot-hourly-rate"')
+        end
+      end
+    end
+
+    describe "PATCH /tasks/:id" do
+      let!(:task) { create(:task, :pending) }
+
+      it "atualiza status para completed (AC5.2)" do
+        patch task_path(task), params: { task: { status: "completed" } }
+        expect(task.reload.status).to eq("completed")
+      end
+
+      it "atualiza end_date e redireciona (AC5.2)" do
+        new_date = 2.weeks.from_now.to_date
+        patch task_path(task), params: { task: { end_date: new_date.to_s } }
+        expect(response).to redirect_to(tasks_path)
+        expect(task.reload.end_date).to eq(new_date)
+      end
+
+      it "ao re-renderizar form com erros, painéis Horas/Financeiro ficam visíveis (M2)" do
+        patch task_path(task), params: { task: { name: "" } }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).not_to match(/id="panel-horas"[^>]*hidden/)
+        expect(response.body).not_to match(/id="panel-financeiro"[^>]*hidden/)
+      end
+
+      context "task delivered" do
+        let!(:delivered_task) do
+          t = create(:task, :pending)
+          t.update!(status: "delivered")
+          t
+        end
+
+        it "ignora alteração de status em task delivered (AC5.3)" do
+          patch task_path(delivered_task), params: {
+            task: { status: "pending", name: "Novo Nome" }
+          }
+          delivered_task.reload
+          expect(delivered_task.status).to eq("delivered")  # bloqueado
+          expect(delivered_task.name).to eq("Novo Nome")    # demais campos passam (AC3.3)
+        end
+      end
+    end
+  end
 end
