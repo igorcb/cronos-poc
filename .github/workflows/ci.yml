@@ -160,13 +160,8 @@ jobs:
           npm run build
           npm run build:css
 
-      - name: Run tests
-        run: |
-          # Quando RSpec estiver configurado (Story 1.3), descomente:
-          # bin/rspec
-          echo "Testes serão configurados na Story 1.3 (RSpec + FactoryBot)"
-          echo "Por enquanto, verificando que Rails carrega sem erros..."
-          bin/rails runner "puts 'Rails loaded successfully!'"
+      - name: Run RSpec
+        run: bundle exec rspec --format progress
 
   assets:
     name: Assets Build

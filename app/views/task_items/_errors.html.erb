@@ -1,0 +1,9 @@
+<% if task_item.errors.any? %>
+  <div id="task_item_errors_<%= task_item.task_id %>" role="alert" class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md mb-4">
+    <ul class="list-disc list-inside text-sm">
+      <% task_item.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

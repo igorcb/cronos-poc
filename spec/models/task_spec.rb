@@ -77,6 +77,12 @@ RSpec.describe Task, type: :model do
       expect(task.errors[:estimated_hours_hm]).to include("deve ser maior que zero")
     end
 
+    it "rejects estimated_hours_hm with out-of-range hours or minutes" do
+      task = build(:task, estimated_hours_hm: "25:99", company: company, project: project)
+      expect(task).not_to be_valid
+      expect(task.errors[:estimated_hours_hm]).to include("deve conter horas válidas (00-23) e minutos válidos (00-59)")
+    end
+
     it "rejects invalid estimated_hours_hm format" do
       task = build(:task, estimated_hours_hm: "invalid", company: company, project: project)
       expect(task).not_to be_valid

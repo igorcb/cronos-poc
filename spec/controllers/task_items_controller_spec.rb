@@ -206,6 +206,21 @@ RSpec.describe TaskItemsController, type: :controller do
         end
       end
     end
+
+    context "with invalid params" do
+      let(:invalid_update) { { task_id: task.id, id: task_item.id, task_item: { start_time: nil, end_time: nil } } }
+
+      it "renders errors via turbo_stream" do
+        patch :update, params: invalid_update, format: :turbo_stream
+        expect(response.body).to include("task_item_errors_#{task.id}")
+      end
+
+      it "redirects with alert via html" do
+        patch :update, params: invalid_update
+        expect(response).to redirect_to(tasks_path)
+        expect(flash[:alert]).to be_present
+      end
+    end
   end
 
   describe "DELETE #destroy" do
