@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: done
-progress: 100%  # 21 de 21 stories concluidas
+status: in-progress
+progress: 95%  # 21 de 22 stories concluidas
 
 dependencies:
   requires:
@@ -138,6 +138,12 @@ stories:
     description: KPI Média por Entrega (R$) inline ao lado do botão +
     notes: Concluído 2026-05-07 — 131 specs passando; inline ao lado do +; Turbo Streams em 4 actions; bug fix replace turbo-frame
 
+  022-resumo-diario-do-mes:
+    status: ready-for-dev
+    priority: high
+    description: Tela de resumo diário do mês (filtro por mês, KPIs e tabela Data/Qtde/Horas/Valor)
+    notes: Criado 2026-05-16 — nova rota /resumo-diario com select de mês default mês corrente
+
   021-coluna-valor-task-dashboard-e-listagem:
     status: done
     priority: medium
@@ -148,11 +154,11 @@ retrospective:
   status: optional
 
 summary:
-  total_stories: 21
+  total_stories: 22
   done: 21
   in_progress: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - DM-005 completo — todas as 21 stories concluídas
+    - Implementar story 022 — tela de resumo diário do mês
