@@ -1,6 +1,6 @@
 # Story 4.17: Exibir Todos os Dados da Tarefa na Tela de Edição
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-004-registro-tempo
 **Data:** 2026-05-14
 **Epic:** Epic 7 — Edição & Correção

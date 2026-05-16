@@ -2,9 +2,9 @@
   <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
     <h1 class="text-2xl font-bold text-white mb-6">Editar Tarefa</h1>
 
-    <%= form_with(model: @task, data: { controller: "project-selector form-validation", turbo: "false" }, html: { novalidate: true }) do |f| %>
+    <%= form_with(model: @task, data: { controller: "project-selector form-validation tabs", turbo: "false" }, html: { novalidate: true }) do |f| %>
       <% if @task.errors.any? %>
-        <div role="alert" class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md">
+        <div role="alert" class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md mb-6">
           <h2 class="font-bold mb-2">
             <%= pluralize(@task.errors.count, "erro encontrado:", "erros encontrados:") %>
           </h2>
@@ -16,91 +16,178 @@
         </div>
       <% end %>
 
-      <div class="space-y-6">
-        <!-- Company -->
-        <div>
-          <%= f.label :company_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
-            Empresa
-            <span class="text-red-400 ml-1" aria-hidden="true">*</span>
-          <% end %>
-          <%= f.collection_select :company_id, @companies, :id, :name,
-              { prompt: "Selecione uma empresa" },
-              "aria-required": "true",
-              "aria-describedby": @task.errors[:company_id].any? ? "edit_task_company_id_error" : nil,
-              "aria-invalid": @task.errors[:company_id].any? ? "true" : nil,
-              data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects change->form-validation#clearError" },
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:company_id].any? ? 'border-red-500' : 'border-gray-600'}" %>
-          <% if @task.errors[:company_id].any? %>
-            <span id="edit_task_company_id_error" role="alert" class="mt-1 text-sm text-red-400">
-              <%= @task.errors[:company_id].first %>
-            </span>
-          <% end %>
-        </div>
+      <!-- Tablist -->
+      <div role="tablist" aria-label="Seções do formulário" class="flex border-b border-gray-700 mb-6 overflow-x-auto">
+        <button type="button" role="tab" id="tab-dados" aria-controls="panel-dados" aria-selected="true" tabindex="0"
+                data-tabs-target="tab"
+                data-action="click->tabs#select keydown->tabs#keydown"
+                class="px-4 py-3 text-sm font-semibold uppercase tracking-wider border-b-2 border-blue-500 text-blue-300 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+          Dados Principais
+        </button>
+        <button type="button" role="tab" id="tab-horas" aria-controls="panel-horas" aria-selected="false" tabindex="-1"
+                data-tabs-target="tab"
+                data-action="click->tabs#select keydown->tabs#keydown"
+                class="px-4 py-3 text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent text-gray-400 hover:text-gray-200 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+          Horas
+        </button>
+        <button type="button" role="tab" id="tab-financeiro" aria-controls="panel-financeiro" aria-selected="false" tabindex="-1"
+                data-tabs-target="tab"
+                data-action="click->tabs#select keydown->tabs#keydown"
+                class="px-4 py-3 text-sm font-semibold uppercase tracking-wider border-b-2 border-transparent text-gray-400 hover:text-gray-200 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+          Financeiro
+        </button>
+      </div>
 
-        <!-- Project -->
-        <div>
-          <%= f.label :project_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
-            Projeto
-            <span class="text-red-400 ml-1" aria-hidden="true">*</span>
-          <% end %>
-          <%= f.collection_select :project_id, @projects, :id, :name,
-              { prompt: "Selecione um projeto", selected: @task.project_id },
-              "aria-required": "true",
-              "aria-describedby": @task.errors[:project_id].any? ? "edit_task_project_id_error" : nil,
-              "aria-invalid": @task.errors[:project_id].any? ? "true" : nil,
-              data: { project_selector_target: "projectSelect", action: "change->form-validation#clearError" },
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:project_id].any? ? 'border-red-500' : 'border-gray-600'}" %>
-          <% if @task.errors[:project_id].any? %>
-            <span id="edit_task_project_id_error" role="alert" class="mt-1 text-sm text-red-400">
-              <%= @task.errors[:project_id].first %>
-            </span>
-          <% end %>
-        </div>
+      <div>
+        <!-- ============ Painel 1: Dados Principais ============ -->
+        <fieldset role="tabpanel" id="panel-dados" aria-labelledby="tab-dados" data-tabs-target="panel"
+                  class="space-y-6 border border-gray-700 rounded-lg p-4 sm:p-5">
 
-        <!-- Code -->
-        <div>
-          <%= f.label :code, class: "block text-sm font-medium text-gray-300 mb-1" do %>
-            Código
-            <span class="text-red-400 ml-1" aria-hidden="true">*</span>
-          <% end %>
-          <%= f.text_field :code,
-              "aria-required": "true",
-              placeholder: "Ex: 14335",
-              inputmode: "numeric",
-              pattern: "[0-9]*",
-              "aria-describedby": @task.errors[:code].any? ? "edit_task_code_error" : nil,
-              "aria-invalid": @task.errors[:code].any? ? "true" : nil,
-              data: { action: "input->form-validation#clearError" },
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:code].any? ? 'border-red-500' : 'border-gray-600'}" %>
-          <% if @task.errors[:code].any? %>
-            <span id="edit_task_code_error" role="alert" class="mt-1 text-sm text-red-400">
-              <%= @task.errors[:code].first %>
-            </span>
-          <% end %>
-        </div>
+          <!-- Company -->
+          <div>
+            <%= f.label :company_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+              Empresa
+              <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+            <% end %>
+            <%= f.collection_select :company_id, @companies, :id, :name,
+                { prompt: "Selecione uma empresa" },
+                "aria-required": "true",
+                "aria-describedby": @task.errors[:company_id].any? ? "edit_task_company_id_error" : nil,
+                "aria-invalid": @task.errors[:company_id].any? ? "true" : nil,
+                data: { project_selector_target: "companySelect", action: "change->project-selector#loadProjects change->form-validation#clearError" },
+                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:company_id].any? ? 'border-red-500' : 'border-gray-600'}" %>
+            <% if @task.errors[:company_id].any? %>
+              <span id="edit_task_company_id_error" role="alert" class="mt-1 text-sm text-red-400">
+                <%= @task.errors[:company_id].first %>
+              </span>
+            <% end %>
+          </div>
 
-        <!-- Name -->
-        <div>
-          <%= f.label :name, class: "block text-sm font-medium text-gray-300 mb-1" do %>
-            Nome da Tarefa
-            <span class="text-red-400 ml-1" aria-hidden="true">*</span>
-          <% end %>
-          <%= f.text_field :name,
-              "aria-required": "true",
-              "aria-describedby": @task.errors[:name].any? ? "edit_task_name_error" : nil,
-              "aria-invalid": @task.errors[:name].any? ? "true" : nil,
-              data: { action: "input->form-validation#clearError" },
-              class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:name].any? ? 'border-red-500' : 'border-gray-600'}" %>
-          <% if @task.errors[:name].any? %>
-            <span id="edit_task_name_error" role="alert" class="mt-1 text-sm text-red-400">
-              <%= @task.errors[:name].first %>
-            </span>
-          <% end %>
-        </div>
+          <!-- Project -->
+          <div>
+            <%= f.label :project_id, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+              Projeto
+              <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+            <% end %>
+            <%= f.collection_select :project_id, @projects, :id, :name,
+                { prompt: "Selecione um projeto", selected: @task.project_id },
+                "aria-required": "true",
+                "aria-describedby": @task.errors[:project_id].any? ? "edit_task_project_id_error" : nil,
+                "aria-invalid": @task.errors[:project_id].any? ? "true" : nil,
+                data: { project_selector_target: "projectSelect", action: "change->form-validation#clearError" },
+                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:project_id].any? ? 'border-red-500' : 'border-gray-600'}" %>
+            <% if @task.errors[:project_id].any? %>
+              <span id="edit_task_project_id_error" role="alert" class="mt-1 text-sm text-red-400">
+                <%= @task.errors[:project_id].first %>
+              </span>
+            <% end %>
+          </div>
 
-        <!-- Estimated Hours and Start Date (same row) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Estimated Hours (HH:MM format) -->
+          <!-- Code -->
+          <div>
+            <%= f.label :code, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+              Código
+              <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+            <% end %>
+            <%= f.text_field :code,
+                "aria-required": "true",
+                placeholder: "Ex: 14335",
+                inputmode: "numeric",
+                pattern: "[0-9]*",
+                "aria-describedby": @task.errors[:code].any? ? "edit_task_code_error" : nil,
+                "aria-invalid": @task.errors[:code].any? ? "true" : nil,
+                data: { action: "input->form-validation#clearError" },
+                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:code].any? ? 'border-red-500' : 'border-gray-600'}" %>
+            <% if @task.errors[:code].any? %>
+              <span id="edit_task_code_error" role="alert" class="mt-1 text-sm text-red-400">
+                <%= @task.errors[:code].first %>
+              </span>
+            <% end %>
+          </div>
+
+          <!-- Name -->
+          <div>
+            <%= f.label :name, class: "block text-sm font-medium text-gray-300 mb-1" do %>
+              Nome da Tarefa
+              <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+            <% end %>
+            <%= f.text_field :name,
+                "aria-required": "true",
+                "aria-describedby": @task.errors[:name].any? ? "edit_task_name_error" : nil,
+                "aria-invalid": @task.errors[:name].any? ? "true" : nil,
+                data: { action: "input->form-validation#clearError" },
+                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:name].any? ? 'border-red-500' : 'border-gray-600'}" %>
+            <% if @task.errors[:name].any? %>
+              <span id="edit_task_name_error" role="alert" class="mt-1 text-sm text-red-400">
+                <%= @task.errors[:name].first %>
+              </span>
+            <% end %>
+          </div>
+
+          <!-- Datas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Start Date -->
+            <div>
+              <%= f.label :start_date, "Data de Início", class: "block text-sm font-medium text-gray-300 mb-1" do %>
+                Data de Início
+                <span class="text-red-400 ml-1" aria-hidden="true">*</span>
+              <% end %>
+              <%= f.date_field :start_date,
+                  "aria-required": "true",
+                  "aria-describedby": @task.errors[:start_date].any? ? "edit_task_start_date_error" : nil,
+                  "aria-invalid": @task.errors[:start_date].any? ? "true" : nil,
+                  data: { action: "input->form-validation#clearError" },
+                  class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:start_date].any? ? 'border-red-500' : 'border-gray-600'}" %>
+              <% if @task.errors[:start_date].any? %>
+                <span id="edit_task_start_date_error" role="alert" class="mt-1 text-sm text-red-400">
+                  <%= @task.errors[:start_date].first %>
+                </span>
+              <% end %>
+            </div>
+
+            <!-- End Date -->
+            <div>
+              <%= f.label :end_date, "Data de Fim", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <%= f.date_field :end_date,
+                  class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border border-gray-600" %>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div>
+            <%= f.label :status, "Status", class: "block text-sm font-medium text-gray-300 mb-1" %>
+            <% if @task.delivered? %>
+              <%= f.select :status,
+                  Task.statuses.keys.map { |s| [s.humanize, s] },
+                  { selected: @task.status },
+                  disabled: true,
+                  "aria-describedby": "edit_task_status_hint",
+                  class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-gray-400 rounded-md border border-gray-600 cursor-not-allowed opacity-70" %>
+              <p id="edit_task_status_hint" class="mt-1 text-xs text-gray-400">
+                Tarefa entregue — o status não pode ser alterado.
+              </p>
+            <% else %>
+              <%= f.select :status,
+                  Task.statuses.keys.map { |s| [s.humanize, s] },
+                  { selected: @task.status },
+                  class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border border-gray-600" %>
+            <% end %>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <%= f.label :notes, "Observações", class: "block text-sm font-medium text-gray-300 mb-1" %>
+            <%= f.text_area :notes, rows: 4, class: "w-full min-h-[88px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+          </div>
+
+          <p class="text-xs text-gray-400"><span class="text-red-400">*</span> campos obrigatórios</p>
+        </fieldset>
+
+        <!-- ============ Painel 2: Horas ============ -->
+        <fieldset role="tabpanel" id="panel-horas" aria-labelledby="tab-horas" data-tabs-target="panel" <%= "hidden" unless @task.errors.any? %>
+                  class="space-y-4 border border-gray-700 rounded-lg p-4 sm:p-5 mt-4" data-testid="edit-section-horas">
+
+          <!-- Estimated Hours (HH:MM) — editável -->
           <div>
             <%= f.label :estimated_hours_hm, class: "block text-sm font-medium text-gray-300 mb-1" do %>
               Horas Estimadas
@@ -119,33 +206,92 @@
             <% end %>
           </div>
 
-          <!-- Start Date -->
+          <!-- Validated Hours — read-only -->
           <div>
-            <%= f.label :start_date, class: "block text-sm font-medium text-gray-300 mb-1" do %>
-              Data de Início
-              <span class="text-red-400 ml-1" aria-hidden="true">*</span>
-            <% end %>
-            <%= f.date_field :start_date,
-                "aria-required": "true",
-                "aria-describedby": @task.errors[:start_date].any? ? "edit_task_start_date_error" : nil,
-                "aria-invalid": @task.errors[:start_date].any? ? "true" : nil,
-                data: { action: "input->form-validation#clearError" },
-                class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border #{@task.errors[:start_date].any? ? 'border-red-500' : 'border-gray-600'}" %>
-            <% if @task.errors[:start_date].any? %>
-              <span id="edit_task_start_date_error" role="alert" class="mt-1 text-sm text-red-400">
-                <%= @task.errors[:start_date].first %>
-              </span>
-            <% end %>
+            <label for="edit_validated_hours" class="block text-sm font-medium text-gray-300 mb-1">Horas Validadas</label>
+            <input type="text" id="edit_validated_hours" readonly value="<%= @task.validated_hours_hm %>"
+                   aria-readonly="true"
+                   data-testid="edit-validated-hours"
+                   class="w-full min-h-[44px] px-3 py-2 bg-gray-700/60 text-white font-medium rounded-md border border-gray-600 cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <p class="mt-1 text-xs text-gray-400">Soma das horas trabalhadas em lançamentos.</p>
           </div>
-        </div>
 
-        <!-- Notes -->
-        <div>
-          <%= f.label :notes, "Observações", class: "block text-sm font-medium text-gray-300 mb-1" %>
-          <%= f.text_area :notes, rows: 4, class: "w-full min-h-[88px] px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
-        </div>
+          <!-- Total de Lançamentos -->
+          <div>
+            <label for="edit_task_items_count" class="block text-sm font-medium text-gray-300 mb-1">Total de Lançamentos</label>
+            <input type="text" id="edit_task_items_count" readonly value="<%= @task.task_items.size %>"
+                   aria-readonly="true"
+                   data-testid="edit-task-items-count"
+                   class="w-full min-h-[44px] px-3 py-2 bg-gray-700/60 text-white font-medium rounded-md border border-gray-600 cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </fieldset>
 
-        <p class="text-xs text-gray-400"><span class="text-red-400">*</span> campos obrigatórios</p>
+        <!-- ============ Painel 3: Financeiro ============ -->
+        <fieldset role="tabpanel" id="panel-financeiro" aria-labelledby="tab-financeiro" data-tabs-target="panel" <%= "hidden" unless @task.errors.any? %>
+                  class="space-y-4 border border-gray-700 rounded-lg p-4 sm:p-5 mt-4" data-testid="edit-section-financeiro">
+
+          <!-- Tarifa atual da empresa -->
+          <div>
+            <label for="edit_company_hourly_rate" class="block text-sm font-medium text-gray-300 mb-1">Tarifa Atual da Empresa</label>
+            <input type="text" id="edit_company_hourly_rate" readonly
+                   value="<%= number_to_currency(@task.company&.hourly_rate || 0, unit: "R$ ", separator: ",", delimiter: ".") %>"
+                   aria-readonly="true"
+                   data-testid="edit-company-hourly-rate"
+                   class="w-full min-h-[44px] px-3 py-2 bg-gray-700/60 text-white font-medium rounded-md border border-gray-600 cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <!-- Tarifa snapshot da entrega -->
+          <% if @task.hourly_rate.present? %>
+            <div>
+              <label for="edit_snapshot_hourly_rate" class="block text-sm font-medium text-gray-300 mb-1">Tarifa na Entrega (snapshot)</label>
+              <input type="text" id="edit_snapshot_hourly_rate" readonly
+                     value="<%= number_to_currency(@task.hourly_rate, unit: "R$ ", separator: ",", delimiter: ".") %>"
+                     aria-readonly="true"
+                     data-testid="edit-snapshot-hourly-rate"
+                     class="w-full min-h-[44px] px-3 py-2 bg-gray-700/60 text-white font-medium rounded-md border border-gray-600 cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          <% end %>
+
+          <!-- Valor acumulado -->
+          <div>
+            <label for="edit_total_value" class="block text-sm font-medium text-gray-300 mb-1">Valor Acumulado</label>
+            <input type="text" id="edit_total_value" readonly
+                   value="<%= number_to_currency(@task.total_value || 0, unit: "R$ ", separator: ",", delimiter: ".") %>"
+                   aria-readonly="true"
+                   data-testid="edit-total-value"
+                   class="w-full min-h-[44px] px-3 py-2 bg-gray-700/60 text-white font-medium rounded-md border border-gray-600 cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <!-- Valor entregue -->
+          <% if @task.delivered_value.present? %>
+            <div>
+              <label for="edit_delivered_value" class="block text-sm font-medium text-gray-300 mb-1">Valor Entregue</label>
+              <input type="text" id="edit_delivered_value" readonly
+                     value="<%= number_to_currency(@task.delivered_value, unit: "R$ ", separator: ",", delimiter: ".") %>"
+                     aria-readonly="true"
+                     data-testid="edit-delivered-value"
+                     class="w-full min-h-[44px] px-3 py-2 bg-gray-700/60 text-white font-medium rounded-md border border-gray-600 cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          <% end %>
+
+          <!-- Delivery Date (read-only) -->
+          <% if @task.delivery_date.present? %>
+            <div>
+              <label for="edit_delivery_date" class="block text-sm font-medium text-gray-300 mb-1">Data de Entrega</label>
+              <input type="text" id="edit_delivery_date" readonly
+                     value="<%= l(@task.delivery_date, format: :default) %>"
+                     aria-readonly="true"
+                     data-testid="edit-delivery-date"
+                     class="w-full min-h-[44px] px-3 py-2 bg-gray-700/60 text-white font-medium rounded-md border border-gray-600 cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          <% end %>
+        </fieldset>
+
+        <!-- ============ Rodapé: timestamps ============ -->
+        <div class="text-xs text-gray-400 space-y-1 pt-2 border-t border-gray-700">
+          <p data-testid="edit-created-at">Criado em: <%= @task.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+          <p data-testid="edit-updated-at">Atualizado em: <%= @task.updated_at.strftime("%d/%m/%Y %H:%M") %></p>
+        </div>
 
         <!-- Submit -->
         <div class="flex flex-col sm:flex-row gap-3 pt-4">

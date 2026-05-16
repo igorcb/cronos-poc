@@ -27,3 +27,6 @@ application.register("row-link", RowLinkController)
 
 import TaskItemHoursController from "./task_item_hours_controller"
 application.register("task-item-hours", TaskItemHoursController)
+
+import TabsController from "./tabs_controller"
+application.register("tabs", TabsController)
