@@ -390,6 +390,51 @@ RSpec.describe "Accessibility WCAG Level A", type: :request do
       end
     end
 
+    # Story 5.22: Resumo Diário — acessibilidade
+    describe "GET /resumo-diario (resumo diário)" do
+      it "tem h1 semântico com texto Resumo Diário" do
+        get daily_summary_path
+        expect(response.body).to include("<h1")
+        expect(response.body).to include("Resumo Diário")
+      end
+
+      it "contém <section> com aria-labelledby para cabeçalho" do
+        get daily_summary_path
+        expect(response.body).to include('aria-labelledby="daily-summary-heading"')
+        expect(response.body).to include('id="daily-summary-heading"')
+      end
+
+      it "contém label associado ao filtro de mês com for=" do
+        get daily_summary_path
+        expect(response.body).to include('for="month"')
+      end
+
+      it "tabela tem scope=col nos cabeçalhos quando há dados" do
+        company2 = create(:company, name: "Acessível Resumo")
+        project2 = create(:project, company: company2)
+        task2 = create(:task, company: company2, project: project2)
+        create(:task_item, task: task2, work_date: Date.current, start_time: "09:00", end_time: "10:00")
+
+        get daily_summary_path
+        expect(response.body).to include('scope="col"')
+      end
+
+      it "tabela tem caption sr-only quando há dados" do
+        company2 = create(:company, name: "Acessível Resumo Caption")
+        project2 = create(:project, company: company2)
+        task2 = create(:task, company: company2, project: project2)
+        create(:task_item, task: task2, work_date: Date.current, start_time: "09:00", end_time: "10:00")
+
+        get daily_summary_path
+        expect(response.body).to include('<caption class="sr-only">')
+      end
+
+      it "exibe role=status no estado vazio" do
+        get daily_summary_path(month: "2026-01")
+        expect(response.body).to include('role="status"')
+      end
+    end
+
     # Story 1.11: Página de perfil — acessibilidade
     describe "GET /profile (minha conta)" do
       before { sign_in }

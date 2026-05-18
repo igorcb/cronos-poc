@@ -202,6 +202,43 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
     end
   end
 
+  # Story 5.22: Resumo Diário — responsividade mobile-first
+  describe "GET /resumo-diario" do
+    it "renders wrapper com mobile-first (w-full)" do
+      get daily_summary_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("w-full")
+    end
+
+    it "renders select de mês com min-h-[44px]" do
+      get daily_summary_path
+      expect(response.body).to include('class="w-full min-h-[44px] bg-gray-700')
+    end
+
+    it "usa padding responsivo p-4 sm:p-6 nos cards" do
+      get daily_summary_path
+      expect(response.body).to include("p-4 sm:p-6")
+    end
+
+    it "renders KPIs com grid responsivo grid-cols-1 md:grid-cols-3" do
+      get daily_summary_path
+      expect(response.body).to include("grid grid-cols-1 md:grid-cols-3 gap-4")
+    end
+
+    it "renders tabela dentro de div overflow-x-auto para mobile" do
+      task2 = create(:task, company: company, project: create(:project, company: company))
+      create(:task_item, task: task2, work_date: Date.current, start_time: "09:00", end_time: "10:00")
+
+      get daily_summary_path
+      expect(response.body).to include("overflow-x-auto")
+    end
+
+    it "renders form layout flex-col sm:flex-row mobile-first" do
+      get daily_summary_path
+      expect(response.body).to include("flex flex-col sm:flex-row")
+    end
+  end
+
   # Story 1.11: Página de perfil — responsividade mobile-first
   describe "GET /profile" do
     before { sign_in }

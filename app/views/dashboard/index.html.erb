@@ -31,13 +31,22 @@
   <!-- Ação Rápida: Nova Tarefa -->
   <section aria-label="Ação rápida">
     <div class="flex items-center justify-between gap-4">
-      <%= link_to new_task_path, data: { turbo_frame: "modal" }, aria: { label: "Nova Tarefa" } do %>
-        <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
-          <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-        </div>
-      <% end %>
+      <div class="flex items-center gap-2">
+        <%= link_to new_task_path, data: { turbo_frame: "modal" }, aria: { label: "Nova Tarefa" } do %>
+          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
+            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+          </div>
+        <% end %>
+        <%= link_to daily_summary_path, aria: { label: "Resumo Diário" } do %>
+          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
+            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+        <% end %>
+      </div>
       <turbo-frame class="flex items-center px-4 py-3 bg-blue-900 rounded-lg">
         <%= render "dashboard/avg_per_delivery_inline", avg_per_delivery: @monthly_avg_per_delivery %>
       </turbo-frame>
