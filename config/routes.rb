@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get "resumo-diario", to: "daily_summary#index", as: :daily_summary
+
   # Disabled public signup (single-user system)
   get  "signup", to: "registrations#new"
   post "signup", to: "registrations#create"
