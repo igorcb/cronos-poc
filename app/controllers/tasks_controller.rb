@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   include DashboardCalculations
 
   before_action :require_authentication
-  before_action :set_task, only: [ :edit, :update, :destroy, :deliver ]
+  before_action :set_task, only: [ :edit, :update, :destroy, :deliver, :reopen, :reopen_modal ]
 
   def index
     @tasks = Task
@@ -115,6 +115,45 @@ class TasksController < ApplicationController
         format.turbo_stream { head :unprocessable_entity }
         format.html { redirect_to tasks_path, alert: "Não foi possível entregar a tarefa" }
       end
+    end
+  end
+
+  def reopen_modal
+    render partial: "reopen_confirmation_modal", locals: { task: @task }
+  end
+
+  def reopen
+    unless @task.delivered?
+      respond_to do |format|
+        format.turbo_stream { head :unprocessable_content }
+        format.html { redirect_to edit_task_path(@task), alert: "Apenas tarefas entregues podem ser reabertas." }
+      end
+      return
+    end
+
+    @task.update!(
+      status: :completed,
+      delivery_date: nil,
+      delivered_value: nil,
+      hourly_rate: nil
+    )
+
+    respond_to do |format|
+      format.turbo_stream do
+        avg_per_delivery = calculate_monthly_avg_per_delivery
+        render turbo_stream: [
+          turbo_stream.replace("task_row_#{@task.id}", partial: "dashboard/task_row", locals: { task: @task }),
+          turbo_stream.replace("dashboard_daily_task_count",   partial: "dashboard/daily_task_count",   locals: { daily_task_count: calculate_daily_task_count }),
+          turbo_stream.replace("dashboard_monthly_task_count", partial: "dashboard/monthly_task_count", locals: { monthly_task_count: calculate_monthly_task_count }),
+          turbo_stream.update("tasks-list", partial: "dashboard/tasks_list", locals: { tasks: monthly_tasks }),
+          turbo_stream.replace("kpi-entregas-mes",             partial: "dashboard/delivered_count",         locals: { monthly_delivered_count: calculate_monthly_delivered_count }),
+          turbo_stream.replace("kpi-horas-entregues",          partial: "dashboard/delivered_hours",         locals: { monthly_delivered_hours: calculate_monthly_delivered_hours }),
+          turbo_stream.replace("kpi-valor-entregue",           partial: "dashboard/delivered_value",         locals: { monthly_delivered_value: calculate_monthly_delivered_value }),
+          turbo_stream.replace("kpi-media-por-entrega",        partial: "dashboard/avg_per_delivery",        locals: { avg_per_delivery: avg_per_delivery }),
+          turbo_stream.replace("kpi-media-por-entrega-inline", partial: "dashboard/avg_per_delivery_inline", locals: { avg_per_delivery: avg_per_delivery })
+        ]
+      end
+      format.html { redirect_to edit_task_path(@task), notice: "Tarefa reaberta com sucesso. Você pode editar os dados agora." }
     end
   end
 
