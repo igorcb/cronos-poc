@@ -2,16 +2,6 @@
   <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
     <h1 class="text-2xl font-bold text-white mb-6">Editar Tarefa</h1>
 
-    <% if @task.delivered? %>
-      <div class="mb-6 flex items-center justify-between bg-yellow-900/30 border border-yellow-700 text-yellow-200 px-4 py-3 rounded-md">
-        <p class="text-sm">Tarefa entregue em <strong><%= l(@task.delivery_date, format: :default) %></strong>. Para alterar status ou data de entrega, é necessário reabrir.</p>
-        <%= link_to "Reabrir tarefa",
-              reopen_modal_task_path(@task),
-              data: { turbo_frame: "modal" },
-              class: "ml-4 inline-flex items-center gap-1 bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-md text-sm font-medium transition min-h-[44px]" %>
-      </div>
-    <% end %>
-
     <%= form_with(model: @task, data: { controller: "project-selector form-validation tabs", turbo: "false" }, html: { novalidate: true }) do |f| %>
       <% if @task.errors.any? %>
         <div role="alert" class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md mb-6">
@@ -174,7 +164,12 @@
                   "aria-describedby": "edit_task_status_hint",
                   class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-gray-400 rounded-md border border-gray-600 cursor-not-allowed opacity-70" %>
               <p id="edit_task_status_hint" class="mt-1 text-xs text-gray-400">
-                Tarefa entregue — use o botão "Reabrir tarefa" acima para alterar.
+                Tarefa entregue em <strong><%= l(@task.delivery_date, format: :default) %></strong>. Use o botão
+                <%= link_to "Reabrir tarefa",
+                      reopen_modal_task_path(@task),
+                      data: { turbo_frame: "modal", turbo: "true" },
+                      class: "text-yellow-400 hover:text-yellow-300 underline font-medium" %>
+                para alterar status ou data.
               </p>
             <% else %>
               <%= f.select :status,
