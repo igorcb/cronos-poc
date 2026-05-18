@@ -1,0 +1,44 @@
+<turbo-frame id="modal">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+       data-controller="modal"
+       data-action="keydown.escape@window->modal#close click->modal#closeOnOverlayClick"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="reopen-modal-title">
+
+    <div class="bg-gray-900 rounded-xl shadow-2xl ring-1 ring-yellow-600 w-full max-w-lg mx-4 flex flex-col">
+      <div class="flex items-start justify-between p-6 border-b border-gray-700/80 bg-gray-800/50 rounded-t-xl">
+        <div>
+          <h2 id="reopen-modal-title" class="text-white font-bold text-lg">Tem certeza que quer reabrir a tarefa?</h2>
+          <p class="text-gray-400 text-sm mt-1"><%= task.display_name %></p>
+        </div>
+        <button data-action="modal#close"
+                aria-label="Fechar modal"
+                class="text-gray-400 hover:text-white transition ml-4 text-xl leading-none">×</button>
+      </div>
+
+      <div class="p-6 space-y-3 text-sm text-gray-300">
+        <p>Ao reabrir:</p>
+        <ul class="list-disc list-inside space-y-1 text-gray-400">
+          <li>Status voltará para <strong>Concluído</strong></li>
+          <li>Data de entrega será limpa</li>
+          <li>Valor entregue será recalculado dinamicamente</li>
+        </ul>
+        <p class="text-gray-400 text-xs">Essa ação pode ser revertida ao entregar novamente.</p>
+      </div>
+
+      <div class="flex justify-end gap-3 p-6 border-t border-gray-700/80 bg-gray-800/30 rounded-b-xl">
+        <button type="button"
+                data-action="modal#close"
+                class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-md text-sm font-medium transition min-h-[44px]">
+          Cancelar
+        </button>
+        <%= button_to "Confirmar reabertura",
+              reopen_task_path(task),
+              method: :patch,
+              form: { data: { turbo: "false" } },
+              class: "bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium transition min-h-[44px]" %>
+      </div>
+    </div>
+  </div>
+</turbo-frame>
