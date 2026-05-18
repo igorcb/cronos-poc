@@ -21,18 +21,45 @@
     </div>
 
     <!-- KPIs do mês -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6" aria-label="KPIs do mês selecionado">
-      <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Cards no mês</p>
-        <p id="kpi-cards" class="text-3xl font-bold text-blue-400"><%= @kpi_cards %></p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" aria-label="KPIs do mês selecionado">
+      <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3">
+            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-400">Cards no mês</p>
+            <p id="kpi-cards" class="text-2xl font-semibold text-white"><%= @kpi_cards %></p>
+          </div>
+        </div>
       </div>
-      <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Horas no mês</p>
-        <p id="kpi-hours" class="text-3xl font-bold text-blue-400"><%= hours_to_hm(@kpi_hours) %></p>
+      <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3">
+            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-400">Horas no mês</p>
+            <p id="kpi-hours" class="text-2xl font-semibold text-white"><%= hours_to_hm(@kpi_hours) %></p>
+          </div>
+        </div>
       </div>
-      <div class="bg-gray-800 shadow-sm rounded-lg p-4 sm:p-6 border border-gray-700">
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Valor no mês</p>
-        <p id="kpi-value" class="text-3xl font-bold text-green-400"><%= number_to_currency(@kpi_value, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+      <div class="bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-700">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3">
+            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-400">Valor no mês</p>
+            <p id="kpi-value" class="text-2xl font-semibold text-white"><%= number_to_currency(@kpi_value, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+          </div>
+        </div>
       </div>
     </div>
 

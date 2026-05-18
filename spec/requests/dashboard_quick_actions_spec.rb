@@ -49,6 +49,20 @@ RSpec.describe "Dashboard Quick Actions", type: :request do
     it "AC4: não exibe card wrapper quick-actions-heading na seção de ação rápida" do
       expect(response.body).not_to include("quick-actions-heading")
     end
+
+    # Story 5.22: Atalho para Resumo Diário ao lado do botão "+"
+    it "exibe atalho 'Resumo Diário' ao lado do botão Nova Tarefa, com link para /resumo-diario" do
+      expect(response.body).to include('aria-label="Resumo Diário"')
+      expect(response.body).to match(
+        %r{aria-label="Resumo Diário"[^>]*href="/resumo-diario"|href="/resumo-diario"[^>]*aria-label="Resumo Diário"}
+      )
+    end
+
+    it "atalho 'Resumo Diário' está dentro da seção Ação rápida (irmão do botão Nova Tarefa)" do
+      expect(response.body).to match(
+        %r{aria-label="Ação rápida".*?aria-label="Nova Tarefa".*?aria-label="Resumo Diário"}m
+      )
+    end
   end
 
   describe "GET / sem autenticação" do

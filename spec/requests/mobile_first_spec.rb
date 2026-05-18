@@ -220,9 +220,9 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
       expect(response.body).to include("p-4 sm:p-6")
     end
 
-    it "renders KPIs com grid responsivo grid-cols-1 sm:grid-cols-3" do
+    it "renders KPIs com grid responsivo grid-cols-1 md:grid-cols-3" do
       get daily_summary_path
-      expect(response.body).to include("grid grid-cols-1 sm:grid-cols-3 gap-4")
+      expect(response.body).to include("grid grid-cols-1 md:grid-cols-3 gap-4")
     end
 
     it "renders tabela dentro de div overflow-x-auto para mobile" do
