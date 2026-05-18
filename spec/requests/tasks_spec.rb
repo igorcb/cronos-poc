@@ -437,7 +437,7 @@ RSpec.describe "Tasks", type: :request do
           expect(response.body).to match(/<select[^>]*disabled[^>]*name="task\[status\]"/m)
           # hint informa que tarefa entregue não tem status editável
           expect(response.body).to include("Tarefa entregue")
-          expect(response.body).to include("não pode ser alterado")
+          expect(response.body).to include("Reabrir tarefa")
         end
 
         it "exibe delivery_date e tarifa snapshot (AC3.2)" do
@@ -486,6 +486,83 @@ RSpec.describe "Tasks", type: :request do
           expect(delivered_task.status).to eq("delivered")  # bloqueado
           expect(delivered_task.name).to eq("Novo Nome")    # demais campos passam (AC3.3)
         end
+      end
+    end
+  end
+
+  describe "Story 4.18 — Reabrir tarefa entregue" do
+    before { sign_in(user) }
+
+    let(:company) { create(:company, hourly_rate: 100) }
+    let(:project) { create(:project, company: company) }
+    let!(:task) do
+      t = create(:task, :pending, company: company, project: project, estimated_hours_hm: "01:00")
+      create(:task_item, task: t, start_time: "09:00", end_time: "10:00")
+      t.update!(status: :delivered)
+      t
+    end
+
+    describe "link Reabrir em /tasks/:id/edit" do
+      it "exibe link quando task delivered (AC1.1)" do
+        get edit_task_path(task)
+        expect(response.body).to include("Reabrir tarefa")
+        expect(response.body).to include(reopen_modal_task_path(task))
+      end
+
+      it "NÃO exibe link quando task pending" do
+        task.update!(status: :pending, delivery_date: nil)
+        get edit_task_path(task)
+        expect(response.body).not_to include(reopen_modal_task_path(task))
+      end
+    end
+
+    describe "GET /tasks/:id/reopen_modal" do
+      it "renderiza modal de confirmação (AC2.1, AC2.2)" do
+        get reopen_modal_task_path(task)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Tem certeza que quer reabrir a tarefa?")
+        expect(response.body).to include("Confirmar reabertura")
+        expect(response.body).to include("Cancelar")
+      end
+    end
+
+    describe "PATCH /tasks/:id/reopen" do
+      it "reverte delivered → completed, limpa snapshot (AC3.1, AC3.2, AC3.3)" do
+        patch reopen_task_path(task)
+        task.reload
+        expect(task.status).to eq("completed")
+        expect(task.delivery_date).to be_nil
+        expect(task.delivered_value).to be_nil
+        expect(task.hourly_rate).to be_nil
+      end
+
+      it "redireciona para edit_task_path com flash de sucesso (AC4.1, AC3.5)" do
+        patch reopen_task_path(task)
+        expect(response).to redirect_to(edit_task_path(task))
+        expect(flash[:notice]).to match(/reaberta com sucesso/i)
+      end
+
+      it "responde turbo_stream com KPIs e task row (AC5.1)" do
+        patch reopen_task_path(task), as: :turbo_stream
+        expect(response.body).to include("task_row_#{task.id}")
+        expect(response.body).to include("kpi-entregas-mes")
+        expect(response.body).to include("kpi-horas-entregues")
+        expect(response.body).to include("kpi-valor-entregue")
+        expect(response.body).to include("kpi-media-por-entrega")
+        expect(response.body).to include("kpi-media-por-entrega-inline")
+      end
+
+      it "retorna alert quando task NÃO está delivered" do
+        task.update!(status: :pending, delivery_date: nil)
+        patch reopen_task_path(task)
+        expect(response).to redirect_to(edit_task_path(task))
+        expect(flash[:alert]).to match(/Apenas tarefas entregues/)
+      end
+
+      it "retorna 422 turbo_stream quando task NÃO está delivered" do
+        task.update!(status: :pending, delivery_date: nil)
+        patch reopen_task_path(task), as: :turbo_stream
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

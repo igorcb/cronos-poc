@@ -8,7 +8,7 @@ domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
 status: in-progress
-progress: 88%  # 16 de 18 stories concluidas
+progress: 100%  # 18 de 18 stories concluidas
 
 dependencies:
   requires:
@@ -123,17 +123,17 @@ stories:
     epic: 7
 
   017-form-edit-completo-todos-dados-task:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Exibir todos os dados da tarefa na edição (status, end_date, dados de tempo e financeiro read-only)
-    notes: Criado 2026-05-14 — form expandido em 3 fieldsets; status/delivery_date disabled quando delivered
+    notes: Implementado via PR #137 mergeado em 2026-05-16 — form em 3 tabs (Dados/Horas/Financeiro)
     epic: 7
 
   018-reabrir-tarefa-entregue:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Botão Reabrir tarefa delivered com modal de confirmação (delivered → completed, limpa delivery_date)
-    notes: Criado 2026-05-14 — endpoint PATCH /tasks/:id/reopen + Turbo Streams + modal Turbo Frame
+    notes: Implementado 2026-05-18 — banner amarelo + modal Turbo Frame + PATCH /reopen; validado via Playwright MCP
     epic: 7
 
 retrospective:
@@ -146,11 +146,10 @@ retrospective:
 
 summary:
   total_stories: 18
-  done: 16
+  done: 18
   in_progress: 0
-  ready_for_dev: 2
+  ready_for_dev: 0
   backlog: 0
   blockers: []
   next_actions:
-    - Implementar story 017 — form de edição com todos os dados da tarefa
-    - Implementar story 018 — botão Reabrir tarefa entregue com modal de confirmação
+    - DM-004 completo — todas as 18 stories concluídas
