@@ -1,6 +1,6 @@
 # Story 4.18: Botão Reabrir Tarefa Entregue (Reverter delivered → completed)
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-004-registro-tempo
 **Data:** 2026-05-14
 **Epic:** Epic 7 — Edição & Correção
