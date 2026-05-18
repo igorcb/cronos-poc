@@ -164,7 +164,12 @@
                   "aria-describedby": "edit_task_status_hint",
                   class: "w-full min-h-[44px] px-3 py-2 bg-gray-700 text-gray-400 rounded-md border border-gray-600 cursor-not-allowed opacity-70" %>
               <p id="edit_task_status_hint" class="mt-1 text-xs text-gray-400">
-                Tarefa entregue — o status não pode ser alterado.
+                Tarefa entregue em <strong><%= l(@task.delivery_date, format: :default) %></strong>. Use o botão
+                <%= link_to "Reabrir tarefa",
+                      reopen_modal_task_path(@task),
+                      data: { turbo_frame: "modal", turbo: "true" },
+                      class: "text-yellow-400 hover:text-yellow-300 underline font-medium" %>
+                para alterar status ou data.
               </p>
             <% else %>
               <%= f.select :status,
