@@ -225,7 +225,7 @@ GEM
     nokogiri (1.19.3-x86_64-linux-musl)
       racc (~> 1.4)
     ostruct (0.6.3)
-    parallel (1.27.0)
+    parallel (1.28.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
@@ -304,7 +304,7 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    regexp_parser (2.11.3)
+    regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
     rexml (3.4.4)
@@ -343,7 +343,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.34.3)
+    rubocop-rails (2.35.0)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -470,7 +470,7 @@ DEPENDENCIES
   rails-controller-testing (~> 1.0)
   rspec-rails (~> 8.0)
   rubocop (~> 1.86)
-  rubocop-rails (~> 2.34)
+  rubocop-rails (~> 2.35)
   rubocop-rails-omakase
   rubocop-rspec (~> 3.9)
   selenium-webdriver
