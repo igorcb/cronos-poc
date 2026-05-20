@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: done
-progress: 100%  # 22 de 22 stories concluidas
+status: in-progress
+progress: 96%  # 22 de 23 stories concluidas
 
 dependencies:
   requires:
@@ -138,6 +138,12 @@ stories:
     description: KPI Média por Entrega (R$) inline ao lado do botão +
     notes: Concluído 2026-05-07 — 131 specs passando; inline ao lado do +; Turbo Streams em 4 actions; bug fix replace turbo-frame
 
+  023-icones-kpis-mes-verdes:
+    status: ready-for-dev
+    priority: low
+    description: Padronizar ícone do KPI Valor Mês em verde — consistência visual com Tasks Mês e Horas Mês
+    notes: Criado 2026-05-20 — mudança cirúrgica de 1 caractere em _monthly_value.html.erb (text-yellow-400 → text-green-400)
+
   022-resumo-diario-do-mes:
     status: done
     priority: high
@@ -154,12 +160,12 @@ retrospective:
   status: optional
 
 summary:
-  total_stories: 22
+  total_stories: 23
   done: 22
   in_progress: 0
   in_review: 0
-  ready_for_dev: 0
+  ready_for_dev: 1
   backlog: 0
   blockers: []
   next_actions:
-    - DM-005 completo — 100% das stories entregues
+    - Implementar story 023 — padronizar ícone Valor Mês em verde
