@@ -51,3 +51,8 @@
 
 # SimpleCov coverage reports
 /coverage/
+
+# Environment variables (NUNCA commitar — contém secrets como GOOGLE_CLIENT_SECRET)
+/.env
+/.env.*
+!/.env.example

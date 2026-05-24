@@ -23,6 +23,27 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
       get new_session_path
       expect(response.body).to match(/min-h-\[44px\]/)
     end
+
+    # QA finding 9.1 #5 HIGH — novo botão Google precisa ser touch-friendly (44px+)
+    describe "botão Entrar com Google (story 9.1)" do
+      around do |example|
+        original_id = ENV["GOOGLE_CLIENT_ID"]
+        original_secret = ENV["GOOGLE_CLIENT_SECRET"]
+        ENV["GOOGLE_CLIENT_ID"] = "fake-client-id"
+        ENV["GOOGLE_CLIENT_SECRET"] = "fake-secret"
+        example.run
+      ensure
+        ENV["GOOGLE_CLIENT_ID"] = original_id
+        ENV["GOOGLE_CLIENT_SECRET"] = original_secret
+      end
+
+      it "renders botão Entrar com Google com min-h-[44px]" do
+        get new_session_path
+        expect(response.body).to include("Entrar com Google")
+        # O bloco do botão Google contém min-h-[44px] na mesma class string
+        expect(response.body).to match(/google_oauth2[\s\S]{0,500}min-h-\[44px\]/)
+      end
+    end
   end
 
   before { sign_in }

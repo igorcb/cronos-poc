@@ -3,14 +3,18 @@
 # Table name: users
 #
 #  id              :integer          not null, primary key
-#  created_at      :datetime         not null
 #  email           :string           not null
-#  password_digest :string           not null
+#  password_digest :string
+#  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  google_uid      :string
+#  name            :string
+#  avatar_url      :string
 #
 # Indexes
 #
-#  index_users_on_email  (email) UNIQUE
+#  index_users_on_email       (email) UNIQUE
+#  index_users_on_google_uid  (google_uid) UNIQUE
 #
 
 FactoryBot.define do

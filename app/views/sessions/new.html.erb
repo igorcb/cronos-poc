@@ -46,6 +46,23 @@
               class: "w-full min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
         </div>
       <% end %>
+
+      <% if google_oauth_enabled? %>
+        <!-- Divisor "ou" + Botão Google (story 9.1) -->
+        <div class="flex items-center gap-3 my-6" role="separator" aria-label="ou">
+          <hr class="flex-1 border-gray-600" aria-hidden="true">
+          <span class="text-gray-400 text-sm" aria-hidden="true">ou</span>
+          <hr class="flex-1 border-gray-600" aria-hidden="true">
+        </div>
+
+        <%= button_to "/auth/google_oauth2",
+              method: :post,
+              data: { turbo: false },
+              class: "w-full min-h-[44px] flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-medium py-2 px-4 rounded-md border border-gray-300 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" do %>
+          <%= image_tag "google_g.svg", alt: "", class: "w-5 h-5", aria: { hidden: "true" } %>
+          <span>Entrar com Google</span>
+        <% end %>
+      <% end %>
     </div>
 
     <!-- Footer Note -->
