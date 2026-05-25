@@ -2,15 +2,15 @@ class CompaniesController < ApplicationController
   before_action :set_company, only: [ :edit, :update, :destroy ]
 
   def index
-    @companies = Company.active.order(created_at: :desc)
+    @companies = scoped_companies.active.order(created_at: :desc)
   end
 
   def new
-    @company = Company.new
+    @company = scoped_companies.new
   end
 
   def create
-    @company = Company.new(company_params)
+    @company = scoped_companies.new(company_params)
 
     if @company.save
       redirect_to companies_path, notice: "Empresa cadastrada com sucesso"
@@ -41,11 +41,12 @@ class CompaniesController < ApplicationController
   private
 
   def set_company
-    @company = Company.find(params[:id])
+    @company = scoped_companies.find(params[:id])
   end
 
   def company_params
     params.require(:company).permit(:name, :hourly_rate)
     # NOTE: :active NÃO está permitido - apenas via deactivate!/activate!
+    # NOTE: :user_id NÃO está permitido — sempre injetado server-side via Current.user.
   end
 end

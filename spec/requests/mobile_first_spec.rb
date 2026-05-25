@@ -3,7 +3,7 @@ require "rails_helper"
 # Story 8.1: Implementar Mobile-First com Tailwind Breakpoints
 # Verifica que as views contêm as classes Tailwind necessárias para responsividade mobile-first.
 RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
-  let(:user) { User.create!(email: "mobile@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "mobile@example.com", password: "password123") }
   let!(:company) { create(:company, name: "Empresa Teste") }
 
   def sign_in

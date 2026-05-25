@@ -317,6 +317,47 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "multi-tenant cascade on destroy (story 9.2 QA #11)" do
+    # Decisão registrada: User.has_many .. dependent: :destroy implementa offboarding
+    # LGPD/GDPR. Porém Company tem `has_many :projects, dependent: :restrict_with_error`
+    # que aborta a deleção se ainda houver projects associados.
+    # Comportamento atual: User.destroy só cascateia integralmente se a árvore
+    # for destruída de baixo para cima (TaskItems → Tasks → Projects → Companies → User).
+    # Limitação documentada — uma futura "OffboardUser" service pode coordenar isso.
+    let(:user) { create(:user) }
+
+    it "user.destroy é bloqueado por Company quando há projects/tasks (restrict_with_error)" do
+      create(:task_item, task: create(:task, user: user))
+      expect { user.destroy }.not_to change(User, :count)
+    end
+
+    it "user.destroy cascateia tudo se a árvore for limpa antes (TaskItems → Tasks → Projects)" do
+      item = create(:task_item, task: create(:task, user: user))
+      task = item.task
+      project = task.project
+      company = task.company
+
+      task.task_items.destroy_all
+      task.destroy
+      project.destroy
+      company.destroy
+
+      expect { user.destroy }.to change(User, :count).by(-1)
+    end
+
+    it "destruir user sem dados associados funciona normalmente" do
+      lonely = create(:user)
+      expect { lonely.destroy }.to change(User, :count).by(-1)
+    end
+
+    it "não afeta dados de outros tenants" do
+      other_user = create(:user)
+      other_item = create(:task_item, task: create(:task, user: other_user))
+      user.destroy
+      expect(TaskItem.exists?(other_item.id)).to be true
+    end
+  end
+
   describe "#password_reset_token_expires_in" do
     it "returns a time 15 minutes in the future" do
       user = User.create!(email: "reset@example.com", password: "password123")

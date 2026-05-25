@@ -7,8 +7,8 @@
 domain: DM-008
 domain_name: Multi-Tenancy & Google OAuth
 domain_type: Transversal / Seguranca & SaaS
-status: ready-for-dev
-progress: 0%  # 0 de 3 stories concluidas
+status: in-progress
+progress: 67%  # 2 de 3 stories concluidas
 
 dependencies:
   requires:
@@ -16,18 +16,23 @@ dependencies:
 
 stories:
   001-google-oauth-login:
-    status: ready-for-dev
+    status: done
     priority: critical
     description: Login via Google OAuth substituindo email/senha
-    notes: Criado 2026-05-15 — gem omniauth-google-oauth2 + migrations + setup Google Cloud Console
+    notes: Implementado via PR #159 em 2026-05-23 — gem omniauth-google-oauth2 + migrations + coexistencia com email/senha
     epic: 9
     estimate_sp: 3
 
   002-multi-tenancy-isolamento-por-usuario:
-    status: ready-for-dev
+    status: done
     priority: critical
     description: Adicionar user_id em Companies/Projects/Tasks/TaskItems + scoping em todos os controllers
-    notes: Criado 2026-05-15 — depende de 9.1; 3 migrations + refactor 5 controllers + 130+ specs; backfill de dados existentes via INITIAL_TENANT_EMAIL
+    notes: |
+      Implementado em 2026-05-25 na branch feature-002-multi-tenancy-isolamento-por-usuario.
+      3 migrations + concern TenantScoped + custom validator + refactor 5 controllers + factories herdando user.
+      Round 2 (pos-QA): 22 findings aplicados (4 CRITICAL/6 HIGH/8 MEDIUM/4 LOW).
+      Suite: 1030/1030 passing, 100% line coverage.
+      Playwright validacao multi-tenant ponta-a-ponta OK (admin + bob isolados, 404 cross-tenant).
     epic: 9
     estimate_sp: 8
 
@@ -44,13 +49,12 @@ retrospective:
 
 summary:
   total_stories: 3
-  done: 0
+  done: 2
   in_progress: 0
-  ready_for_dev: 3
+  ready_for_dev: 1
   backlog: 0
   total_sp: 13
+  done_sp: 11
   blockers: []
   next_actions:
-    - Implementar story 9.1 — Google OAuth login (gera credenciais no Google Cloud Console primeiro)
-    - Implementar story 9.2 — Multi-tenancy com user_id em todas as tabelas tenant
-    - Implementar story 9.3 — Onboarding de primeiro acesso
+    - Implementar story 9.3 — Onboarding de primeiro acesso (depende de 9.2 já entregue)

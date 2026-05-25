@@ -5,6 +5,8 @@ FactoryBot.define do
     end_time { '10:30' }
     work_date { Date.current }
     status { 'pending' }
+    # user_id é herdado da task via callback before_validation (TaskItem#inherit_user_from_task).
+    user { task&.user }
 
     trait :completed do
       status { 'completed' }

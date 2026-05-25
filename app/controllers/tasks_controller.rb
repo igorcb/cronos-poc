@@ -5,7 +5,7 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :edit, :update, :destroy, :deliver, :reopen, :reopen_modal ]
 
   def index
-    @tasks = Task
+    @tasks = scoped_tasks
       .includes(:company, :project, :task_items)
       .where(start_date: resolve_period_range)
       .order(start_date: :desc, created_at: :desc)
@@ -26,19 +26,21 @@ class TasksController < ApplicationController
                    (params[:period].present? && params[:period] != "current_month")
     @period_label = resolve_period_label
 
-    @companies = Company.active.order(:name)
+    @companies = scoped_companies.active.order(:name)
+    # Multi-tenant (story 9.2 QA #9): evitar merge(Company.active) — confuso semanticamente.
+    # Usar where(companies: { active: true }) explicito mantém escopo do tenant claro.
     @projects = company_id ?
-      Project.where(company_id: company_id).order(:name) :
-      Project.joins(:company).merge(Company.active).order(:name)
+      scoped_projects.where(company_id: company_id).order(:name) :
+      scoped_projects.joins(:company).where(companies: { active: true }).order(:name)
   end
 
   def new
-    @task = Task.new
-    @companies = Company.active.order(:name)
+    @task = scoped_tasks.new
+    @companies = scoped_companies.active.order(:name)
   end
 
   def create
-    @task = Task.new(task_params)
+    @task = scoped_tasks.new(task_params)
     @task.status = "pending" unless @task.status.in?(Task.statuses.keys)
 
     if @task.save
@@ -63,7 +65,7 @@ class TasksController < ApplicationController
         redirect_to tasks_path, notice: "Tarefa criada com sucesso"
       end
     else
-      @companies = Company.active.order(:name)
+      @companies = scoped_companies.active.order(:name)
       render :new, status: :unprocessable_entity
     end
   end
@@ -177,27 +179,24 @@ class TasksController < ApplicationController
   private
 
   def set_task
-    @task = Task.find(params[:id])
+    @task = scoped_tasks.find(params[:id])
   end
 
   def set_edit_form_collections
-    @companies = Company.active.order(:name)
+    @companies = scoped_companies.active.order(:name)
     @projects = @task.company&.projects&.order(:name) || []
   end
 
   def calculate_daily_total(filtered_tasks = nil)
-    if filtered_tasks
-      task_ids = filtered_tasks.unscope(:includes).select(:id)
-      TaskItem.total_minutes(TaskItem.where(work_date: Date.current, task_id: task_ids))
-    else
-      TaskItem.total_minutes(TaskItem.where(work_date: Date.current))
-    end
+    base = filtered_tasks || scoped_tasks
+    task_ids = base.unscope(:includes).select(:id)
+    TaskItem.total_minutes(scoped_task_items.where(work_date: Date.current, task_id: task_ids))
   end
 
   def calculate_company_totals(filtered_tasks = nil)
-    base_relation = filtered_tasks || Task.where(start_date: Date.current.all_month)
+    base_relation = filtered_tasks || scoped_tasks.where(start_date: Date.current.all_month)
     base_ids = base_relation.unscope(:includes).select(:id)
-    Company
+    scoped_companies
       .joins(tasks: :task_items)
       .where(tasks: { id: base_ids })
       .group("companies.id", "companies.name", "companies.hourly_rate")

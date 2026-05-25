@@ -25,12 +25,18 @@ companies = [
   { name: 'Solix Gescam', hourly_rate: 60 }
 ]
 
+# Multi-tenant (story 9.2 QA #12): só atribuir hourly_rate em CREATE.
+# Se a company já existe (admin atualizou manualmente em prod), preserva os valores.
 companies.each do |company_data|
-  company = Company.find_or_initialize_by(name: company_data[:name])
-  company.hourly_rate = company_data[:hourly_rate]
-  company.active = true
-  company.save!
-  puts "  ✓ #{company.name} - R$ #{company.hourly_rate}/h"
+  company = Company.find_or_initialize_by(name: company_data[:name], user_id: user.id)
+  if company.new_record?
+    company.hourly_rate = company_data[:hourly_rate]
+    company.active = true
+    company.save!
+    puts "  ✓ #{company.name} - R$ #{company.hourly_rate}/h (criada)"
+  else
+    puts "  → #{company.name} - R$ #{company.hourly_rate}/h (existente, preservada)"
+  end
 end
 
 puts "\nCreated #{Company.count} companies"

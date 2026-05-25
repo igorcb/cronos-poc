@@ -7,10 +7,12 @@
 #  company_id :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  user_id    :integer          not null
 #
 # Indexes
 #
 #  index_projects_on_company_id  (company_id)
+#  index_projects_on_user_id     (user_id)
 #
 
 require 'rails_helper'
@@ -80,24 +82,34 @@ end
 require 'rails_helper'
 
 RSpec.describe Project, type: :model do
-  let(:company) { Company.create!(name: 'Empresa Teste', hourly_rate: 100) }
+  # Multi-tenant (story 9.2 — DM-008): Company exige user_id.
+  let!(:user) { create(:user) }
+  let(:company) { Company.create!(name: 'Empresa Teste', hourly_rate: 100, user: user) }
 
   describe 'validations' do
     it 'permite projetos com mesmo nome em empresas diferentes' do
-      company2 = Company.create!(name: 'Outra Empresa', hourly_rate: 150)
+      company2 = Company.create!(name: 'Outra Empresa', hourly_rate: 150, user: user)
 
-      Project.create!(name: 'Projeto Alpha', company: company)
-      project2 = Project.new(name: 'Projeto Alpha', company: company2)
+      Project.create!(name: 'Projeto Alpha', company: company, user: user)
+      project2 = Project.new(name: 'Projeto Alpha', company: company2, user: user)
 
       expect(project2).to be_valid
     end
 
     it 'não permite projetos com mesmo nome na mesma empresa' do
-      Project.create!(name: 'Projeto Beta', company: company)
-      project2 = Project.new(name: 'Projeto Beta', company: company)
+      Project.create!(name: 'Projeto Beta', company: company, user: user)
+      project2 = Project.new(name: 'Projeto Beta', company: company, user: user)
 
       expect(project2).not_to be_valid
       expect(project2.errors[:name]).to include('já está em uso')
+    end
+  end
+
+  describe "multi-tenant immutability (story 9.2 QA #5)" do
+    it "rejeita alterar user_id de Project existente (attr_readonly)" do
+      other_user = create(:user)
+      project = Project.create!(name: 'Imutavel', company: company, user: user)
+      expect { project.user_id = other_user.id }.to raise_error(ActiveRecord::ReadonlyAttributeError)
     end
   end
 end

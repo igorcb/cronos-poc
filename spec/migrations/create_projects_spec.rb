@@ -27,11 +27,13 @@ RSpec.describe 'CreateProjects migration', type: :migration do
 
         expect(conn.table_exists?(:projects)).to be false
       ensure
-        # Restore projects table if it was dropped
+        # Restore projects table if it was dropped.
+        # Multi-tenant (story 9.2 — DM-008): inclui user_id pois o schema atual exige.
         unless conn.table_exists?(:projects)
           conn.create_table :projects do |t|
             t.string :name, null: false
             t.references :company, null: false, foreign_key: true
+            t.references :user, null: false, foreign_key: true, index: true
             t.timestamps
           end
         end
@@ -42,6 +44,9 @@ RSpec.describe 'CreateProjects migration', type: :migration do
           conn.execute("DELETE FROM tasks WHERE project_id NOT IN (SELECT id FROM projects)")
           conn.add_foreign_key :tasks, :projects
         end
+
+        # Reset cache de colunas pq fizemos DDL fora do fluxo Rails.
+        [Project, Task, TaskItem].each(&:reset_column_information)
       end
     end
   end

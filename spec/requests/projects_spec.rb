@@ -285,11 +285,9 @@ RSpec.describe "Projects", type: :request do
       expect(response.body).not_to include("Inactive Company")
     end
 
-    it "redirects to index with alert when project not found" do
+    it "returns 404 when project not found (multi-tenant: não vazar IDs)" do
       get edit_project_path(id: -1)
-      expect(response).to redirect_to(projects_path)
-      follow_redirect!
-      expect(response.body).to include("Projeto não encontrado")
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -347,11 +345,9 @@ RSpec.describe "Projects", type: :request do
     end
 
     context "when project does not exist" do
-      it "redirects to index with alert" do
+      it "returns 404 (multi-tenant: não vazar IDs)" do
         patch project_path(id: -1), params: { project: { name: "New Name" } }
-        expect(response).to redirect_to(projects_path)
-        follow_redirect!
-        expect(response.body).to include("Projeto não encontrado")
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -520,11 +516,9 @@ RSpec.describe "Projects", type: :request do
     end
 
     context "when project does not exist" do
-      it "redirects to index with alert" do
+      it "returns 404 (multi-tenant: não vazar IDs)" do
         delete project_path(id: -1)
-        expect(response).to redirect_to(projects_path)
-        follow_redirect!
-        expect(response.body).to include("Projeto não encontrado")
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

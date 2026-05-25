@@ -581,4 +581,16 @@ RSpec.describe Task, type: :model do
       expect(task.delivered_value).to eq(150.0)
     end
   end
+
+  describe "multi-tenant immutability (story 9.2 QA #5)" do
+    let!(:user_a) { create(:user) }
+    let!(:user_b) { create(:user) }
+
+    it "rejeita alterar user_id de Task existente (attr_readonly)" do
+      task = create(:task, user: user_a)
+      # attr_readonly em Rails 8 levanta ActiveRecord::ReadonlyAttributeError
+      # ao tentar setar atributo readonly. Defesa em profundidade contra mass-assignment.
+      expect { task.user_id = user_b.id }.to raise_error(ActiveRecord::ReadonlyAttributeError)
+    end
+  end
 end

@@ -358,4 +358,21 @@ RSpec.describe TaskItem, type: :model do
       expect(item.value).to eq(200.0)
     end
   end
+
+  describe "multi-tenant integrity (story 9.2 QA #5, #8)" do
+    let!(:user_a) { create(:user) }
+    let!(:user_b) { create(:user) }
+    let!(:task_a) { create(:task, user: user_a) }
+
+    it "rejeita create de TaskItem com user_id diferente da task.user_id (QA #8)" do
+      item = build(:task_item, task: task_a, user: user_b)
+      expect(item).not_to be_valid
+      expect(item.errors[:user_id]).to include("deve coincidir com user_id da task")
+    end
+
+    it "rejeita alterar user_id de TaskItem existente (QA #5, attr_readonly)" do
+      item = create(:task_item, task: task_a)
+      expect { item.user_id = user_b.id }.to raise_error(ActiveRecord::ReadonlyAttributeError)
+    end
+  end
 end

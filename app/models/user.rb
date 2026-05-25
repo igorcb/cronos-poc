@@ -23,6 +23,12 @@ class User < ApplicationRecord
   has_secure_password validations: false
   has_many :sessions, dependent: :destroy
 
+  # Multi-tenant (story 9.2 — DM-008): cada User é dono das próprias entidades.
+  has_many :companies,  dependent: :destroy
+  has_many :projects,   dependent: :destroy
+  has_many :tasks,      dependent: :destroy
+  has_many :task_items, dependent: :destroy
+
   generates_token_for :password_reset, expires_in: 15.minutes do
     password_salt&.last(10)
   end

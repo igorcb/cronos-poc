@@ -31,9 +31,13 @@
 
 class Task < ApplicationRecord
   # Associações
+  belongs_to :user
   belongs_to :company
   belongs_to :project
   has_many :task_items, dependent: :destroy
+
+  # Multi-tenant (story 9.2 QA #5): user_id é imutável após create.
+  attr_readonly :user_id
 
   # Atributo virtual para formato HH:MM
   attr_accessor :estimated_hours_hm
@@ -47,8 +51,10 @@ class Task < ApplicationRecord
             format: { with: /\A\d+\z/, message: "deve conter apenas números", allow_blank: true },
             uniqueness: { scope: :name, message: "já existe uma tarefa com este código e nome", allow_blank: true }
   validates :name, presence: true
-  validates :company_id, presence: true
-  validates :project_id, presence: true
+  validates :company_id, presence: true,
+            belongs_to_current_user: { class_name: "Company" }
+  validates :project_id, presence: true,
+            belongs_to_current_user: { class_name: "Project" }
   validates :start_date, presence: true
   validate :estimated_hours_hm_must_be_valid
   validates :status, presence: true, inclusion: { in: %w[pending completed delivered] }
@@ -124,7 +130,9 @@ class Task < ApplicationRecord
   private
 
   def broadcast_dashboard_update
-    DashboardBroadcastJob.perform_later
+    # Multi-tenant (story 9.2 — DM-008): passar user_id para o job, evitando
+    # vazamento entre tenants no Turbo stream.
+    DashboardBroadcastJob.perform_later(user_id)
   end
 
   def estimated_hours_hm_must_be_valid

@@ -2,7 +2,7 @@ require "rails_helper"
 
 # Story 5.6: Exibir Lista de Tarefas do Mês no Dashboard
 RSpec.describe "Dashboard Tasks Month", type: :request do
-  let(:user) { User.create!(email: "dashboard_tasks_month@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "dashboard_tasks_month@example.com", password: "password123") }
 
   def sign_in
     post session_path, params: { email: user.email, password: "password123" }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_23_104408) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_25_173854) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,7 +20,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_104408) do
     t.decimal "hourly_rate", precision: 10, scale: 2, null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["active"], name: "index_companies_on_active"
+    t.index ["user_id", "active"], name: "index_companies_on_user_id_and_active"
+    t.index ["user_id"], name: "index_companies_on_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -28,7 +31,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_104408) do
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["company_id"], name: "index_projects_on_company_id"
+    t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -61,11 +66,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_104408) do
     t.string "status", default: "pending", null: false
     t.bigint "task_id", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.decimal "value", precision: 10, scale: 2
     t.date "work_date", default: -> { "CURRENT_DATE" }
     t.index ["status"], name: "index_task_items_on_status"
     t.index ["task_id", "created_at"], name: "index_task_items_on_task_id_and_created_at"
     t.index ["task_id"], name: "index_task_items_on_task_id"
+    t.index ["user_id", "work_date"], name: "index_task_items_on_user_id_and_work_date"
+    t.index ["user_id"], name: "index_task_items_on_user_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -83,11 +91,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_104408) do
     t.date "start_date", null: false
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.decimal "validated_hours", precision: 10, scale: 2
     t.index ["company_id", "project_id"], name: "index_tasks_on_company_id_and_project_id"
     t.index ["company_id"], name: "index_tasks_on_company_id"
     t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["status"], name: "index_tasks_on_status"
+    t.index ["user_id", "start_date"], name: "index_tasks_on_user_id_and_start_date"
+    t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -102,8 +113,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_104408) do
     t.index ["google_uid"], name: "index_users_on_google_uid", unique: true
   end
 
+  add_foreign_key "companies", "users"
   add_foreign_key "projects", "companies"
+  add_foreign_key "projects", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "task_items", "tasks"
+  add_foreign_key "task_items", "users"
   add_foreign_key "tasks", "companies"
+  add_foreign_key "tasks", "users"
 end

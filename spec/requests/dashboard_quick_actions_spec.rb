@@ -2,7 +2,7 @@ require "rails_helper"
 
 # Story 5.7: Substituir Seção "Ações Rápidas" por Ícone de Nova Tarefa
 RSpec.describe "Dashboard Quick Actions", type: :request do
-  let(:user) { User.create!(email: "dashboard_qa@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "dashboard_qa@example.com", password: "password123") }
 
   def sign_in
     post session_path, params: { email: user.email, password: "password123" }

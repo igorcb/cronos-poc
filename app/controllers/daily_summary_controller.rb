@@ -5,7 +5,7 @@ class DailySummaryController < ApplicationController
     @month_range = Date.new(year, month, 1).all_month
     @selected_month_label = I18n.t("date.month_names")[month]
 
-    @daily_rows = TaskItem
+    @daily_rows = scoped_task_items
       .where(work_date: @month_range)
       .group(:work_date)
       .order(work_date: :desc)

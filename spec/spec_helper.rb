@@ -7,8 +7,6 @@ SimpleCov.start "rails" do
   add_filter "/bin/"
   # Tarefa rake de dev (annotate models) — não roda em test env
   add_filter "/lib/tasks/auto_annotate_models.rake"
-  # SSE controller com loop infinito — impossível testar fluxo completo
-  add_filter "/app/controllers/dashboard_events_controller.rb"
 
   minimum_coverage 100
 end
