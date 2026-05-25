@@ -136,6 +136,36 @@ A `master.key` é crítica - sem ela, não há acesso às credentials. Mantenha 
 - Password Manager (1Password, Bitwarden)
 - Arquivo criptografado separado
 
+### 🔑 Google OAuth (Login com Google) — story 9.1
+
+O Cronos POC suporta login via Google OAuth **em adição** ao login por email/senha. Ambos coexistem.
+
+**Setup no Google Cloud Console:**
+
+1. Acesse https://console.cloud.google.com/
+2. Crie um projeto (ex: `cronos-poc`)
+3. Vá em **APIs e Serviços → Tela de permissão OAuth**
+   - Tipo: **Externo** (qualquer conta Google)
+   - Escopos: `email`, `profile`, `openid`
+   - Adicione seu email em "Usuários de teste"
+4. Vá em **APIs e Serviços → Credenciais → Criar credenciais → ID do cliente OAuth**
+   - Tipo: **Aplicativo da Web**
+   - Origens JavaScript autorizadas: `http://localhost:3001`
+   - URIs de redirecionamento autorizados: `http://localhost:3001/auth/google_oauth2/callback`
+5. Copie o **Client ID** e **Client Secret** gerados
+
+**Configuração local:**
+
+```bash
+# Adicione ao .env na raiz do projeto (não versionado)
+GOOGLE_CLIENT_ID=seu-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-seu-secret
+```
+
+> Sem essas ENVs, o botão "Entrar com Google" não é renderizado na tela de login (graceful degradation). O login por email/senha continua funcionando normalmente.
+
+**Produção:** crie um Client ID separado com o domínio real e configure as ENVs no provedor de deploy.
+
 ## 🔄 CI/CD
 
 O projeto usa GitHub Actions para CI. A cada push ou pull request, são executados:

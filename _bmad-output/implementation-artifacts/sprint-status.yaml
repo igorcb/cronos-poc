@@ -110,3 +110,7 @@ development_status:
   8-3-garantir-acessibilidade-wcag-nivel-a: done  # Implementado 2026-04-14
   8-4-testar-responsividade-em-multiplos-dispositivos: done  # Validated via Playwright 2026-04-21
   epic-8-retrospective: optional
+
+  # Epic 9: Multi-Tenancy & Google OAuth (DM-008)
+  epic-9: in-progress
+  9-1-google-oauth-login: done  # Implementado 2026-05-23, QA reviewed (15 findings: 12 aplicados, 4 deferidos), Playwright validated, 971 specs / 100% cobertura

@@ -22,6 +22,13 @@ Rails.application.routes.draw do
   # Disabled public signup (single-user system)
   get  "signup", to: "registrations#new"
   post "signup", to: "registrations#create"
+
+  # OAuth (story 9.1 — DM-008): callback do Google OmniAuth
+  match "/auth/:provider/callback", to: "omniauth_callbacks#google_oauth2",
+        via: [ :get, :post ],
+        as: :omniauth_callback,
+        constraints: { provider: "google_oauth2" }
+  get "/auth/failure", to: "omniauth_callbacks#failure", as: :omniauth_failure
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

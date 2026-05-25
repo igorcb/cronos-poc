@@ -18,6 +18,36 @@ RSpec.describe "Accessibility WCAG Level A", type: :request do
     end
   end
 
+  # QA finding 9.1 #5 HIGH + #7 MEDIUM — novo botão Google + divisor "ou" precisam de semântica acessível
+  describe "Botão 'Entrar com Google' e divisor (story 9.1)" do
+    around do |example|
+      original_id = ENV["GOOGLE_CLIENT_ID"]
+      original_secret = ENV["GOOGLE_CLIENT_SECRET"]
+      ENV["GOOGLE_CLIENT_ID"] = "fake-client-id"
+      ENV["GOOGLE_CLIENT_SECRET"] = "fake-secret"
+      example.run
+    ensure
+      ENV["GOOGLE_CLIENT_ID"] = original_id
+      ENV["GOOGLE_CLIENT_SECRET"] = original_secret
+    end
+
+    it "renderiza o ícone Google com aria-hidden=true (texto carrega a semântica)" do
+      get new_session_path
+      # asset pipeline adiciona fingerprint (google_g-HASH.svg), e ordem dos atributos varia
+      expect(response.body).to match(/<img[^>]*aria-hidden="true"[^>]*google_g[^>]*\.svg|<img[^>]*google_g[^>]*\.svg[^>]*aria-hidden="true"/)
+    end
+
+    it "divisor 'ou' usa role=separator com aria-label (não aria-hidden no wrapper)" do
+      get new_session_path
+      expect(response.body).to match(/role="separator"[^>]*aria-label="ou"|aria-label="ou"[^>]*role="separator"/)
+    end
+
+    it "botão Google tem texto descritivo visível para leitor de tela" do
+      get new_session_path
+      expect(response.body).to include("Entrar com Google")
+    end
+  end
+
   # AC1: Todos os inputs têm <label> associados corretamente
   # AC6: HTML semântico: <main>, <nav>, <section>, <button>
   describe "GET /session/new (login)" do

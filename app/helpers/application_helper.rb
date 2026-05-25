@@ -14,4 +14,14 @@ module ApplicationHelper
     m = total_minutes % 60
     sprintf("%02d:%02d", h, m)
   end
+
+  # OAuth Google ativo quando ambas as ENVs estão configuradas.
+  # Usado por initializer e view para evitar botão funcional levando a 404.
+  def self.google_oauth_enabled?
+    ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
+  end
+
+  def google_oauth_enabled?
+    ApplicationHelper.google_oauth_enabled?
+  end
 end
