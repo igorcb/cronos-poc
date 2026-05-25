@@ -8,10 +8,13 @@
 #  active      :boolean          default(TRUE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  user_id     :integer          not null
 #
 # Indexes
 #
-#  index_companies_on_active  (active)
+#  index_companies_on_active              (active)
+#  index_companies_on_user_id             (user_id)
+#  index_companies_on_user_id_and_active  (user_id,active)
 #
 
 require 'rails_helper'
@@ -135,6 +138,16 @@ RSpec.describe Company, type: :model do
         expect { company.destroy }.not_to change(Company, :count)
         expect(company.errors[:base]).to be_present
       end
+    end
+  end
+
+  describe "multi-tenant immutability (story 9.2 QA #5)" do
+    let!(:user_a) { create(:user) }
+    let!(:user_b) { create(:user) }
+
+    it "rejeita alterar user_id de Company existente (attr_readonly)" do
+      company = create(:company, user: user_a)
+      expect { company.user_id = user_b.id }.to raise_error(ActiveRecord::ReadonlyAttributeError)
     end
   end
 end

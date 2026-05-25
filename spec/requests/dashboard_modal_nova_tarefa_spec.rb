@@ -2,9 +2,9 @@ require "rails_helper"
 
 # Story 5.8: Modal Nova Tarefa no Dashboard
 RSpec.describe "Dashboard Modal Nova Tarefa", type: :request do
-  let(:user) { User.create!(email: "modal_task@example.com", password: "password123") }
-  let(:company) { Company.create!(name: "Empresa Modal", hourly_rate: 100, active: true) }
-  let(:project) { Project.create!(name: "Projeto Modal", company: company) }
+  let!(:user) { User.create!(email: "modal_task@example.com", password: "password123") }
+  let(:company) { Company.create!(name: "Empresa Modal", hourly_rate: 100, active: true, user: user) }
+  let(:project) { Project.create!(name: "Projeto Modal", company: company, user: user) }
 
   def sign_in
     post session_path, params: { email: user.email, password: "password123" }

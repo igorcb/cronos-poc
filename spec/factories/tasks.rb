@@ -29,12 +29,16 @@
 #  fk_rails_...  project_id (project_id => projects.id)
 #
 
+# Multi-tenant (story 9.2 — DM-008):
+# Task, Company e Project compartilham o mesmo user.
+# A factory deriva user da Company; Project é criado sob a mesma Company/user.
 FactoryBot.define do
   factory :task do
     code { Faker::Number.number(digits: 5).to_s }
     name { Faker::Lorem.sentence(word_count: 3) }
     company
-    project { association :project, company: company }
+    project { association(:project, company: company) }
+    user { company&.user || project&.user }
     start_date { Date.today }
     end_date { 1.week.from_now.to_date }
     status { 'pending' }

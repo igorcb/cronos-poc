@@ -4,7 +4,7 @@ require "rails_helper"
 # Verifica que os formulários de Task têm inputs otimizados para teclados mobile,
 # touch targets adequados e validações client-side.
 RSpec.describe "Mobile TimeEntry Form Optimization", type: :request do
-  let(:user) { User.create!(email: "mobile_form@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "mobile_form@example.com", password: "password123") }
   let!(:company) { create(:company, name: "Empresa Mobile") }
   let!(:project) { create(:project, company: company) }
   let!(:task) { create(:task, company: company, project: project) }

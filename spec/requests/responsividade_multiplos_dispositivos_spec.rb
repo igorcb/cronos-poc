@@ -12,7 +12,7 @@ require "rails_helper"
 # AC5: Filtros funcionam em mobile (dropdown otimizado)
 # AC6: Browsers suportados declarados via meta viewport e semântica HTML5
 RSpec.describe "Responsividade em Múltiplos Dispositivos", type: :request do
-  let(:user) { User.create!(email: "responsive@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "responsive@example.com", password: "password123") }
   let!(:company) { create(:company, name: "Empresa Responsiva") }
   let!(:project) { create(:project, company: company) }
   let!(:task) { create(:task, company: company, project: project) }

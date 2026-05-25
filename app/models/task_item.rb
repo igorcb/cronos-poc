@@ -1,6 +1,10 @@
 class TaskItem < ApplicationRecord
   # ASSOCIAÇÕES
+  belongs_to :user
   belongs_to :task
+
+  # Multi-tenant (story 9.2 QA #5): user_id é imutável após create.
+  attr_readonly :user_id
 
   # VALIDAÇÕES
   validates :task_id, presence: true
@@ -10,9 +14,12 @@ class TaskItem < ApplicationRecord
   validates :work_date, presence: true
 
   before_validation :set_work_date_default
+  before_validation :inherit_user_from_task
 
   validate :end_time_after_start_time
   validate :task_must_not_be_delivered, on: [ :create, :update ]
+  # Multi-tenant (story 9.2 QA #8): user_id deve coincidir com task.user_id.
+  validate :user_id_matches_task_user_id, on: :create
 
   # Callbacks de validação para destroy
   before_destroy :prevent_destroy_if_task_delivered
@@ -98,11 +105,29 @@ class TaskItem < ApplicationRecord
   end
 
   def broadcast_dashboard_update
-    DashboardBroadcastJob.perform_later
+    # Multi-tenant (story 9.2 — DM-008): passar user_id para o job, evitando
+    # vazamento entre tenants no Turbo stream.
+    DashboardBroadcastJob.perform_later(user_id)
   end
 
   def set_work_date_default
     self.work_date ||= Date.current
+  end
+
+  # Multi-tenant (story 9.2 — DM-008): TaskItem herda user_id da Task pai.
+  # Garante isolamento mesmo quando o item é construído a partir de @task.task_items.build
+  # (que não propaga user_id automaticamente).
+  def inherit_user_from_task
+    self.user_id ||= task&.user_id
+  end
+
+  # Multi-tenant (story 9.2 QA #8): user_id deve coincidir com task.user_id.
+  # Defesa em profundidade: protege contra mass-assignment de user_id diferente da task.
+  def user_id_matches_task_user_id
+    return unless task.present? && user_id.present?
+    return if user_id == task.user_id
+
+    errors.add(:user_id, "deve coincidir com user_id da task")
   end
 
   # Callback: previne deleção se task foi delivered

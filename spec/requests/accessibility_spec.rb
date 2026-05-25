@@ -3,7 +3,7 @@ require "rails_helper"
 # Story 8.3: Garantir Acessibilidade WCAG Nível A
 # Verifica que as views contêm os atributos e semântica necessários para acessibilidade básica.
 RSpec.describe "Accessibility WCAG Level A", type: :request do
-  let(:user) { User.create!(email: "accessibility@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "accessibility@example.com", password: "password123") }
   let!(:company) { create(:company, name: "Empresa Acessível") }
 
   def sign_in

@@ -2,7 +2,7 @@ require "rails_helper"
 
 # Story 5.10: Expandir KPIs do Dashboard — 6 Métricas Globais
 RSpec.describe "Dashboard KPIs", type: :request do
-  let(:user) { User.create!(email: "dashboard_kpis@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "dashboard_kpis@example.com", password: "password123") }
   let(:company) { create(:company, hourly_rate: 100.00) }
   let(:project) { create(:project, company: company) }
 

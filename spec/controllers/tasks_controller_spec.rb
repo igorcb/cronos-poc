@@ -1,9 +1,11 @@
 require "rails_helper"
 
 RSpec.describe TasksController, type: :controller do
-  let(:user) { create(:user) }
-  let(:session) { user.sessions.create!(user_agent: "Test", ip_address: "127.0.0.1") }
-  let(:company) { create(:company, hourly_rate: 100) }
+  # Multi-tenant (story 9.2 — DM-008): user/session forçados antes de company/project
+  # para que a factory de company reuse o user logado (ver spec/factories/companies.rb).
+  let!(:user) { create(:user) }
+  let!(:session) { user.sessions.create!(user_agent: "Test", ip_address: "127.0.0.1") }
+  let(:company) { create(:company, hourly_rate: 100, user: user) }
   let!(:project) { create(:project, company: company) }  # Use let! to ensure creation
 
   before { cookies.signed[:session_id] = session.id }

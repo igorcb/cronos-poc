@@ -46,4 +46,30 @@ RSpec.describe "db:seed" do
     admin = User.find_by(email: 'admin@cronos-poc.local')
     expect(admin).to be_present
   end
+
+  describe "companies (story 9.2 QA #12)" do
+    before do
+      ENV['ADMIN_EMAIL'] = 'seedcompanies@example.com'
+      ENV['ADMIN_PASSWORD'] = 'password123'
+    end
+
+    it "cria companies do admin com hourly_rate seed" do
+      Rake::Task['db:seed'].execute
+      admin = User.find_by(email: 'seedcompanies@example.com')
+      nobe = admin.companies.find_by(name: 'NobeSistema')
+      expect(nobe.hourly_rate).to eq(45)
+    end
+
+    it "preserva hourly_rate quando company já existe (não sobrescreve)" do
+      Rake::Task['db:seed'].execute
+      admin = User.find_by(email: 'seedcompanies@example.com')
+      nobe = admin.companies.find_by(name: 'NobeSistema')
+      nobe.update!(hourly_rate: 99)
+
+      Rake::Task['db:seed'].reenable
+      Rake::Task['db:seed'].execute
+
+      expect(nobe.reload.hourly_rate).to eq(99)
+    end
+  end
 end

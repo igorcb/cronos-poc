@@ -128,19 +128,21 @@ class TaskItemsController < ApplicationController
   private
 
   def set_task
-    @task = Task.find(params[:task_id])
+    @task = scoped_tasks.find(params[:task_id])
   end
 
   def set_task_item
-    @task_item = @task.task_items.find(params[:id])
+    # Multi-tenant defesa em profundidade (story 9.2 QA #6):
+    # filtra explicitamente pelo user_id do tenant atual, além do task_id.
+    @task_item = scoped_task_items.where(task_id: @task.id).find(params[:id])
   end
 
   def calculate_daily_total
-    TaskItem.total_minutes(TaskItem.where(work_date: Date.current))
+    TaskItem.total_minutes(scoped_task_items.where(work_date: Date.current))
   end
 
   def calculate_company_totals
-    Company
+    scoped_companies
       .joins(tasks: :task_items)
       .where(tasks: { start_date: Date.current.all_month })
       .group("companies.id", "companies.name", "companies.hourly_rate")

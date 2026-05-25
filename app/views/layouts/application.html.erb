@@ -51,9 +51,16 @@
             </div>
 
             <!-- User Menu (Desktop) -->
-            <div class="hidden md:flex items-center space-x-4">
-              <span class="text-sm text-gray-300">
-                <%= Current.user.email %>
+            <!-- Story 9.2 — DM-008 (AC7.1): exibe avatar e name (populados pelo Google) com fallback no email. -->
+            <div class="hidden md:flex items-center space-x-3" data-testid="user-menu">
+              <% if Current.user.avatar_url.present? %>
+                <%= image_tag Current.user.avatar_url,
+                              alt: "Avatar de #{Current.user.name.presence || Current.user.email}",
+                              class: "h-8 w-8 rounded-full border border-gray-700",
+                              referrerpolicy: "no-referrer" %>
+              <% end %>
+              <span class="text-sm text-gray-300" data-testid="user-display-name">
+                <%= Current.user.name.presence || Current.user.email %>
               </span>
               <%= button_to "Sair", session_path, method: :delete,
                   class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition",
@@ -91,8 +98,15 @@
             <%= link_to "Minha Conta", profile_path, class: "block text-gray-300 hover:text-blue-400 hover:bg-gray-700 px-3 py-2 rounded-md text-base font-medium" %>
           </div>
           <div class="pt-4 pb-3 border-t border-gray-700">
-            <div class="px-4">
-              <div class="text-sm text-gray-300"><%= Current.user.email %></div>
+            <!-- Story 9.2 — DM-008 (AC7.1): exibe avatar/name no menu mobile. -->
+            <div class="px-4 flex items-center space-x-3">
+              <% if Current.user.avatar_url.present? %>
+                <%= image_tag Current.user.avatar_url,
+                              alt: "Avatar de #{Current.user.name.presence || Current.user.email}",
+                              class: "h-8 w-8 rounded-full border border-gray-700",
+                              referrerpolicy: "no-referrer" %>
+              <% end %>
+              <div class="text-sm text-gray-300"><%= Current.user.name.presence || Current.user.email %></div>
             </div>
             <div class="mt-3 px-2">
               <%= button_to "Sair", session_path, method: :delete,

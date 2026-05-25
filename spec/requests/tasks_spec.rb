@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Tasks", type: :request do
-  let(:user) { User.create!(email: "tasks@example.com", password: "password123") }
+  let!(:user) { User.create!(email: "tasks@example.com", password: "password123") }
 
   # Helper to sign in user
   def sign_in(user)

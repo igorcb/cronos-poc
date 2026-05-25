@@ -70,6 +70,11 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include Rails.application.routes.url_helpers, type: :component
 
+  # Multi-tenant (story 9.2 QA #10): reset simétrico de Current entre testes.
+  # CurrentAttributes é per-thread; sem reset, valor de um teste vaza para o próximo.
+  config.before(:each) { Current.reset }
+  config.after(:each)  { Current.reset }
+
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
