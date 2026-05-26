@@ -454,6 +454,9 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe "POST #create" do
+    # Story 9.3 — DM-008 (QA #H4): sair do onboarding via helper centralizado.
+    before { complete_onboarding_for(user) }
+
     let(:valid_params) {
       {
         task: {

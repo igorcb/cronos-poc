@@ -118,8 +118,10 @@
       </nav>
     <% end %>
 
-    <!-- Flash Messages -->
-    <%= render "shared/flash" if flash.any? %>
+    <!-- Flash Messages — wrapper persistente para Turbo Stream updates (story 9.3) -->
+    <div id="flash">
+      <%= render "shared/flash" if flash.any? %>
+    </div>
 
     <!-- Main Content -->
     <main id="main-content" class="flex-grow">

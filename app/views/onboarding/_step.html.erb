@@ -1,0 +1,84 @@
+<%# Onboarding step card (story 9.3 — DM-008).
+    Locals:
+      number      — Integer (1, 2 ou 3)
+      title       — String do título do passo
+      description — String descritiva
+      cta         — Texto do botão de ação
+      path        — Path para clique do CTA
+      state       — :pending | :locked | :done
+
+    QA #M5 — `data-onboarding-state` é hook de teste (asserções em request specs);
+             não há Stimulus controller associado.
+    QA #L4 — case sem `else` silencioso; raise força atualização exaustiva quando
+             um novo estado for introduzido.
+%>
+<% wrapper_classes =
+     case state
+     when :pending then "bg-gray-800 border-blue-500 ring-2 ring-blue-500/30"
+     when :done    then "bg-gray-800 border-green-600 opacity-90"
+     when :locked  then "bg-gray-900 border-gray-700 opacity-60"
+     else raise ArgumentError, "estado de onboarding desconhecido: #{state.inspect}"
+     end %>
+<% badge_classes =
+     case state
+     when :pending then "bg-blue-600 text-white"
+     when :done    then "bg-green-600 text-white"
+     when :locked  then "bg-gray-700 text-gray-400"
+     else raise ArgumentError, "estado de onboarding desconhecido: #{state.inspect}"
+     end %>
+<% aria_label =
+     case state
+     when :pending then "Passo #{number} (atual)"
+     when :done    then "Passo #{number} concluído"
+     when :locked  then "Passo #{number} bloqueado"
+     else raise ArgumentError, "estado de onboarding desconhecido: #{state.inspect}"
+     end %>
+
+<article role="listitem"
+         aria-label="<%= aria_label %>"
+         data-onboarding-state="<%= state %>"
+         class="border rounded-lg p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 transition <%= wrapper_classes %>">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <span aria-hidden="true"
+          class="inline-flex items-center justify-center w-10 h-10 rounded-full font-bold text-lg <%= badge_classes %>">
+      <% if state == :done %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+        </svg>
+      <% else %>
+        <%= number %>
+      <% end %>
+    </span>
+    <div class="sm:hidden text-sm font-medium text-white"><%= title %></div>
+  </div>
+
+  <div class="flex-grow">
+    <h2 class="hidden sm:block text-lg font-semibold text-white"><%= title %></h2>
+    <p class="text-sm text-gray-400 mt-1"><%= description %></p>
+  </div>
+
+  <div class="flex-shrink-0">
+    <% case state %>
+    <% when :pending %>
+      <%= link_to cta, path,
+                  class: "inline-flex items-center justify-center min-h-[44px] w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition",
+                  data: { onboarding_cta: "step_#{number}" } %>
+    <% when :locked %>
+      <span aria-disabled="true"
+            role="button"
+            class="inline-flex items-center justify-center min-h-[44px] w-full sm:w-auto px-4 py-2 bg-gray-700 text-gray-400 font-semibold rounded-md cursor-not-allowed gap-2">
+        <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.104 0 2-.896 2-2V7a2 2 0 10-4 0v2c0 1.104.896 2 2 2zm6 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6a2 2 0 012-2h8a2 2 0 012 2z"/>
+        </svg>
+        Bloqueado
+      </span>
+    <% when :done %>
+      <span class="inline-flex items-center justify-center min-h-[44px] px-4 py-2 text-green-400 font-semibold gap-2">
+        <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Concluído
+      </span>
+    <% end %>
+  </div>
+</article>

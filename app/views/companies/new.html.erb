@@ -1,4 +1,13 @@
 <div class="w-full">
+  <%# Story 9.3 — DM-008 (QA #M7): aria-live anuncia contexto do passo após
+      redirect (SR não anuncia nova página automaticamente). %>
+  <% if OnboardingState.new(Current.user).active? %>
+    <p class="text-sm text-blue-400 font-semibold mb-2"
+       aria-live="polite"
+       data-onboarding-step-label="step_1">
+      <%= t("onboarding.steps.step_1.header") %>
+    </p>
+  <% end %>
   <h1 class="text-3xl font-bold text-white mb-6">Nova Empresa</h1>
   <%= render "form", company: @company %>
 </div>

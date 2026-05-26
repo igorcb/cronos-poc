@@ -72,7 +72,10 @@ RSpec.describe "Companies", type: :request do
   end
 
   describe "POST /companies" do
-    before { sign_in(user) }
+    before do
+      sign_in(user)
+      complete_onboarding_for(user) # QA #H4 — sair do onboarding via helper centralizado
+    end
 
     context "with valid parameters" do
       let(:valid_params) { { company: { name: "Nova Empresa", hourly_rate: 175.50 } } }

@@ -112,5 +112,8 @@ development_status:
   epic-8-retrospective: optional
 
   # Epic 9: Multi-Tenancy & Google OAuth (DM-008)
-  epic-9: in-progress
+  epic-9: done
   9-1-google-oauth-login: done  # Implementado 2026-05-23, QA reviewed (15 findings: 12 aplicados, 4 deferidos), Playwright validated, 971 specs / 100% cobertura
+  9-2-multi-tenancy-isolamento-por-usuario: done  # Implementado 2026-05-25, QA round 2 (22 findings aplicados), Playwright multi-tenant OK, 1030 specs / 100%
+  9-3-onboarding-primeiro-acesso: done  # Implementado 2026-05-26, QA round 1 (18 findings aplicados), Playwright fluxo completo OK, 1120 specs / 100%
+  epic-9-retrospective: pending

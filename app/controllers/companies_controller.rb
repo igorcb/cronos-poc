@@ -11,9 +11,16 @@ class CompaniesController < ApplicationController
 
   def create
     @company = scoped_companies.new(company_params)
+    # Story 9.3 — DM-008 (QA #H2): capturar antes do save evita race e mantém
+    # decisão determinística mesmo em requests paralelos.
+    onboarding_active_before_save = OnboardingState.new(Current.user).active?
 
     if @company.save
-      redirect_to companies_path, notice: "Empresa cadastrada com sucesso"
+      if onboarding_active_before_save
+        redirect_to new_project_path, notice: t("onboarding.flashes.company_created")
+      else
+        redirect_to companies_path, notice: "Empresa cadastrada com sucesso"
+      end
     else
       render :new, status: :unprocessable_content
     end

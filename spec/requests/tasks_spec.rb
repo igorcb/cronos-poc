@@ -61,6 +61,8 @@ RSpec.describe "Tasks", type: :request do
 
     let!(:company) { create(:company, name: "Test Company") }
     let!(:project) { create(:project, company: company, name: "Test Project") }
+    # Story 9.3 — DM-008 (QA #H4): sair do onboarding via helper centralizado.
+    before { complete_onboarding_for(user) }
 
     context "with valid parameters" do
       let(:valid_params) do
