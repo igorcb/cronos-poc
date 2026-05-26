@@ -1,0 +1,38 @@
+<%# Onboarding inicial (story 9.3 — DM-008).
+    Renderizado em dashboard/index quando current_user ainda não completou.
+    Recebe `onboarding_state` (instância de OnboardingState) como local para evitar
+    queries redundantes (QA #C1). Strings em pt-BR.yml/onboarding.* (QA #L2).
+%>
+<section aria-labelledby="onboarding-heading" class="w-full max-w-2xl mx-auto py-8 sm:py-12">
+  <h1 id="onboarding-heading" class="text-2xl sm:text-3xl font-bold text-white mb-2">
+    <%= t("onboarding.greeting", name: display_first_name(Current.user)) %>
+  </h1>
+  <p class="text-gray-400 mb-8">
+    <%= t("onboarding.intro") %>
+  </p>
+
+  <%# QA #M3 — usar div role="list" evita dupla numeração (badges visuais + lista ordenada). %>
+  <div role="list" class="space-y-4" aria-label="Passos do onboarding">
+    <% [
+      { key: :step_1, number: 1 },
+      { key: :step_2, number: 2 },
+      { key: :step_3, number: 3 }
+    ].each do |step| %>
+      <% st = onboarding_state.step_state(step[:key]) %>
+      <% description =
+           if st == :locked
+             t("onboarding.steps.#{step[:key]}.locked_description",
+               default: t("onboarding.steps.#{step[:key]}.description"))
+           else
+             t("onboarding.steps.#{step[:key]}.description")
+           end %>
+      <%= render "onboarding/step",
+                  number: step[:number],
+                  title: t("onboarding.steps.#{step[:key]}.title"),
+                  description: description,
+                  cta: t("onboarding.steps.#{step[:key]}.cta"),
+                  path: onboarding_step_path(step[:key]),
+                  state: st %>
+    <% end %>
+  </div>
+</section>

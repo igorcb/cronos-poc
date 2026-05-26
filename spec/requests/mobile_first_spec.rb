@@ -260,6 +260,41 @@ RSpec.describe "Mobile-First Tailwind Breakpoints", type: :request do
     end
   end
 
+  # Story 9.3 — DM-008: Onboarding mobile-first (cards verticais → linha em sm+)
+  describe "GET / (dashboard onboarding — novo usuário)" do
+    let!(:new_user_mobile) { User.create!(email: "onb_mobile@example.com", password: "password123", name: "Pedro Lima") }
+
+    before do
+      delete session_path
+      post session_path, params: { email: new_user_mobile.email, password: "password123" }
+    end
+
+    it "container do onboarding usa w-full e max-w mobile-first" do
+      get root_path
+      expect(response.body).to match(/<section[^>]*class="w-full max-w-2xl mx-auto/)
+    end
+
+    it "cards de passo empilham em mobile (flex-col) e ficam em linha em sm+" do
+      get root_path
+      expect(response.body).to include("flex flex-col sm:flex-row")
+    end
+
+    it "CTA do passo atual tem min-h-[44px] (touch target)" do
+      get root_path
+      expect(response.body).to match(/class="[^"]*min-h-\[44px\][^"]*"[^>]*data-onboarding-cta="step_1"/)
+    end
+
+    it "passo bloqueado tem min-h-[44px] mesmo sem ação" do
+      get root_path
+      expect(response.body).to match(/aria-disabled="true"[^>]*class="[^"]*min-h-\[44px\]/)
+    end
+
+    it "usa padding responsivo p-4 sm:p-6 nos cards" do
+      get root_path
+      expect(response.body).to include("p-4 sm:p-6")
+    end
+  end
+
   # Story 1.11: Página de perfil — responsividade mobile-first
   describe "GET /profile" do
     before { sign_in }

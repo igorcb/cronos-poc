@@ -179,7 +179,11 @@ RSpec.describe "Dashboard Tasks Month", type: :request do
 
     # AC5: Empty state quando não há tarefas
     context "when there are no tasks in the current month" do
-      before { get root_path }
+      # Story 9.3 — DM-008 (QA #H4): sair do onboarding via helper centralizado.
+      before do
+        complete_onboarding_for(user)
+        get root_path
+      end
 
       it "AC5: exibe mensagem Nenhuma tarefa este mês" do
         expect(response.body).to include("Nenhuma tarefa este mês")

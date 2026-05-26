@@ -162,7 +162,10 @@ RSpec.describe "Projects", type: :request do
   end
 
   describe "POST /projects" do
-    before { sign_in(user) }
+    before do
+      sign_in(user)
+      complete_onboarding_for(user) # QA #H4 — sair do onboarding via helper centralizado
+    end
     let!(:company) { create(:company, name: "Test Company") }
 
     context "with valid parameters" do

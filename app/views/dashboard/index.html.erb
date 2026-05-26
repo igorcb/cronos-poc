@@ -1,5 +1,8 @@
 <%# Multi-tenant (story 9.2 QA #2): stream assinado por user — impede subscribe cross-tenant via devtools. %>
 <%= turbo_stream_from Current.user, :dashboard %>
+<% if @onboarding_state.active? %>
+  <%= render "dashboard/onboarding", onboarding_state: @onboarding_state %>
+<% else %>
 <div class="space-y-6">
   <!-- Welcome Section -->
   <section aria-labelledby="dashboard-heading">
@@ -91,3 +94,4 @@
     </div>
   </section>
 </div>
+<% end %>

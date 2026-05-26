@@ -42,12 +42,22 @@ class TasksController < ApplicationController
   def create
     @task = scoped_tasks.new(task_params)
     @task.status = "pending" unless @task.status.in?(Task.statuses.keys)
+    # Story 9.3 — DM-008 (QA #H1): captura antes do save vale para AMBOS
+    # os branches (HTML e Turbo-Frame=modal). Sem esse cuidado, primeira
+    # task criada via modal do dashboard nunca mostrava o flash de conclusão.
+    first_task_of_onboarding = !Current.user.tasks.exists?
 
     if @task.save
+      task_create_notice = first_task_of_onboarding ?
+                             t("onboarding.flashes.completed") :
+                             "Tarefa criada com sucesso"
+
       if request.headers["Turbo-Frame"] == "modal"
+        flash.now[:notice] = task_create_notice
         avg_per_delivery = calculate_monthly_avg_per_delivery
         render turbo_stream: [
           turbo_stream.update("modal", ""),
+          turbo_stream.update("flash", partial: "shared/flash"),
           turbo_stream.prepend("tasks-list", partial: "dashboard/task_row", locals: { task: @task }),
           turbo_stream.replace("dashboard_daily_hours",        partial: "dashboard/daily_hours",        locals: { daily_hours: calculate_daily_hours }),
           turbo_stream.replace("dashboard_monthly_hours",      partial: "dashboard/monthly_hours",      locals: { monthly_hours: calculate_monthly_hours }),
@@ -62,7 +72,7 @@ class TasksController < ApplicationController
           turbo_stream.replace("kpi-media-por-entrega-inline", partial: "dashboard/avg_per_delivery_inline", locals: { avg_per_delivery: avg_per_delivery })
         ]
       else
-        redirect_to tasks_path, notice: "Tarefa criada com sucesso"
+        redirect_to tasks_path, notice: task_create_notice
       end
     else
       @companies = scoped_companies.active.order(:name)

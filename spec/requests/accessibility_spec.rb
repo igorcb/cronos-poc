@@ -4,7 +4,9 @@ require "rails_helper"
 # Verifica que as views contêm os atributos e semântica necessários para acessibilidade básica.
 RSpec.describe "Accessibility WCAG Level A", type: :request do
   let!(:user) { User.create!(email: "accessibility@example.com", password: "password123") }
-  let!(:company) { create(:company, name: "Empresa Acessível") }
+  let!(:company) { create(:company, name: "Empresa Acessível", user: user) }
+  # Story 9.3 — DM-008 (QA #H4): sair do onboarding via helper centralizado.
+  before { complete_onboarding_for(user) }
 
   def sign_in
     post session_path, params: { email: user.email, password: "password123" }
@@ -462,6 +464,60 @@ RSpec.describe "Accessibility WCAG Level A", type: :request do
       it "exibe role=status no estado vazio" do
         get daily_summary_path(month: "2026-01")
         expect(response.body).to include('role="status"')
+      end
+    end
+
+    # Story 9.3 — DM-008: Onboarding (partial _onboarding)
+    describe "GET / (dashboard onboarding — novo usuário sem Company)" do
+      let!(:new_user) { User.create!(email: "onb_access@example.com", password: "password123", name: "Joao Silva") }
+
+      before do
+        delete session_path
+        post session_path, params: { email: new_user.email, password: "password123" }
+      end
+
+      it "renderiza section com aria-labelledby='onboarding-heading'" do
+        get root_path
+        expect(response.body).to include('aria-labelledby="onboarding-heading"')
+        expect(response.body).to include('id="onboarding-heading"')
+      end
+
+      # QA #M3 — usa role="list" em vez de <ol> para evitar dupla numeração no SR
+      # (badges visuais 1/2/3 já comunicam ordem).
+      it "lista de passos é div role=list com aria-label" do
+        get root_path
+        expect(response.body).to match(/role="list"[^>]*aria-label="Passos do onboarding"|aria-label="Passos do onboarding"[^>]*role="list"/)
+      end
+
+      it "cada card de passo é <article role='listitem'> com aria-label descritivo" do
+        get root_path
+        expect(response.body).to include('role="listitem"')
+        expect(response.body).to include('aria-label="Passo 1 (atual)"')
+      end
+
+      it "passo bloqueado usa span com role=button e aria-disabled=true" do
+        get root_path
+        expect(response.body).to match(/<span[^>]*aria-disabled="true"[^>]*role="button"|<span[^>]*role="button"[^>]*aria-disabled="true"/)
+      end
+
+      it "SVGs decorativos do onboarding usam aria-hidden" do
+        get root_path
+        expect(response.body).to include('aria-hidden="true"')
+      end
+
+      # QA #M7 — headers "Passo X de 3" precisam de aria-live para anunciar
+      # contexto após redirect (SR não anuncia mudança de página automaticamente).
+      it "header 'Passo 1 de 3' em /companies/new tem aria-live=polite" do
+        get new_company_path
+        expect(response.body).to match(/<p[^>]*aria-live="polite"[^>]*data-onboarding-step-label="step_1"/)
+      end
+
+      it "header 'Passo 2 de 3' em /projects/new tem aria-live=polite" do
+        delete session_path
+        post session_path, params: { email: new_user.email, password: "password123" }
+        create(:company, user: new_user)
+        get new_project_path
+        expect(response.body).to match(/<p[^>]*aria-live="polite"[^>]*data-onboarding-step-label="step_2"/)
       end
     end
 

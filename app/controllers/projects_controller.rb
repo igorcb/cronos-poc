@@ -30,9 +30,16 @@ class ProjectsController < ApplicationController
 
   def create
     @project = scoped_projects.new(project_params)
+    # Story 9.3 — DM-008 (QA #H2): captura antes do save (consistente com
+    # CompaniesController e TasksController — evita race em requests paralelos).
+    onboarding_active_before_save = OnboardingState.new(Current.user).active?
 
     if @project.save
-      redirect_to projects_path, notice: "Projeto cadastrado com sucesso"
+      if onboarding_active_before_save
+        redirect_to root_path, notice: t("onboarding.flashes.project_created")
+      else
+        redirect_to projects_path, notice: "Projeto cadastrado com sucesso"
+      end
     else
       @companies = scoped_companies.active.order(:name)
       render :new, status: :unprocessable_entity

@@ -2,6 +2,12 @@ class DashboardController < ApplicationController
   include DashboardCalculations
 
   def index
+    # Story 9.3 — DM-008: cache de OnboardingState evita N+1 (QA #C1) —
+    # 1 instância × 3 EXISTS no pior caso, reusada por view gate e partial.
+    @onboarding_state = OnboardingState.new(Current.user)
+
+    return if @onboarding_state.active?
+
     @tasks              = monthly_tasks
     @daily_hours        = calculate_daily_hours
     @monthly_hours      = calculate_monthly_hours

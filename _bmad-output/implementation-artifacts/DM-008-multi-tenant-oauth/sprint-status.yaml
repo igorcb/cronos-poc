@@ -7,8 +7,8 @@
 domain: DM-008
 domain_name: Multi-Tenancy & Google OAuth
 domain_type: Transversal / Seguranca & SaaS
-status: in-progress
-progress: 67%  # 2 de 3 stories concluidas
+status: done
+progress: 100%  # 3 de 3 stories concluidas
 
 dependencies:
   requires:
@@ -37,10 +37,15 @@ stories:
     estimate_sp: 8
 
   003-onboarding-primeiro-acesso:
-    status: ready-for-dev
+    status: done
     priority: high
     description: Tela de onboarding de 3 passos para novo usuário (criar Empresa → Projeto → Tarefa)
-    notes: Criado 2026-05-15 — depende de 9.2; estado derivado de counts (sem coluna de progresso)
+    notes: |
+      Implementado em 2026-05-26 na branch feature-003-onboarding-primeiro-acesso.
+      OnboardingState PORO + helper enxuto + partials i18n + redirects condicionais pre-save.
+      Round 1 (pos-QA): 18 findings aplicados (1 CRITICAL/5 HIGH/7 MEDIUM/5 LOW).
+      Suite: 1120/1120 passing, 100% line coverage (802/802).
+      Playwright validacao ponta-a-ponta OK (login -> step_1 -> empresa -> step_2 -> projeto -> step_3 -> task -> dashboard normal com flash "Configuracao concluida!").
     epic: 9
     estimate_sp: 2
 
@@ -49,12 +54,12 @@ retrospective:
 
 summary:
   total_stories: 3
-  done: 2
+  done: 3
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   total_sp: 13
-  done_sp: 11
+  done_sp: 13
   blockers: []
   next_actions:
-    - Implementar story 9.3 — Onboarding de primeiro acesso (depende de 9.2 já entregue)
+    - Rodar retrospectiva do Epic 9 (Multi-Tenancy & OAuth completo)

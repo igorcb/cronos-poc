@@ -70,6 +70,33 @@ pt-BR:
       completed: "Concluído"
       delivered: "Entregue"
 
+  # Story 9.3 — DM-008: onboarding (flashes + copy dos passos)
+  onboarding:
+    greeting: "Olá, %{name}! 👋"
+    intro: "Vamos configurar seu Cronos POC em 3 passos rápidos."
+    fallback_name: "amigo"
+    steps:
+      step_1:
+        title: "Passo 1 — Criar Empresa"
+        description: "Cadastre a primeira empresa para a qual você trabalha."
+        cta: "Criar Empresa"
+        header: "Passo 1 de 3 — Criar Empresa"
+      step_2:
+        title: "Passo 2 — Criar Projeto"
+        description: "Adicione um projeto dentro da empresa."
+        locked_description: "Crie primeiro uma Empresa para depois adicionar Projetos."
+        cta: "Criar Projeto"
+        header: "Passo 2 de 3 — Criar Projeto"
+      step_3:
+        title: "Passo 3 — Lançar Primeira Tarefa"
+        description: "Crie uma tarefa para começar a registrar horas."
+        locked_description: "Disponível após criar Empresa e Projeto."
+        cta: "Criar Primeira Tarefa"
+    flashes:
+      company_created: "Empresa criada! Agora crie seu primeiro projeto."
+      project_created: "Projeto criado! Agora lance sua primeira tarefa."
+      completed: "Configuração concluída! 🎉 Sua primeira tarefa foi criada."
+
   activerecord:
     errors:
       messages:
