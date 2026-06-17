@@ -139,10 +139,10 @@ stories:
     notes: Concluído 2026-05-07 — 131 specs passando; inline ao lado do +; Turbo Streams em 4 actions; bug fix replace turbo-frame
 
   023-icones-kpis-mes-verdes:
-    status: ready-for-dev
+    status: done
     priority: low
     description: Padronizar ícone do KPI Valor Mês em verde — consistência visual com Tasks Mês e Horas Mês
-    notes: Criado 2026-05-20 — mudança cirúrgica de 1 caractere em _monthly_value.html.erb (text-yellow-400 → text-green-400)
+    notes: Verificado 2026-06-17 — já estava implementado em _monthly_value.html.erb (text-green-400); nenhuma alteração necessária
 
   022-resumo-diario-do-mes:
     status: done

@@ -1,6 +1,6 @@
 # Story 5.23: Padronizar Ícones dos KPIs do Mês em Verde
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-005-visualizacao-totalizadores
 **Data:** 2026-05-20
 **Epic:** Epic 5 — Visualização & Dashboard
@@ -42,10 +42,10 @@ O trio **Tasks Mês / Horas Mês / Valor Mês** tem 2 verdes mas 1 amarelo — q
 
 ## Critérios de Aceite
 
-- [ ] **AC1:** `app/views/dashboard/_monthly_value.html.erb` — alterar `text-yellow-400` → `text-green-400` no SVG
-- [ ] **AC2:** `_monthly_task_count` e `_monthly_hours` — permanecem `text-green-400` (já estão corretos)
-- [ ] **AC3:** Demais KPIs (`_daily_*`, `_delivered_*`, `_avg_per_delivery`) — **não alterar**
-- [ ] **AC4:** Validação via Playwright MCP: screenshot do dashboard mostra os 3 ícones do trio "Mês" todos em verde
+- [x] **AC1:** `app/views/dashboard/_monthly_value.html.erb` — alterar `text-yellow-400` → `text-green-400` no SVG
+- [x] **AC2:** `_monthly_task_count` e `_monthly_hours` — permanecem `text-green-400` (já estão corretos)
+- [x] **AC3:** Demais KPIs (`_daily_*`, `_delivered_*`, `_avg_per_delivery`) — **não alterar**
+- [x] **AC4:** Validação via Playwright MCP: screenshot do dashboard mostra os 3 ícones do trio "Mês" todos em verde
 
 ---
 
