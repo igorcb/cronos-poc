@@ -1,6 +1,6 @@
 # Story 10.1: Corrigir Contagem Divergente de Tarefas entre Dashboard e Resumo Diário
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-010-consistencia-metricas
 **Data:** 2026-06-17
 **Epic:** Epic 10 — Consistência de Métricas e Nomenclatura
@@ -35,11 +35,11 @@ enquanto o Dashboard conta `tasks` distintas. Uma task com apontamentos em 3 dia
 
 ## Critérios de Aceite
 
-- [ ] **AC1:** Dashboard e Resumo Diário exibem o mesmo valor de "Tarefas do mês" para o mesmo período
-- [ ] **AC2:** O valor representa tasks distintas — não task_items duplicados por dia
-- [ ] **AC3:** Ao trocar o mês no filtro do Resumo Diário, o KPI atualiza corretamente mantendo a mesma lógica de contagem
-- [ ] **AC4:** Spec valida que os dois KPIs retornam o mesmo valor para o mesmo período
-- [ ] **AC5:** Nenhuma regressão nos demais totalizadores (Horas no mês, Valor no mês)
+- [x] **AC1:** Dashboard e Resumo Diário exibem o mesmo valor de "Tarefas do mês" para o mesmo período
+- [x] **AC2:** O valor representa tasks distintas — não task_items duplicados por dia
+- [x] **AC3:** Ao trocar o mês no filtro do Resumo Diário, o KPI atualiza corretamente mantendo a mesma lógica de contagem
+- [x] **AC4:** Spec valida que os dois KPIs retornam o mesmo valor para o mesmo período
+- [x] **AC5:** Nenhuma regressão nos demais totalizadores (Horas no mês, Valor no mês)
 
 ---
 

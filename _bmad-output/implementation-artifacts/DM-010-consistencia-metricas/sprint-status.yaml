@@ -7,8 +7,8 @@
 domain: DM-010
 domain_name: Consistência de Métricas e Nomenclatura
 domain_type: Correcao / Qualidade de Dados
-status: ready_for_dev
-progress: 0%  # 0 de 2 stories concluidas
+status: in_progress
+progress: 50%  # 1 de 2 stories concluidas
 
 dependencies:
   requires:
@@ -16,13 +16,13 @@ dependencies:
 
 stories:
   001-corrigir-contagem-divergente-tarefas-mes:
-    status: ready_for_dev
+    status: done
     priority: high
     description: Corrigir divergência de contagem entre Dashboard (61) e Resumo Diário (81) para Junho/2026
     notes: >
-      Bug identificado em produção em 17/06/2026.
-      Resumo Diário conta task_items em vez de tasks distintas.
-      Correção: usar Task.joins(:task_items).distinct.count no ResumoDiarioController.
+      Implementado via PR em 2026-06-17.
+      @kpi_cards agora usa scoped_task_items.joins(:task).where(work_date:).select("DISTINCT task_id").count.
+      1121/1121 specs, 100% cobertura.
     epic: 10
     estimate_sp: 3
 
@@ -41,9 +41,9 @@ retrospective:
 
 summary:
   total_stories: 2
-  done: 0
+  done: 1
   in_progress: 0
-  ready_for_dev: 2
+  ready_for_dev: 1
   backlog: 0
   total_sp: 4
   done_sp: 0
