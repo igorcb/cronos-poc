@@ -59,6 +59,7 @@ Registrar dados é necessário, mas o valor real está em **consumir** esses dad
 | 018 | `018-exclusao-task-item-no-modal.md` | Exclusão de Lançamento Individual no Modal de Histórico |
 | 019 | `019-novos-kpis-dashboard.md` | Novos KPIs: Entregas do Mês, Horas Entregues, Valor Entregue |
 | 020 | `020-kpi-media-por-entrega.md` | KPI Média por Entrega (R$) no grid e ao lado do botão + |
+| 024 | `024-cursor-title-acoes-dashboard.md` | Cursor pointer e title nas ações (Lançar horas / Entregar) da listagem |
 
 ## Requisitos Rastreados
 
