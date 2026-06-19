@@ -17,7 +17,11 @@ class DailySummaryController < ApplicationController
       )
       .map { |date, qtde, hours, value| [date, qtde.to_i, hours.to_f, value.to_f] }
 
-    @kpi_cards = @daily_rows.sum { |_, qtde, _, _| qtde }
+    @kpi_cards = scoped_task_items
+                   .joins(:task)
+                   .where(work_date: @month_range)
+                   .select("DISTINCT task_id")
+                   .count
     @kpi_hours = @daily_rows.sum { |_, _, hours, _| hours }
     @kpi_value = @daily_rows.sum { |_, _, _, value| value }
 

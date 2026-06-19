@@ -163,10 +163,19 @@ RSpec.describe "Daily Summary", type: :request do
           expect(pos_15).to be < pos_14
         end
 
-        # AC3.1: KPI Cards = soma das Qtdes diárias (1 + 2 + 1 = 4)
-        it "shows KPI Cards as sum of daily distinct counts (option 2)" do
+        # AC3.1 / Story 10.1 AC2: KPI Cards = tasks DISTINTAS no mês (não soma diária)
+        # task_a aparece nos dias 14 e 15, task_b aparece nos dias 15 e 16 → 2 tasks distintas
+        it "shows KPI Cards as count of distinct tasks in the month" do
           get daily_summary_path(month: "2026-04")
-          expect(response.body).to match(%r{id="kpi-cards"[^>]*>\s*4\s*<})
+          expect(response.body).to match(%r{id="kpi-cards"[^>]*>\s*2\s*<})
+        end
+
+        # Story 10.1 AC4 + AC1: uma task com apontamentos em múltiplos dias conta apenas 1
+        # task_a aparece nos dias 14 e 15 → não conta como 2
+        it "does not double-count a task that has task_items on multiple days" do
+          get daily_summary_path(month: "2026-04")
+          # task_a (dias 14 e 15) + task_b (dias 15 e 16) = 2 tasks distintas, nunca 4
+          expect(response.body).to match(%r{id="kpi-cards"[^>]*>\s*2\s*<})
         end
 
         # AC3.2: KPI Horas = soma de hours_worked formatada HH:MM (4+2+2 = 8h = 08:00)
