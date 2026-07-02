@@ -60,12 +60,23 @@ RSpec.describe "db:seed" do
     expect(admin).to be_present
   end
 
-  it "raises KeyError when ADMIN_PASSWORD is not set (story 10.3 — no insecure default)" do
+  it "raises KeyError in production when ADMIN_PASSWORD is not set (story 10.3 — no insecure default)" do
     ENV.delete('ADMIN_PASSWORD')
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
 
     expect {
       Rake::Task['db:seed'].execute
     }.to raise_error(KeyError, /ADMIN_PASSWORD/)
+  end
+
+  it "falls back to a default password outside production when ADMIN_PASSWORD is not set (CI/db:prepare)" do
+    ENV.delete('ADMIN_PASSWORD')
+
+    expect {
+      Rake::Task['db:seed'].execute
+    }.not_to raise_error
+
+    expect(User.find_by(email: 'admin@cronos-poc.local')).to be_present
   end
 
   describe "companies (story 9.2 QA #12)" do

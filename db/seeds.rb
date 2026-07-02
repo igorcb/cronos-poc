@@ -6,7 +6,14 @@
 puts "Creating admin user..."
 
 admin_email = ENV.fetch('ADMIN_EMAIL', 'admin@cronos-poc.local')
-admin_password = ENV.fetch('ADMIN_PASSWORD') # raise KeyError se ausente (dev/test setam via .env)
+# Em produção, exige ADMIN_PASSWORD sem default (story 10.3 — sem 'password123' inseguro).
+# Em dev/test, usa default para não travar db:prepare no CI e no setup local.
+admin_password =
+  if Rails.env.production?
+    ENV.fetch('ADMIN_PASSWORD') # raise KeyError se ausente
+  else
+    ENV.fetch('ADMIN_PASSWORD', 'password123')
+  end
 
 user = User.find_or_initialize_by(email: admin_email)
 user.password = admin_password
