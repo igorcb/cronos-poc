@@ -1,0 +1,65 @@
+# Sprint Status - DM-009: Hardening de Produção
+# Dominio: DM-009-hardening-producao
+# Tipo: Transversal / Segurança & Operações
+# Epic: Epic 10
+# Gerado: 2026-05-26
+
+domain: DM-009
+domain_name: Hardening de Produção
+domain_type: Transversal / Seguranca & Operacoes
+status: ready-for-dev
+progress: 0%  # 0 de 4 stories concluidas
+
+dependencies:
+  requires:
+    - DM-008  # Multi-tenancy em producao
+
+stories:
+  001-rotacionar-master-key:
+    status: ready-for-dev
+    priority: critical
+    description: Rotacionar master.key (vazada no historico) e revogar credentials antigos
+    notes: Pre-requisito para qualquer secret real em credentials.yml.enc
+    epic: 10
+    estimate_sp: 1
+
+  002-backup-postgresql-automatizado:
+    status: ready-for-dev
+    priority: high
+    description: Backup diario do PostgreSQL para storage externo (S3/B2/R2) com restore documentado
+    notes: Protege contra falha do Railway, exige escolha de provider e criacao de bucket
+    epic: 10
+    estimate_sp: 2
+
+  003-verificacao-envs-no-boot:
+    status: ready-for-dev
+    priority: medium
+    description: Initializer que falha o boot se faltar ENV critica em producao + remover default password123 do seeds
+    notes: Detecta config incompleta no deploy, nao em runtime
+    epic: 10
+    estimate_sp: 1
+
+  004-limpar-arquivos-kamal-abandonados:
+    status: ready-for-dev
+    priority: low
+    description: Remover config/deploy.yml e .kamal/ (Kamal nao usado) ou documentar como abandonado
+    notes: Codigo morto causa confusao; decisao entre opcao A (remover) ou B (documentar)
+    epic: 10
+    estimate_sp: 0.5
+
+retrospective:
+  status: pending
+
+summary:
+  total_stories: 4
+  done: 0
+  in_progress: 0
+  ready_for_dev: 4
+  backlog: 0
+  total_sp: 4.5
+  blockers: []
+  next_actions:
+    - Implementar story 10.1 (CRITICAL) - rotacionar master.key
+    - Implementar story 10.3 (MEDIUM) junto com 10.1 - remove password123 default
+    - Implementar story 10.2 (HIGH) - backup PostgreSQL
+    - Implementar story 10.4 (LOW) - limpar Kamal

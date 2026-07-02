@@ -29,7 +29,10 @@ inputDocuments: ['prd.md', 'architecture.md', 'domain-index.md']
 | 7 | Edição & Correção | DM-004 (Epic 7) | 5 | ✅ done |
 | 8 | Mobile & Acessibilidade | DM-007 | 5 | ✅ done |
 | 9 | Multi-Tenancy & OAuth | DM-008 | 3 | ✅ done |
-| **TOTAL** | | | **74** | **✅** |
+| 10 | Hardening de Produção | DM-009 | 4 | 🔵 ready-for-dev |
+| 11 | Observabilidade & UX Polish | DM-010 | 4 | 🔵 ready-for-dev |
+| 12 | Validação com Usuários Reais | DM-011 | 3 | 🔵 ready-for-dev |
+| **TOTAL** | | | **85** | **74 done + 11 planejadas** |
 
 ---
 
@@ -133,6 +136,32 @@ inputDocuments: ['prd.md', 'architecture.md', 'domain-index.md']
 - 9.1 Login via Google OAuth (lado a lado com email/senha) ✅
 - 9.2 Multi-tenancy — isolamento de dados por usuário ✅
 - 9.3 Onboarding — primeiro acesso (3 passos) ✅
+
+## Epic 10 — Hardening de Produção (DM-009) 🔵 planejado
+
+- 10.1 Rotacionar `master.key` e revogar credentials antigos (CRITICAL, 1 SP)
+- 10.2 Backup PostgreSQL automatizado (off-provider) (HIGH, 2 SP)
+- 10.3 Hook de verificação de ENVs no boot da aplicação (MEDIUM, 1 SP)
+- 10.4 Limpar ou documentar arquivos Kamal abandonados (LOW, 0.5 SP)
+
+**Total: 4.5 SP** | Foco: resiliência operacional e segurança pós-deploy
+
+## Epic 11 — Observabilidade & UX Polish (DM-010) 🔵 planejado
+
+- 11.1 Logs estruturados com Lograge (MEDIUM, 1 SP)
+- 11.2 Healthcheck endpoint `/up` customizado (MEDIUM, 1 SP)
+- 11.3 Analytics de produto (Plausible ou PostHog) (HIGH, 2 SP)
+- 11.4 Acessibilidade WCAG nível AA completa (MEDIUM, 2 SP)
+
+**Total: 6 SP** | Foco: entender uso real e polir experiência
+
+## Epic 12 — Validação com Usuários Reais (DM-011) 🔵 planejado
+
+- 12.1 Recrutar 3-5 usuários piloto e onboarding pessoal (HIGH, 1 SP)
+- 12.2 Coletar feedback estruturado (entrevistas + form) (HIGH, 1 SP)
+- 12.3 Síntese e priorização do próximo Epic baseada em uso real (HIGH, 1 SP)
+
+**Total: 3 SP** | Foco: discovery — sair do desenvolvimento solo, extrair sinal real
 
 ---
 

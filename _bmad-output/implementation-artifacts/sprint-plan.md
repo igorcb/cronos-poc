@@ -140,24 +140,28 @@ Esse sprint transformou o app de single-user em SaaS multi-tenant real.
 
 ---
 
-## Próximos sprints sugeridos (não planejados ainda)
+## Próximos sprints planejados
 
-### Sprint 10 — Hardening de produção (3-5 SP estimados)
-- 10.1 — Rotacionar master.key + revogar credentials antigos
-- 10.2 — Backup PostgreSQL automatizado (S3/Backblaze)
-- 10.3 — Hook de verificação de ENVs no boot
-- 10.4 — Limpar/documentar arquivos Kamal abandonados
+Todos com stories documentadas em `_bmad-output/implementation-artifacts/DM-XXX/`.
 
-### Sprint 11 — Observabilidade & UX polish (4-6 SP estimados)
-- 11.1 — Analytics de drop-off no onboarding (Plausible/PostHog)
-- 11.2 — Logs estruturados (Lograge)
-- 11.3 — Acessibilidade WCAG AA completa
-- 11.4 — Healthcheck endpoint customizado
+### Sprint 10 — Hardening de produção (DM-009, 4.5 SP)
+- 10.1 — Rotacionar master.key + revogar credentials antigos (CRITICAL, 1 SP)
+- 10.2 — Backup PostgreSQL automatizado (S3/B2/R2) (HIGH, 2 SP)
+- 10.3 — Hook de verificação de ENVs no boot + remover password123 default (MEDIUM, 1 SP)
+- 10.4 — Limpar/documentar arquivos Kamal abandonados (LOW, 0.5 SP)
 
-### Sprint 12 — Validação com usuários reais
-- Convidar 3-5 usuários piloto
-- Medir uso real, deixar features emergirem
-- Retrospectiva de produto a cada 2 semanas
+### Sprint 11 — Observabilidade & UX Polish (DM-010, 6 SP)
+- 11.1 — Logs estruturados com Lograge (MEDIUM, 1 SP)
+- 11.2 — Healthcheck /up customizado (DB + queue + cache + migrations) (MEDIUM, 1 SP)
+- 11.3 — Analytics de produto (Plausible ou PostHog, 7 eventos) (HIGH, 2 SP)
+- 11.4 — Acessibilidade WCAG nível AA completa (MEDIUM, 2 SP)
+
+### Sprint 12 — Validação com Usuários Reais (DM-011, 3 SP)
+- 12.1 — Recrutar 3-5 pilotos + onboarding pessoal (HIGH, 1 SP)
+- 12.2 — Entrevistas 30min + form quantitativo após 7-14 dias (HIGH, 1 SP)
+- 12.3 — Síntese, categorização e decisão do próximo Epic 13 (HIGH, 1 SP)
+
+**Total planejado: 13.5 SP** distribuídos em 11 stories através de 3 sprints.
 
 ---
 

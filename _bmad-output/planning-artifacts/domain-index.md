@@ -23,8 +23,11 @@ O Cronos POC é organizado em **8 domínios** que cobrem desde infraestrutura t�
 | **DM-006** | Filtros Dinâmicos | Consumo / Apresentação | 6 | 4 | ✅ done |
 | **DM-007** | Experiência Mobile & Responsividade | Transversal | 8 | 5 | ✅ done |
 | **DM-008** | Multi-Tenancy & Google OAuth | Transversal / Segurança & SaaS | 9 | 3 | ✅ done |
+| **DM-009** | Hardening de Produção | Transversal / Segurança & Ops | 10 | 4 | 🔵 ready-for-dev |
+| **DM-010** | Observabilidade & UX Polish | Transversal / Ops & Experiência | 11 | 4 | 🔵 ready-for-dev |
+| **DM-011** | Validação com Usuários Reais | Discovery / Product | 12 | 3 | 🔵 ready-for-dev |
 
-**Total: 74 stories entregues**
+**Total: 74 stories entregues + 11 stories planejadas (roadmap)**
 
 ---
 

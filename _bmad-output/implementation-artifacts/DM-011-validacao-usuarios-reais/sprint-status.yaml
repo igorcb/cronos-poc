@@ -1,0 +1,59 @@
+# Sprint Status - DM-011: Validacao com Usuarios Reais
+# Dominio: DM-011-validacao-usuarios-reais
+# Tipo: Discovery / Product
+# Epic: Epic 12
+# Gerado: 2026-05-26
+
+domain: DM-011
+domain_name: Validacao com Usuarios Reais
+domain_type: Discovery / Product
+status: ready-for-dev
+progress: 0%  # 0 de 3 stories concluidas
+
+dependencies:
+  requires:
+    - DM-008  # Multi-tenancy estavel
+    - DM-009  # Hardening (master.key rotacionada antes de expor)
+    - DM-010  # Analytics (story 11.3) - sem isso, decisoes serao por anedota
+
+stories:
+  001-recrutar-usuarios-piloto:
+    status: ready-for-dev
+    priority: high
+    description: Recrutar 3-5 usuarios piloto e fazer onboarding pessoal de cada um
+    notes: Discovery puro - sem mudancas de codigo, foco em diario de bordo e suporte na primeira semana
+    epic: 12
+    estimate_sp: 1
+
+  002-coletar-feedback-estruturado:
+    status: ready-for-dev
+    priority: high
+    description: Entrevistas 30min + form quantitativo apos 7-14 dias de uso por piloto
+    notes: Cruza qualitativo (entrevista) com quantitativo (form) e analytics; depende da story 12.1
+    epic: 12
+    estimate_sp: 1
+
+  003-sintese-e-priorizacao-proximo-epic:
+    status: ready-for-dev
+    priority: high
+    description: Categorizar findings, triar por frequencia/severidade, esbocar proximo Epic
+    notes: Regra do 2+ usuarios para evitar vies individual; fecha ciclo de validacao
+    epic: 12
+    estimate_sp: 1
+
+retrospective:
+  status: pending
+
+summary:
+  total_stories: 3
+  done: 0
+  in_progress: 0
+  ready_for_dev: 3
+  backlog: 0
+  total_sp: 3
+  blockers: []
+  next_actions:
+    - Implementar story 12.1 - recrutar 3-5 pilotos (semana 1)
+    - Aguardar 7-14 dias de uso pelos pilotos
+    - Implementar story 12.2 - entrevistas + form (semana 2-3)
+    - Implementar story 12.3 - sintese e decisao do proximo Epic (semana 3)
