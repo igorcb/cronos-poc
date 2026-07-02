@@ -6,7 +6,7 @@
 puts "Creating admin user..."
 
 admin_email = ENV.fetch('ADMIN_EMAIL', 'admin@cronos-poc.local')
-admin_password = ENV.fetch('ADMIN_PASSWORD', 'password123')
+admin_password = ENV.fetch('ADMIN_PASSWORD') # raise KeyError se ausente (dev/test setam via .env)
 
 user = User.find_or_initialize_by(email: admin_email)
 user.password = admin_password

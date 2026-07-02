@@ -6,9 +6,22 @@ RSpec.describe "db:seed" do
     Rails.application.load_tasks if Rake::Task.tasks.empty?
   end
 
+  # Restaura ENV original após cada exemplo — evita poluição global entre specs
+  # (exemplos setam/deletam ADMIN_EMAIL/ADMIN_PASSWORD). Story 10.3 QA HIGH-1.
+  around do |example|
+    original = ENV.to_h.slice('ADMIN_EMAIL', 'ADMIN_PASSWORD')
+    example.run
+  ensure
+    %w[ADMIN_EMAIL ADMIN_PASSWORD].each { |k| ENV.delete(k) }
+    original.each { |k, v| ENV[k] = v }
+  end
+
   before do
     User.destroy_all
     allow($stdout).to receive(:puts)
+    # Garante que a task re-executa o corpo em cada exemplo (Rake marca como já
+    # rodada após execute). Story 10.3 QA HIGH-2.
+    Rake::Task['db:seed'].reenable
   end
 
   it "creates admin user with ENV credentials" do
@@ -37,14 +50,22 @@ RSpec.describe "db:seed" do
     }.not_to change(User, :count)
   end
 
-  it "uses default credentials when ENV not set" do
+  it "uses default email when ADMIN_EMAIL not set but ADMIN_PASSWORD is present" do
     ENV.delete('ADMIN_EMAIL')
-    ENV.delete('ADMIN_PASSWORD')
+    ENV['ADMIN_PASSWORD'] = 'secure_password123'
 
     Rake::Task['db:seed'].execute
 
     admin = User.find_by(email: 'admin@cronos-poc.local')
     expect(admin).to be_present
+  end
+
+  it "raises KeyError when ADMIN_PASSWORD is not set (story 10.3 — no insecure default)" do
+    ENV.delete('ADMIN_PASSWORD')
+
+    expect {
+      Rake::Task['db:seed'].execute
+    }.to raise_error(KeyError, /ADMIN_PASSWORD/)
   end
 
   describe "companies (story 9.2 QA #12)" do
