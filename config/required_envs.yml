@@ -1,0 +1,25 @@
+# Declaração de ENVs obrigatórias/opcionais por ambiente.
+# Lido por config/initializers/000_validate_envs.rb no boot.
+#
+# - required: ausência aborta o boot em produção (raise)
+# - optional: ausência apenas gera warning no logger
+production:
+  required:
+    - RAILS_MASTER_KEY
+    - DATABASE_URL
+    - SECRET_KEY_BASE
+    - ADMIN_EMAIL
+    - ADMIN_PASSWORD
+    - INITIAL_TENANT_EMAIL
+  optional:
+    - GOOGLE_CLIENT_ID
+    - GOOGLE_CLIENT_SECRET
+    - BACKUP_BUCKET
+
+development:
+  required: []
+  optional: []
+
+test:
+  required: []
+  optional: []

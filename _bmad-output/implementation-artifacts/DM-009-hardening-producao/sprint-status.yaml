@@ -7,8 +7,8 @@
 domain: DM-009
 domain_name: Hardening de Produção
 domain_type: Transversal / Seguranca & Operacoes
-status: ready-for-dev
-progress: 0%  # 0 de 4 stories concluidas
+status: in-progress
+progress: 25%  # 1 de 4 stories concluidas
 
 dependencies:
   requires:
@@ -32,10 +32,10 @@ stories:
     estimate_sp: 2
 
   003-verificacao-envs-no-boot:
-    status: ready-for-dev
+    status: done
     priority: medium
     description: Initializer que falha o boot se faltar ENV critica em producao + remover default password123 do seeds
-    notes: Detecta config incompleta no deploy, nao em runtime
+    notes: Implementado em 2026-07-02 — initializer 000_validate_envs + required_envs.yml + seeds sem default password123
     epic: 10
     estimate_sp: 1
 
@@ -52,14 +52,13 @@ retrospective:
 
 summary:
   total_stories: 4
-  done: 0
+  done: 1
   in_progress: 0
-  ready_for_dev: 4
+  ready_for_dev: 3
   backlog: 0
   total_sp: 4.5
   blockers: []
   next_actions:
     - Implementar story 10.1 (CRITICAL) - rotacionar master.key
-    - Implementar story 10.3 (MEDIUM) junto com 10.1 - remove password123 default
     - Implementar story 10.2 (HIGH) - backup PostgreSQL
     - Implementar story 10.4 (LOW) - limpar Kamal

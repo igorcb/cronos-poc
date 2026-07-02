@@ -1,6 +1,6 @@
 # Story 10.3: Hook de Verificação de ENVs no Boot da Aplicação
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-009-hardening-producao
 **Epic:** Epic 10 — Hardening de Produção
 **Story ID:** 10.3
@@ -35,34 +35,34 @@ Esta story implementa um **initializer que falha o boot do app** se ENVs crític
 ## Critérios de Aceite
 
 ### AC1 — Lista de ENVs obrigatórias
-- [ ] **AC1.1:** Criar `config/required_envs.yml` declarando ENVs por ambiente
-- [ ] **AC1.2:** Produção: `RAILS_MASTER_KEY`, `DATABASE_URL`, `SECRET_KEY_BASE`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `INITIAL_TENANT_EMAIL`
-- [ ] **AC1.3:** Produção opcionais (warning, não fatal): `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `BACKUP_BUCKET`, credenciais S3
-- [ ] **AC1.4:** Dev/test: sem obrigatórias (Docker e ENVs locais já tem defaults)
+- [x] **AC1.1:** Criar `config/required_envs.yml` declarando ENVs por ambiente
+- [x] **AC1.2:** Produção: `RAILS_MASTER_KEY`, `DATABASE_URL`, `SECRET_KEY_BASE`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `INITIAL_TENANT_EMAIL`
+- [x] **AC1.3:** Produção opcionais (warning, não fatal): `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `BACKUP_BUCKET`, credenciais S3
+- [x] **AC1.4:** Dev/test: sem obrigatórias (Docker e ENVs locais já tem defaults)
 
 ### AC2 — Initializer
-- [ ] **AC2.1:** `config/initializers/000_validate_envs.rb` (prefixo 000 para rodar antes de tudo)
-- [ ] **AC2.2:** Em `Rails.env.production?`, lê yaml e verifica `ENV[key].present?` para cada obrigatória
-- [ ] **AC2.3:** Se faltar qualquer obrigatória → `raise` com mensagem clara listando todas as ausentes (não só a primeira)
-- [ ] **AC2.4:** Se faltar opcional → `Rails.logger.warn` ao invés de raise
+- [x] **AC2.1:** `config/initializers/000_validate_envs.rb` (prefixo 000 para rodar antes de tudo)
+- [x] **AC2.2:** Em `Rails.env.production?`, lê yaml e verifica `ENV[key].present?` para cada obrigatória
+- [x] **AC2.3:** Se faltar qualquer obrigatória → `raise` com mensagem clara listando todas as ausentes (não só a primeira)
+- [x] **AC2.4:** Se faltar opcional → `Rails.logger.warn` ao invés de raise
 
 ### AC3 — Mensagem de erro
-- [ ] **AC3.1:** Formato: "Cronos POC não pode subir em produção sem as seguintes ENVs: RAILS_MASTER_KEY, ADMIN_PASSWORD. Configure no Railway dashboard."
-- [ ] **AC3.2:** Stack trace mínima (raise no initializer)
+- [x] **AC3.1:** Formato: "Cronos POC não pode subir em produção sem as seguintes ENVs: RAILS_MASTER_KEY, ADMIN_PASSWORD. Configure no Railway dashboard."
+- [x] **AC3.2:** Stack trace mínima (raise no initializer)
 
 ### AC4 — Defaults perigosos removidos
-- [ ] **AC4.1:** `db/seeds.rb` linha 9 — remover default `'password123'` de `ENV.fetch('ADMIN_PASSWORD', 'password123')`
-- [ ] **AC4.2:** Substituir por `ENV.fetch('ADMIN_PASSWORD')` (sem default) → raise KeyError se ausente
-- [ ] **AC4.3:** Em dev/test continua usando default via `.env` (que já existe)
+- [x] **AC4.1:** `db/seeds.rb` linha 9 — remover default `'password123'` de `ENV.fetch('ADMIN_PASSWORD', 'password123')`
+- [x] **AC4.2:** Substituir por `ENV.fetch('ADMIN_PASSWORD')` (sem default) → raise KeyError se ausente
+- [x] **AC4.3:** Em dev/test continua usando default via `.env` (que já existe)
 
 ### AC5 — Cobertura
-- [ ] **AC5.1:** Spec do initializer (testar em isolamento, stub `Rails.env.production?` e `ENV`)
-- [ ] **AC5.2:** Spec: ENV obrigatória ausente → raise
-- [ ] **AC5.3:** Spec: ENV opcional ausente → apenas warning no logger
-- [ ] **AC5.4:** Spec: todas ENVs presentes → boot OK
+- [x] **AC5.1:** Spec do initializer (testar em isolamento, stub `Rails.env.production?` e `ENV`)
+- [x] **AC5.2:** Spec: ENV obrigatória ausente → raise
+- [x] **AC5.3:** Spec: ENV opcional ausente → apenas warning no logger
+- [x] **AC5.4:** Spec: todas ENVs presentes → boot OK
 
 ### AC6 — Documentação
-- [ ] **AC6.1:** `RAILWAY_DEPLOY.md` ou `OPERATIONS.md` documenta as ENVs obrigatórias e onde configurar
+- [x] **AC6.1:** `RAILWAY_DEPLOY.md` ou `OPERATIONS.md` documenta as ENVs obrigatórias e onde configurar
 
 ---
 
@@ -147,10 +147,10 @@ admin_password = ENV.fetch('ADMIN_PASSWORD')  # raise KeyError se ausente
 
 ## Testes
 
-- [ ] Initializer com production sem ENV → raise
-- [ ] Initializer com production com todas → boot OK
-- [ ] Initializer com dev → ignora (não lê yaml)
-- [ ] seeds com ADMIN_PASSWORD ausente em dev → KeyError (e dev deve setar via .env)
+- [x] Initializer com production sem ENV → raise
+- [x] Initializer com production com todas → boot OK
+- [x] Initializer com dev → ignora (não lê yaml)
+- [x] seeds com ADMIN_PASSWORD ausente em dev → KeyError (e dev deve setar via .env)
 
 ---
 
