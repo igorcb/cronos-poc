@@ -7,7 +7,7 @@
 domain: DM-004
 domain_name: Registro de Tempo
 domain_type: Core / Principal
-status: in-progress
+status: done
 progress: 100%  # 18 de 18 stories concluidas
 
 dependencies:

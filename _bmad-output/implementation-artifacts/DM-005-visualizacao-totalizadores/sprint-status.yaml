@@ -7,8 +7,8 @@
 domain: DM-005
 domain_name: Visualizacao & Totalizadores
 domain_type: Consumo / Apresentacao
-status: in-progress
-progress: 96%  # 22 de 23 stories concluidas
+status: done
+progress: 100%  # 23 de 23 stories concluidas
 
 dependencies:
   requires:
@@ -161,11 +161,10 @@ retrospective:
 
 summary:
   total_stories: 23
-  done: 22
+  done: 23
   in_progress: 0
   in_review: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   blockers: []
-  next_actions:
-    - Implementar story 023 — padronizar ícone Valor Mês em verde
+  next_actions: []

@@ -40,6 +40,20 @@ Rails.application.configure do
   # Change to "debug" to log everything (including potentially personally-identifiable information!).
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
+  # Lograge: colapsa cada request em uma linha JSON estruturada.
+  # Story 11.1 — DM-010 (AC1.2, AC1.3, AC3.2). Ativo apenas em produção
+  # (dev/test mantêm o log verboso do Rails para debugging — AC1.4).
+  config.lograge.enabled = true
+  config.lograge.formatter = Lograge::Formatters::Json.new
+  # Mescla dados customizados injetados por ApplicationController#append_info_to_payload.
+  config.lograge.custom_options = lambda do |event|
+    {
+      user_id: event.payload[:user_id],
+      request_id: event.payload[:request_id],
+      ip: event.payload[:ip]
+    }
+  end
+
   # Prevent health checks from clogging up the logs.
   config.silence_healthcheck_path = "/up"
 
