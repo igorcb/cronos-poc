@@ -1,6 +1,6 @@
 # Story 10.2: Padronizar Nomenclatura dos KPIs para "Tarefas do mês"
 
-**Status:** ready-for-dev
+**Status:** done
 **Domínio:** DM-010-consistencia-metricas
 **Data:** 2026-06-17
 **Epic:** Epic 10 — Consistência de Métricas e Nomenclatura
@@ -35,11 +35,11 @@ o valor já corrigido.
 
 ## Critérios de Aceite
 
-- [ ] **AC1:** Dashboard: rótulo "Tasks Mês" alterado para "Tarefas do mês"
-- [ ] **AC2:** Resumo Diário: rótulo "Cards no mês" alterado para "Tarefas do mês"
-- [ ] **AC3:** Nenhum outro KPI visível usa termos em inglês ou jargão técnico
-- [ ] **AC4:** Alteração cobre versão desktop e mobile (responsivo)
-- [ ] **AC5:** Specs de nomenclatura atualizadas para refletir os novos rótulos
+- [x] **AC1:** Dashboard: rótulo "Tasks Mês" alterado para "Tarefas do mês"
+- [x] **AC2:** Resumo Diário: rótulo "Cards no mês" alterado para "Tarefas do mês"
+- [x] **AC3:** Nenhum outro KPI visível usa termos em inglês ou jargão técnico ("Tasks Hoje" → "Tarefas hoje")
+- [x] **AC4:** Alteração cobre versão desktop e mobile (responsivo — só troca de texto, sem alteração de classes Tailwind)
+- [x] **AC5:** Specs de nomenclatura atualizadas para refletir os novos rótulos
 
 ---
 

@@ -7,8 +7,8 @@
 domain: DM-010
 domain_name: Consistência de Métricas e Nomenclatura
 domain_type: Correcao / Qualidade de Dados
-status: in_progress
-progress: 50%  # 1 de 2 stories concluidas
+status: done
+progress: 100%  # 2 de 2 stories concluidas
 
 dependencies:
   requires:
@@ -27,12 +27,13 @@ stories:
     estimate_sp: 3
 
   002-padronizar-nomenclatura-kpis-portugues:
-    status: ready_for_dev
+    status: done
     priority: medium
     description: Renomear "Tasks Mês" e "Cards no mês" para "Tarefas do mês" em todo o sistema
     notes: >
-      Depende da story 10.1 estar concluída.
-      Alterar rótulos em dashboard/index.html.erb e resumo_diario/index.html.erb (ou pt-BR.yml).
+      Implementado em 2026-07-07. Alterados _monthly_task_count.html.erb, _daily_task_count.html.erb (AC3 — "Tasks Hoje" → "Tarefas hoje")
+      e daily_summary/index.html.erb. Specs dashboard_kpis_spec.rb e dashboard_modal_nova_tarefa_spec.rb atualizados.
+      1134/1134 specs, 100% cobertura.
     epic: 10
     estimate_sp: 1
 
@@ -41,13 +42,11 @@ retrospective:
 
 summary:
   total_stories: 2
-  done: 1
+  done: 2
   in_progress: 0
-  ready_for_dev: 1
+  ready_for_dev: 0
   backlog: 0
   total_sp: 4
-  done_sp: 0
+  done_sp: 4
   blockers: []
-  next_actions:
-    - Implementar story 10.1 — corrigir query do ResumoDiarioController
-    - Implementar story 10.2 — renomear rótulos após 10.1 concluída
+  next_actions: []

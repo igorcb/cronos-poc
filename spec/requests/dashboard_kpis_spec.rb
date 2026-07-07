@@ -146,12 +146,12 @@ RSpec.describe "Dashboard KPIs", type: :request do
         expect(response.body).to include("Valor Mês")
       end
 
-      it "exibe o card Tasks Mês" do
-        expect(response.body).to include("Tasks Mês")
+      it "exibe o card Tarefas do mês" do
+        expect(response.body).to include("Tarefas do mês")
       end
 
-      it "exibe o card Tasks Hoje" do
-        expect(response.body).to include("Tasks Hoje")
+      it "exibe o card Tarefas hoje" do
+        expect(response.body).to include("Tarefas hoje")
       end
 
       it "exibe o card Valor Hoje" do
