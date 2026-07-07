@@ -14,6 +14,9 @@ module ValidateEnvs
   # Levanta RuntimeError listando TODAS as obrigatórias ausentes (não só a primeira).
   def call(env: Rails.env, config_path: CONFIG_PATH, logger: Rails.logger)
     return unless env.to_s == "production"
+    # Pular durante build-time (assets:precompile no Docker). ENVs de runtime
+    # não existem ainda; validação real acontece no boot do container.
+    return if ENV["DISABLE_DATABASE"] == "1" || ENV["SECRET_KEY_BASE_DUMMY"] == "1"
 
     config = (YAML.safe_load_file(config_path) || {})[env.to_s] || {}
 
