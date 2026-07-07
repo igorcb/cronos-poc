@@ -110,6 +110,31 @@ RSpec.describe ValidateEnvs do
         end
       end
 
+      context 'when DISABLE_DATABASE=1 (Docker build-time assets:precompile)' do
+        before do
+          allow(ENV).to receive(:[]).and_call_original
+          allow(ENV).to receive(:[]).with('DISABLE_DATABASE').and_return('1')
+        end
+
+        it 'skips validation entirely, does not read the config' do
+          expect(YAML).not_to receive(:load_file)
+          expect(described_class.call(env: 'production', config_path: config_path, logger: logger)).to be_nil
+        end
+      end
+
+      context 'when SECRET_KEY_BASE_DUMMY=1 (Rails default build-time flag)' do
+        before do
+          allow(ENV).to receive(:[]).and_call_original
+          allow(ENV).to receive(:[]).with('DISABLE_DATABASE').and_return(nil)
+          allow(ENV).to receive(:[]).with('SECRET_KEY_BASE_DUMMY').and_return('1')
+        end
+
+        it 'skips validation entirely, does not read the config' do
+          expect(YAML).not_to receive(:load_file)
+          expect(described_class.call(env: 'production', config_path: config_path, logger: logger)).to be_nil
+        end
+      end
+
       context 'and all ENVs (required and optional) are present' do
         before { stub_env(%w[FOO_REQUIRED BAR_REQUIRED BAZ_OPTIONAL]) }
 
