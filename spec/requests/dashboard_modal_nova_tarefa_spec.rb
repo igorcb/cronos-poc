@@ -219,12 +219,12 @@ RSpec.describe "Dashboard Modal Nova Tarefa", type: :request do
       expect(response.body).to include('id="dashboard_monthly_value"')
     end
 
-    it "Story5.10: exibe card Tasks Hoje com id turbo stream" do
+    it "Story5.10: exibe card Tarefas hoje com id turbo stream" do
       get root_path
       expect(response.body).to include('id="dashboard_daily_task_count"')
     end
 
-    it "Story5.10: exibe card Tasks Mês com id turbo stream" do
+    it "Story5.10: exibe card Tarefas do mês com id turbo stream" do
       get root_path
       expect(response.body).to include('id="dashboard_monthly_task_count"')
     end
