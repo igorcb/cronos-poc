@@ -43,6 +43,30 @@ RAILS_MAX_THREADS=5
 WEB_CONCURRENCY=2
 ```
 
+## Validação de ENVs no Boot (Story 10.3)
+
+Em **produção**, o app **se recusa a subir** se faltar qualquer ENV crítica.
+A validação roda no initializer `config/initializers/000_validate_envs.rb` e lê
+a declaração em `config/required_envs.yml`.
+
+### ENVs obrigatórias (ausência aborta o boot)
+| ENV | Motivo |
+|-----|--------|
+| `RAILS_MASTER_KEY` | Decrypt de `credentials.yml.enc` |
+| `DATABASE_URL` | Conexão com PostgreSQL |
+| `SECRET_KEY_BASE` | Assinatura de cookies/sessões |
+| `ADMIN_EMAIL` | Seed do usuário admin |
+| `ADMIN_PASSWORD` | Seed do usuário admin (sem default inseguro) |
+| `INITIAL_TENANT_EMAIL` | Migration de backfill multi-tenant (DM-008) |
+
+Se faltar qualquer uma, o boot falha com mensagem listando **todas** as ausentes.
+
+### ENVs opcionais (apenas warning no log)
+`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (login Google — degradação graciosa),
+`BACKUP_BUCKET` (backup automatizado — Story 10.2).
+
+> Para alterar a lista, edite `config/required_envs.yml`.
+
 ## Passos para Deploy
 
 ### 1. Login no Railway

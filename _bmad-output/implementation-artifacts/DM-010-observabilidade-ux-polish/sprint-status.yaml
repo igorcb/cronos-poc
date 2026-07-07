@@ -1,0 +1,65 @@
+# Sprint Status - DM-010: Observabilidade & UX Polish
+# Dominio: DM-010-observabilidade-ux-polish
+# Tipo: Transversal / Operacoes & Experiencia
+# Epic: Epic 11
+# Gerado: 2026-05-26
+
+domain: DM-010
+domain_name: Observabilidade & UX Polish
+domain_type: Transversal / Operacoes & Experiencia
+status: ready-for-dev
+progress: 0%  # 0 de 4 stories concluidas
+
+dependencies:
+  requires:
+    - DM-008  # Multi-tenancy em producao (base para tracking por user)
+    - DM-009  # Hardening (ENVs validadas no boot)
+
+stories:
+  001-logs-estruturados-lograge:
+    status: ready-for-dev
+    priority: medium
+    description: Lograge para logs JSON estruturados em producao com user_id/request_id
+    notes: Facilita filtro/agregacao no Railway dashboard
+    epic: 11
+    estimate_sp: 1
+
+  002-healthcheck-endpoint-customizado:
+    status: ready-for-dev
+    priority: medium
+    description: Healthcheck /up custom que verifica DB + queue + cache + migrations
+    notes: Substitui o /up padrao Rails que so checa se Puma esta vivo
+    epic: 11
+    estimate_sp: 1
+
+  003-analytics-de-produto:
+    status: ready-for-dev
+    priority: high
+    description: Plausible ou PostHog com 7 eventos customizados (signup, onboarding steps, task_delivered)
+    notes: Mede drop-off no onboarding e uso de features
+    epic: 11
+    estimate_sp: 2
+
+  004-acessibilidade-wcag-nivel-aa:
+    status: ready-for-dev
+    priority: medium
+    description: Auditoria axe + ajustes de contraste/focus/reflow para atingir WCAG nivel AA
+    notes: 5 telas principais; Lighthouse score >= 95
+    epic: 11
+    estimate_sp: 2
+
+retrospective:
+  status: pending
+
+summary:
+  total_stories: 4
+  done: 0
+  in_progress: 0
+  ready_for_dev: 4
+  backlog: 0
+  total_sp: 6
+  blockers: []
+  next_actions:
+    - Implementar story 11.3 primeiro (HIGH) - analytics dao base para validacao
+    - Implementar 11.1 e 11.2 em paralelo (MEDIUM) - logs e healthcheck
+    - Implementar 11.4 por ultimo (auditoria mais demorada)
