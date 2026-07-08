@@ -1,5 +1,10 @@
 # Deferred Work
 
+## Deferred from: code review de 004-factories-specs-completos (2026-07-08)
+
+- **MEDIUM — `belongs_to(:user)` testado só via `.macro`**: `spec/models/idle_period_spec.rb:4` verifica apenas `reflect_on_association(:user).macro == :belongs_to`, sem checar `optional: false` ou popular de fato a associação. Não é regressão desta story; reforçar com `build(:idle_period, user: nil)` inválido se a heurística de testes shoulda-matchers virar padrão obrigatório.
+- **MEDIUM — `include("modal")` viola heurística AC8**: `spec/controllers/idle_periods_controller_spec.rb:107` usa `expect(response.body).to include("modal")`, um texto curto sem contexto específico (heurística firmada em architecture.md §7). Pré-existente das Stories 13.2/13.3, não introduzido pela Story 13.4. Ajustar para asserção mais específica ao tocar esse arquivo novamente.
+
 ## Deferred from: code review de 002-criar-viewcomponent-para-timeentry-card (2026-03-28)
 
 - `Rails::Controller::Testing.install` como side-effect global em `spec/rails_helper.rb` — adicionado em Story 5.1, avaliar escopo ao implementar testes de controller futuros

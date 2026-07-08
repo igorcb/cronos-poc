@@ -1,6 +1,11 @@
 require "rails_helper"
 
 RSpec.describe IdlePeriod, type: :model do
+  it "belongs to user" do
+    association = described_class.reflect_on_association(:user)
+    expect(association.macro).to eq(:belongs_to)
+  end
+
   it "is valid with valid attributes" do
     idle_period = build(:idle_period)
     expect(idle_period).to be_valid
@@ -41,6 +46,12 @@ RSpec.describe IdlePeriod, type: :model do
   it "calculates hours for long_duration trait" do
     idle_period = create(:idle_period, :long_duration)
     expect(idle_period.hours).to eq(4.0)
+  end
+
+  it "rounds hours to 2 decimal places" do
+    # 09:00-09:01 = 60s = 0.01666...h, deve arredondar para 0.02 (não 0.0167)
+    idle_period = create(:idle_period, start_time: "09:00", end_time: "09:01")
+    expect(idle_period.hours).to eq(0.02)
   end
 
   it "does not allow changing user_id after create" do
