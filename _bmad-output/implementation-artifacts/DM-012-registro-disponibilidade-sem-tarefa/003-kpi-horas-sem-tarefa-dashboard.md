@@ -208,8 +208,8 @@ Specs completos são escopo da **Story 13.4**. Ao implementar, validar manualmen
 - [app/controllers/dashboard_controller.rb](/home/igor/rails_app/cronos-poc/app/controllers/dashboard_controller.rb) — onde adicionar os ivars
 
 **Previous Stories:**
-- [13-1-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-1-model-idleperiod-migration.md)
-- [13-2-idleperiodscontroller.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-2-idleperiodscontroller.md)
+- [001-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/001-model-idleperiod-migration.md)
+- [002-idleperiodscontroller.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/002-idleperiodscontroller.md)
 
 ### Definition of Done
 
