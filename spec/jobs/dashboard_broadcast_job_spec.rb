@@ -27,9 +27,21 @@ RSpec.describe DashboardBroadcastJob, type: :job do
     it "usa zeros como locals quando user_id é nil" do
       allow(Turbo::StreamsChannel).to receive(:broadcast_render_to) do |_, opts|
         expect(opts[:locals][:daily_hours]).to eq(0)
+        expect(opts[:locals][:daily_idle_hours]).to eq(0)
+        expect(opts[:locals][:monthly_idle_hours]).to eq(0)
         expect(opts[:locals][:tasks]).to eq(Task.none)
       end
       described_class.perform_now(nil)
+    end
+
+    it "inclui daily_idle_hours e monthly_idle_hours nos locals do broadcast (Story 13.3)" do
+      idle_today = create(:idle_period, user: user, work_date: Date.current, start_time: "09:00", end_time: "10:30")
+
+      allow(Turbo::StreamsChannel).to receive(:broadcast_render_to) do |_, opts|
+        expect(opts[:locals][:daily_idle_hours]).to eq(idle_today.hours)
+        expect(opts[:locals][:monthly_idle_hours]).to eq(idle_today.hours)
+      end
+      described_class.perform_now(user.id)
     end
 
     it "ignora user_id inexistente, sem raise (degradação suave)" do

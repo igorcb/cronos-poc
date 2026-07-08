@@ -1,4 +1,6 @@
 class IdlePeriodsController < ApplicationController
+  include DashboardCalculations
+
   before_action :require_authentication
   before_action :set_idle_period, only: [ :destroy ]
 
@@ -12,7 +14,11 @@ class IdlePeriodsController < ApplicationController
     if @idle_period.save
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.action(:remove, "modal")
+          render turbo_stream: [
+            turbo_stream.action(:remove, "modal"),
+            turbo_stream.replace("dashboard_daily_idle_hours", partial: "dashboard/daily_idle_hours", locals: { daily_idle_hours: calculate_daily_idle_hours }),
+            turbo_stream.replace("dashboard_monthly_idle_hours", partial: "dashboard/monthly_idle_hours", locals: { monthly_idle_hours: calculate_monthly_idle_hours })
+          ]
         end
         format.html { redirect_to root_path, notice: "Período sem tarefa registrado" }
       end
@@ -34,7 +40,11 @@ class IdlePeriodsController < ApplicationController
     if @idle_period.destroy
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.remove("idle_period_#{@idle_period.id}")
+          render turbo_stream: [
+            turbo_stream.remove("idle_period_#{@idle_period.id}"),
+            turbo_stream.replace("dashboard_daily_idle_hours", partial: "dashboard/daily_idle_hours", locals: { daily_idle_hours: calculate_daily_idle_hours }),
+            turbo_stream.replace("dashboard_monthly_idle_hours", partial: "dashboard/monthly_idle_hours", locals: { monthly_idle_hours: calculate_monthly_idle_hours })
+          ]
         end
         format.html { redirect_to root_path, notice: "Período sem tarefa removido" }
       end

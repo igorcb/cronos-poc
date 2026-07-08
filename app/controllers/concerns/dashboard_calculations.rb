@@ -64,6 +64,14 @@ module DashboardCalculations
     calculate_monthly_delivered_value / count
   end
 
+  def calculate_daily_idle_hours
+    scoped_idle_periods.where(work_date: Date.current).pluck(:hours).sum
+  end
+
+  def calculate_monthly_idle_hours
+    scoped_idle_periods.where(work_date: Date.current.all_month).pluck(:hours).sum
+  end
+
   private
 
   def monthly_delivered_task_ids

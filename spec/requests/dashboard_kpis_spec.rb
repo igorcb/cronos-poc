@@ -364,5 +364,51 @@ RSpec.describe "Dashboard KPIs", type: :request do
         end
       end
     end
+
+    # Story 13.3 — KPI "Horas sem tarefa" no Dashboard (DM-012)
+    describe "KPI Horas sem tarefa (Story 13.3)" do
+      context "sem IdlePeriods" do
+        before { get root_path }
+
+        it "AC3: @daily_idle_hours = 0 sem registros" do
+          expect(controller.instance_variable_get(:@daily_idle_hours)).to eq(0)
+        end
+
+        it "AC3: @monthly_idle_hours = 0 sem registros" do
+          expect(controller.instance_variable_get(:@monthly_idle_hours)).to eq(0)
+        end
+
+        it "AC1: exibe o card Horas sem tarefa (hoje)" do
+          expect(response.body).to include("Horas sem tarefa (hoje)")
+        end
+
+        it "AC2: exibe o card Horas sem tarefa (mês)" do
+          expect(response.body).to include("Horas sem tarefa (mês)")
+        end
+      end
+
+      context "com IdlePeriods no dia e no mês" do
+        let!(:idle_today_a) { create(:idle_period, user: user, work_date: Date.current, start_time: "09:00", end_time: "10:30") }
+        let!(:idle_today_b) { create(:idle_period, user: user, work_date: Date.current, start_time: "14:00", end_time: "15:00") }
+        let!(:idle_earlier_this_month) do
+          create(:idle_period, user: user, work_date: Date.current.beginning_of_month, start_time: "09:00", end_time: "10:00")
+        end
+        let!(:idle_other_month) do
+          create(:idle_period, user: user, work_date: Date.current.beginning_of_month - 1.month, start_time: "09:00", end_time: "10:00")
+        end
+        let!(:idle_other_user) { create(:idle_period, user: create(:user), work_date: Date.current, start_time: "09:00", end_time: "10:00") }
+
+        before { get root_path }
+
+        it "AC1: @daily_idle_hours soma somente os IdlePeriods do Current.user de hoje" do
+          expect(controller.instance_variable_get(:@daily_idle_hours)).to eq(idle_today_a.hours + idle_today_b.hours)
+        end
+
+        it "AC2: @monthly_idle_hours soma os IdlePeriods do Current.user do mês corrente" do
+          expected = idle_today_a.hours + idle_today_b.hours + idle_earlier_this_month.hours
+          expect(controller.instance_variable_get(:@monthly_idle_hours)).to eq(expected)
+        end
+      end
+    end
   end
 end

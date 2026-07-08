@@ -67,6 +67,17 @@ RSpec.describe IdlePeriodsController, type: :controller do
           expect(response.body).to include("action=\"remove\"")
           expect(response.body).to include("target=\"modal\"")
         end
+
+        # Story 13.3 — AC5/AC6: KPIs atualizados via Turbo Stream sem reload
+        it "atualiza o KPI dashboard_daily_idle_hours via turbo_stream" do
+          post :create, params: valid_params, format: :turbo_stream
+          expect(response.body).to include("target=\"dashboard_daily_idle_hours\"")
+        end
+
+        it "atualiza o KPI dashboard_monthly_idle_hours via turbo_stream" do
+          post :create, params: valid_params, format: :turbo_stream
+          expect(response.body).to include("target=\"dashboard_monthly_idle_hours\"")
+        end
       end
     end
 
@@ -125,6 +136,17 @@ RSpec.describe IdlePeriodsController, type: :controller do
         delete :destroy, params: { id: idle_period.id }, format: :turbo_stream
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
         expect(response.body).to include("action=\"remove\"")
+      end
+
+      # Story 13.3 — AC5/AC6: KPIs atualizados via Turbo Stream sem reload
+      it "atualiza o KPI dashboard_daily_idle_hours via turbo_stream" do
+        delete :destroy, params: { id: idle_period.id }, format: :turbo_stream
+        expect(response.body).to include("target=\"dashboard_daily_idle_hours\"")
+      end
+
+      it "atualiza o KPI dashboard_monthly_idle_hours via turbo_stream" do
+        delete :destroy, params: { id: idle_period.id }, format: :turbo_stream
+        expect(response.body).to include("target=\"dashboard_monthly_idle_hours\"")
       end
     end
 
