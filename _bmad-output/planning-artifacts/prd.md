@@ -134,6 +134,7 @@ Profissionais que atuam para várias empresas e projetos:
 | Onboarding funcional ponta-a-ponta | Login → 3 steps → dashboard | ✅ Validado |
 | Deploy em produção | URL pública acessível | ✅ Railway |
 | Tempo médio até primeira Task (novo user) | < 5 min | Não medido (sem analytics) |
+| Evidência de horas sem tarefa disponível no mês (DM-012) | KPI visível por período | Planejado (Epic 13) |
 
 ---
 
@@ -168,6 +169,15 @@ Profissionais que atuam para várias empresas e projetos:
 - Convidar 3-5 usuários piloto
 - Medir uso real, deixar próximas features emergirem do uso
 
+### Epic 13 — Disponibilidade sem tarefa (DM-012)
+Contexto: Igor trabalha sob contrato com carga mínima de 190h/mês e máxima de 300h/mês, mas nem sempre há tarefa disponível para preencher a disponibilidade contratual. Sem um registro formal, o sistema não distingue entre indisponibilidade e ausência de demanda quando as 190h não são atingidas.
+
+- Novo tipo de registro "Sem Tarefa" (separado de Task/TaskItem), com marcação manual de início e fim
+- Registro **não soma** no total de horas trabalhadas (não conta para 190h/300h)
+- Novo KPI no dashboard: total de horas "Sem Tarefa" no período filtrado (dia/mês)
+- Escopo apenas web — sem alterações no app mobile
+- Ver detalhamento: `_bmad-output/planning-artifacts/DM-012-registro-disponibilidade-sem-tarefa/product-brief.md`
+
 ---
 
 ## 10. Histórico de versões
@@ -178,4 +188,5 @@ Profissionais que atuam para várias empresas e projetos:
 | 1.1 | 2026-04-21 | Adição da lista de tarefas no dashboard |
 | 1.2 | 2026-05-07 | Persistência de hourly_rate/value (snapshots) |
 | 1.3 | 2026-05-15 | Epic 9 (Multi-tenancy + OAuth) planejado |
-| **2.0** | **2026-05-26** | **PRD final — projeto entregue, 9 epics, 74 stories, em produção** |
+| 2.0 | 2026-05-26 | PRD final — projeto entregue, 9 epics, 74 stories, em produção |
+| **2.1** | **2026-07-08** | **Adição do Epic 13 (DM-012) — registro de disponibilidade sem tarefa** |
