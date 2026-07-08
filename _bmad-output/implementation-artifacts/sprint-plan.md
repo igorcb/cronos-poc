@@ -161,7 +161,13 @@ Todos com stories documentadas em `_bmad-output/implementation-artifacts/DM-XXX/
 - 12.2 — Entrevistas 30min + form quantitativo após 7-14 dias (HIGH, 1 SP)
 - 12.3 — Síntese, categorização e decisão do próximo Epic 13 (HIGH, 1 SP)
 
-**Total planejado: 13.5 SP** distribuídos em 11 stories através de 3 sprints.
+### Sprint 13 — Disponibilidade sem Tarefa (DM-012, 7 SP)
+- 13.1 — Model `IdlePeriod` + migration (user_id, start_time, end_time, hours calc) (MEDIUM, 1 SP)
+- 13.2 — `IdlePeriodsController` (new modal, create, destroy) — padrão TaskItemsController (MEDIUM, 2 SP)
+- 13.3 — KPI "Horas sem tarefa" no dashboard (dia/mês) + Turbo Stream via DashboardBroadcastJob (MEDIUM, 2 SP)
+- 13.4 — Factories + specs completos (model, controller, request, dashboard KPI) (MEDIUM, 2 SP)
+
+**Total planejado: 20.5 SP** distribuídos em 15 stories através de 4 sprints.
 
 ---
 

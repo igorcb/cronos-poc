@@ -117,3 +117,11 @@ development_status:
   9-2-multi-tenancy-isolamento-por-usuario: done  # Implementado 2026-05-25, QA round 2 (22 findings aplicados), Playwright multi-tenant OK, 1030 specs / 100%
   9-3-onboarding-primeiro-acesso: done  # Implementado 2026-05-26, QA round 1 (18 findings aplicados), Playwright fluxo completo OK, 1120 specs / 100%
   epic-9-retrospective: pending
+
+  # Epic 13: Disponibilidade sem Tarefa (DM-012)
+  epic-13: backlog
+  13-1-model-idleperiod-migration: backlog
+  13-2-idleperiodscontroller: backlog
+  13-3-kpi-horas-sem-tarefa-dashboard: backlog
+  13-4-factories-specs-completos: backlog
+  epic-13-retrospective: optional

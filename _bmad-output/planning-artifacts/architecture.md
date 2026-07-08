@@ -63,6 +63,7 @@ User (1) ──── (N) Company ──── (N) Project ──── (N) Task
 | **Project** | name, company_id, **user_id** | Valida que company pertence ao user (cascata) |
 | **Task** | code, name, estimated_hours, validated_hours, status, start_date, end_date, delivery_date, hourly_rate (snapshot), delivered_value (snapshot), notes, company_id, project_id, **user_id** | Status automático por callback |
 | **TaskItem** | start_time, end_time, work_date, hours_worked (calc), hourly_rate (snapshot), value (snapshot), task_id, **user_id** | Callback before_save calcula hours_worked e value |
+| **IdlePeriod** *(Epic 13 / DM-012)* | start_time, end_time, hours (calc), **user_id** | Registro manual de disponibilidade sem tarefa; não vinculado a Company/Project/Task; **não soma** no total de horas trabalhadas |
 | **Current** | `CurrentAttributes` com `user`, `session` | Multi-tenant context global por request |
 | **OnboardingState** | PORO derivado de counts | step_1/step_2/step_3/completed |
 
@@ -105,6 +106,7 @@ Acesso cross-tenant retorna **404** (não 403) — não vaza existência de IDs.
 | **TasksController** | index, new, create, edit, update, destroy, deliver, reopen, reopen_modal |
 | **TaskItemsController** | new (modal), create, update, destroy (todos turbo_stream) |
 | **DailySummaryController** | index (com filtro de mês) |
+| **IdlePeriodsController** *(Epic 13 / DM-012)* | new (modal), create, destroy (turbo_stream) — mesmo padrão de `TaskItemsController` |
 | **ProfilesController** | show, edit, update (alteração de senha) |
 | **DashboardEventsController** | events (SSE legacy, filtrado de coverage) |
 | **DashboardBroadcastJob** | Job que dispara broadcast pelo stream assinado por user |
@@ -155,6 +157,9 @@ Todos herdam `ApplicationController` que inclui `Authentication` (require_authen
 | DA-035 | Modal de exclusão de TaskItem com confirm + recalc validated_hours | Story 5.18 |
 | DA-042 | Turbo Stream HTTP > ActionCable para TaskItem | Estabilidade + simplicidade |
 | DA-099 | OnboardingState como PORO derivado | Sem coluna no User; counts são fonte da verdade |
+| DA-100 | `IdlePeriod` como model separado de Task/TaskItem (Epic 13 / DM-012) | Evita contaminar lógica de status/snapshot/delivered de Task; horas não somam no total trabalhado por design |
+| DA-101 | KPI de horas "Sem Tarefa" calculado no `DashboardController`, broadcast via `DashboardBroadcastJob` existente | Reaproveita pipeline de Turbo Stream por user já validado; sem novo canal |
+| DA-102 | Sem validação de overlap entre `IdlePeriod` e `Task`/`TaskItem` no MVP | Simplicidade; reavaliar se uso real revelar necessidade |
 
 ---
 

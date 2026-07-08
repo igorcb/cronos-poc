@@ -5,8 +5,8 @@ project_name: 'cronos-poc'
 user_name: 'Igor'
 date: '2026-05-26'
 status: 'shipped'
-totalEpics: 9
-totalStories: 74
+totalEpics: 13
+totalStories: 78
 inputDocuments: ['prd.md', 'architecture.md', 'domain-index.md']
 ---
 
@@ -32,7 +32,8 @@ inputDocuments: ['prd.md', 'architecture.md', 'domain-index.md']
 | 10 | Hardening de Produção | DM-009 | 4 | 🔵 ready-for-dev |
 | 11 | Observabilidade & UX Polish | DM-010 | 4 | 🔵 ready-for-dev |
 | 12 | Validação com Usuários Reais | DM-011 | 3 | 🔵 ready-for-dev |
-| **TOTAL** | | | **85** | **74 done + 11 planejadas** |
+| 13 | Disponibilidade sem Tarefa | DM-012 | 4 | 🔵 ready-for-dev |
+| **TOTAL** | | | **89** | **74 done + 15 planejadas** |
 
 ---
 
@@ -162,6 +163,15 @@ inputDocuments: ['prd.md', 'architecture.md', 'domain-index.md']
 - 12.3 Síntese e priorização do próximo Epic baseada em uso real (HIGH, 1 SP)
 
 **Total: 3 SP** | Foco: discovery — sair do desenvolvimento solo, extrair sinal real
+
+## Epic 13 — Disponibilidade sem Tarefa (DM-012) 🔵 planejado
+
+- 13.1 Model `IdlePeriod` + migration (user_id, start_time, end_time, hours calc) (MEDIUM, 1 SP)
+- 13.2 `IdlePeriodsController` (new modal, create, destroy) — padrão TaskItemsController (MEDIUM, 2 SP)
+- 13.3 KPI "Horas sem tarefa" no dashboard (dia/mês) + Turbo Stream via DashboardBroadcastJob (MEDIUM, 2 SP)
+- 13.4 Factories + specs completos (model, controller, request, dashboard KPI) (MEDIUM, 2 SP)
+
+**Total: 7 SP** | Foco: evidenciar disponibilidade sem tarefa para justificativa de horas contratuais (mín. 190h/mês)
 
 ---
 
