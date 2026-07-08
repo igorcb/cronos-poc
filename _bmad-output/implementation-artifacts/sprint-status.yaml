@@ -118,6 +118,29 @@ development_status:
   9-3-onboarding-primeiro-acesso: done  # Implementado 2026-05-26, QA round 1 (18 findings aplicados), Playwright fluxo completo OK, 1120 specs / 100%
   epic-9-retrospective: pending
 
+  # Epic 10: Hardening de Produção (DM-009)
+  epic-10: in-progress  # 2/4 stories done (10.1, 10.3); 10.2 (backup) e 10.4 (Kamal) ainda backlog
+  10-1-rotacionar-master-key-e-revogar-credentials-antigos: done  # commit a7cc3c1
+  10-2-backup-postgresql-automatizado: backlog  # commit 0f60542/cbefa86 usa rótulo "Story 10.2" mas implementa padronização de KPIs (não bate com escopo real desta story) — backup PostgreSQL nunca foi implementado
+  10-3-hook-de-verificacao-de-envs-no-boot: done  # commit 4811415
+  10-4-limpar-ou-documentar-arquivos-kamal-abandonados: backlog
+  epic-10-retrospective: optional
+
+  # Epic 11: Observabilidade & UX Polish (DM-010)
+  epic-11: in-progress
+  11-1-logs-estruturados-com-lograge: done  # commit 42f6ec5/bb9ea49
+  11-2-healthcheck-endpoint-up-customizado: backlog
+  11-3-analytics-de-produto: backlog
+  11-4-acessibilidade-wcag-nivel-aa-completa: backlog
+  epic-11-retrospective: optional
+
+  # Epic 12: Validação com Usuários Reais (DM-011)
+  epic-12: backlog
+  12-1-recrutar-usuarios-piloto-e-onboarding-pessoal: backlog
+  12-2-coletar-feedback-estruturado: backlog
+  12-3-sintese-e-priorizacao-do-proximo-epic: backlog
+  epic-12-retrospective: optional
+
   # Epic 13: Disponibilidade sem Tarefa (DM-012)
   epic-13: in-progress
   13-1-model-idleperiod-migration: ready-for-dev
