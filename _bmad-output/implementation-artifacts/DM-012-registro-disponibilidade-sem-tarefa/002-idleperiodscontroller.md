@@ -199,7 +199,7 @@ O padrão do projeto é 404 sempre (não vazar existência de IDs) — `find` co
 - [app/controllers/concerns/tenant_scoped.rb](/home/igor/rails_app/cronos-poc/app/controllers/concerns/tenant_scoped.rb) — padrão `scoped_*`
 
 **Previous Story:**
-- [13-1-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-1-model-idleperiod-migration.md)
+- [001-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/001-model-idleperiod-migration.md)
 
 ### Definition of Done
 

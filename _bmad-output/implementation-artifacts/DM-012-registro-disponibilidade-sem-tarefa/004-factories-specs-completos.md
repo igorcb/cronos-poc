@@ -208,9 +208,9 @@ Verificar `spec/support/` para helpers de login/autenticação já usados em `ta
 - `spec/factories/task_items.rb` — padrão de factory com traits
 
 **Previous Stories:**
-- [13-1-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-1-model-idleperiod-migration.md)
-- [13-2-idleperiodscontroller.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-2-idleperiodscontroller.md)
-- [13-3-kpi-horas-sem-tarefa-dashboard.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-3-kpi-horas-sem-tarefa-dashboard.md)
+- [001-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/001-model-idleperiod-migration.md)
+- [002-idleperiodscontroller.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/002-idleperiodscontroller.md)
+- [003-kpi-horas-sem-tarefa-dashboard.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/003-kpi-horas-sem-tarefa-dashboard.md)
 
 ### Definition of Done
 
