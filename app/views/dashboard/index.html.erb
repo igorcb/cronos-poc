@@ -50,6 +50,13 @@
             </svg>
           </div>
         <% end %>
+        <%= link_to new_idle_period_path, data: { turbo_frame: "modal" }, aria: { label: "Registrar período sem tarefa" } do %>
+          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
+            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        <% end %>
       </div>
       <turbo-frame class="flex items-center px-4 py-3 bg-blue-900 rounded-lg">
         <%= render "dashboard/avg_per_delivery_inline", avg_per_delivery: @monthly_avg_per_delivery %>
