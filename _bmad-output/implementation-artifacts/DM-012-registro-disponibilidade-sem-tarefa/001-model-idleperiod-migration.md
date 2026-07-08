@@ -1,6 +1,6 @@
 # Story 13.1: Model IdlePeriod + Migration
 
-Status: ready-for-dev
+Status: review
 
 <!-- Ultimate context engine analysis completed - comprehensive developer guide created -->
 
@@ -44,38 +44,38 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Criar migration `CreateIdlePeriods`
-  - [ ] Usar `create_table :idle_periods, if_not_exists: true`
-  - [ ] Adicionar coluna `user_id` (`t.references :user, null: false, foreign_key: true, if_not_exists: true`)
-  - [ ] Adicionar coluna `start_time` (`t.time`, `null: false`)
-  - [ ] Adicionar coluna `end_time` (`t.time`, `null: false`)
-  - [ ] Adicionar coluna `work_date` (`t.date`, `null: false`)
-  - [ ] Adicionar coluna `hours` (`t.decimal`, `precision: 10, scale: 2`, `null: false`)
-  - [ ] Adicionar timestamps
-  - [ ] Criar índice em `user_id` com `if_not_exists: true`
-  - [ ] Criar índice composto `[user_id, work_date]` com `if_not_exists: true`
-  - [ ] Executar `rails db:migrate`
+- [x] Criar migration `CreateIdlePeriods`
+  - [x] Usar `create_table :idle_periods, if_not_exists: true`
+  - [x] Adicionar coluna `user_id` (`t.references :user, null: false, foreign_key: true, if_not_exists: true`)
+  - [x] Adicionar coluna `start_time` (`t.time`, `null: false`)
+  - [x] Adicionar coluna `end_time` (`t.time`, `null: false`)
+  - [x] Adicionar coluna `work_date` (`t.date`, `null: false`)
+  - [x] Adicionar coluna `hours` (`t.decimal`, `precision: 10, scale: 2`, `null: false`)
+  - [x] Adicionar timestamps
+  - [x] Criar índice em `user_id` com `if_not_exists: true`
+  - [x] Criar índice composto `[user_id, work_date]` com `if_not_exists: true`
+  - [x] Executar `rails db:migrate`
 
-- [ ] Criar model `IdlePeriod` (`app/models/idle_period.rb`)
-  - [ ] Adicionar `belongs_to :user`
-  - [ ] Adicionar `attr_readonly :user_id`
-  - [ ] Adicionar `validates :start_time, presence: true`
-  - [ ] Adicionar `validates :end_time, presence: true`
-  - [ ] Adicionar `validates :work_date, presence: true`
-  - [ ] Adicionar validação customizada `end_time_after_start_time`
-  - [ ] Adicionar callback `before_save :calculate_hours`
-  - [ ] Adicionar scopes: `scope :by_user_and_month, ->(user, date) { where(user:, work_date: date.all_month) }`
+- [x] Criar model `IdlePeriod` (`app/models/idle_period.rb`)
+  - [x] Adicionar `belongs_to :user`
+  - [x] Adicionar `attr_readonly :user_id`
+  - [x] Adicionar `validates :start_time, presence: true`
+  - [x] Adicionar `validates :end_time, presence: true`
+  - [x] Adicionar `validates :work_date, presence: true`
+  - [x] Adicionar validação customizada `end_time_after_start_time`
+  - [x] Adicionar callback `before_save :calculate_hours`
+  - [x] Adicionar scopes: `scope :by_user_and_month, ->(user, date) { where(user:, work_date: date.all_month) }`
 
-- [ ] Adicionar associação em `User`
-  - [ ] `has_many :idle_periods, dependent: :destroy` em `app/models/user.rb`
+- [x] Adicionar associação em `User`
+  - [x] `has_many :idle_periods, dependent: :destroy` em `app/models/user.rb`
 
-- [ ] Criar factory (`spec/factories/idle_periods.rb`)
-  - [ ] Trait padrão: `start_time '09:00'`, `end_time '11:00'`, `work_date Date.current`
-  - [ ] Trait `:long_duration` (ex: manhã inteira, 4h)
+- [x] Criar factory (`spec/factories/idle_periods.rb`)
+  - [x] Trait padrão: `start_time '09:00'`, `end_time '11:00'`, `work_date Date.current`
+  - [x] Trait `:long_duration` (ex: manhã inteira, 4h)
 
-- [ ] Testar migration
-  - [ ] Executar `rails db:migrate`
-  - [ ] Verificar se tabela e índices foram criados
+- [x] Testar migration
+  - [x] Executar `rails db:migrate`
+  - [x] Verificar se tabela e índices foram criados
 
 ## Dev Notes
 
@@ -232,26 +232,53 @@ Esse validator (`app/validators/belongs_to_current_user_validator.rb`) serve par
 
 ### Definition of Done
 
-- [ ] Migration executada sem erros
-- [ ] Model `IdlePeriod` criado com validações, callback de cálculo de horas e `attr_readonly :user_id`
-- [ ] Associação `belongs_to :user` funcionando
-- [ ] Associação `has_many :idle_periods` adicionada em `User`
-- [ ] Validação `end_time_after_start_time` testada manualmente (specs formais ficam para Story 13.4)
-- [ ] Callback `calculate_hours` calculando corretamente
-- [ ] Factory criada com trait `:long_duration`
-- [ ] Rubocop sem ofensas
-- [ ] Nenhuma alteração em `Task`/`TaskItem`/cálculos de horas trabalhadas existentes
+- [x] Migration executada sem erros
+- [x] Model `IdlePeriod` criado com validações, callback de cálculo de horas e `attr_readonly :user_id`
+- [x] Associação `belongs_to :user` funcionando
+- [x] Associação `has_many :idle_periods` adicionada em `User`
+- [x] Validação `end_time_after_start_time` testada manualmente (specs formais ficam para Story 13.4)
+- [x] Callback `calculate_hours` calculando corretamente
+- [x] Factory criada com trait `:long_duration`
+- [x] Rubocop sem ofensas
+- [x] Nenhuma alteração em `Task`/`TaskItem`/cálculos de horas trabalhadas existentes
 
 ## Dev Agent Record
 
 ### Agent Model Used
-_A preencher pelo dev agent na implementação._
+Claude Sonnet 5 (Amelia — bmad-agent-dev)
 
 ### Debug Log References
-_A preencher pelo dev agent na implementação._
+- `docker exec -e RAILS_ENV=development cronos-poc-web-1 bin/rails db:migrate` — migration aplicada sem erros (dev)
+- `docker exec -e RAILS_ENV=test cronos-poc-web-1 bin/rails db:migrate` — migration aplicada sem erros (test)
+- `docker exec -e RAILS_ENV=test cronos-poc-web-1 bundle exec rspec` — 1147 examples, 0 failures, 100% line coverage (826/826)
+- `docker exec cronos-poc-web-1 bundle exec rubocop <arquivos alterados>` — 5 files inspected, no offenses detected
 
 ### Completion Notes List
-_A preencher pelo dev agent na implementação._
+- Migration `CreateIdlePeriods` criada seguindo padrão `if_not_exists: true` em `create_table`, `t.references` e `add_index` (AC 1-9).
+- Model `IdlePeriod` criado como entidade independente — sem associação com `Task`/`Company`/`Project`, sem overlap check, sem contribuir para `validated_hours`/`hourly_rate`/`delivered_value` (AC 15-16, DA-100/DA-102).
+- `attr_readonly :user_id` aplicado (padrão TaskItem/story 9.2 QA #5). Não foi usado `belongs_to_current_user` — não se aplica, pois `user_id` é a própria FK de tenant (Dev Notes item 6).
+- Callback `calculate_hours` replica exatamente a fórmula de `TaskItem.calculate_hours_worked` (segundos / 3600.0, round 2).
+- Validação `end_time_after_start_time` implementada (sem tratamento de virada de meia-noite, diferente de TaskItem — não especificado nesta story).
+- Scope `by_user_and_month` adicionado conforme Dev Notes.
+- Associação `has_many :idle_periods, dependent: :destroy` adicionada em `User`.
+- Factory `idle_periods` criada com trait `:long_duration` (4h, 08:00-12:00).
+- Spec `spec/models/idle_period_spec.rb` criado como pré-requisito de cobertura SimpleCov (100% enforced) — cobertura completa formal (edge cases, request/controller specs) é escopo da Story 13.4, conforme Dev Notes "Testing Requirements".
+- Suite completa (1147 exemplos) e Rubocop 100% verdes; nenhuma alteração em `Task`/`TaskItem`/cálculos existentes.
+
+### QA Code Review (bmad-code-review via rails-code-reviewer)
+- 0 CRITICAL, 0 HIGH, 2 MEDIUM, 2 LOW — todos aplicados:
+  - [MEDIUM] Comentário adicionado em `calculate_hours` documentando dependência implícita das validações de presence (coluna `hours` é NOT NULL).
+  - [MEDIUM] Teste adicionado para `end_time == start_time` (caso de igualdade não coberto).
+  - [LOW] Teste adicionado para isolamento multi-tenant em `.by_user_and_month` (idle period de outro user não deve aparecer).
+  - [LOW] Anotado como observação não bloqueante (sem ação): borda de mês em `by_user_and_month` coberta implicitamente por `Date#all_month` do Rails.
+- Findings registrados em memória: `~/.claude/projects/-home-igor-rails-app-cronos-poc/memory/feedback_qa_13_1_idle_period_model.md`
+- Suite após correções: 1149 exemplos, 0 falhas, 100% cobertura (826/826).
 
 ### File List
-_A preencher pelo dev agent na implementação._
+- `db/migrate/20260708112412_create_idle_periods.rb` (novo)
+- `db/schema.rb` (atualizado — versão 2026_07_08_112412)
+- `db/cable_schema.rb` (atualizado — versão 2026_07_08_112412)
+- `app/models/idle_period.rb` (novo)
+- `app/models/user.rb` (modificado — `has_many :idle_periods`)
+- `spec/factories/idle_periods.rb` (novo)
+- `spec/models/idle_period_spec.rb` (novo)

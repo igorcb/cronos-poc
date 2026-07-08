@@ -143,7 +143,7 @@ development_status:
 
   # Epic 13: Disponibilidade sem Tarefa (DM-012)
   epic-13: in-progress
-  13-1-model-idleperiod-migration: ready-for-dev
+  13-1-model-idleperiod-migration: done  # model IdlePeriod + migration, PR em 2026-07-08
   13-2-idleperiodscontroller: ready-for-dev
   13-3-kpi-horas-sem-tarefa-dashboard: ready-for-dev
   13-4-factories-specs-completos: ready-for-dev
