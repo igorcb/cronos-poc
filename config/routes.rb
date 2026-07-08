@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
     resources :task_items, only: [ :new, :create, :update, :destroy ]
   end
+  resources :idle_periods, only: [ :new, :create, :destroy ]
   resources :projects, only: [ :index, :new, :create, :edit, :update, :destroy ] do
     collection do
       get :projects, to: "projects#projects_json", defaults: { format: :json }
