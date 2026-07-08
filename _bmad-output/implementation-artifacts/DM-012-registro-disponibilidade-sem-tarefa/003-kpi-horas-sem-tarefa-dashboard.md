@@ -1,6 +1,6 @@
 # Story 13.3: KPI "Horas sem tarefa" no Dashboard
 
-Status: ready-for-dev
+Status: done
 
 <!-- Ultimate context engine analysis completed - comprehensive developer guide created -->
 
@@ -42,29 +42,29 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Adicionar métodos de cálculo em `DashboardCalculations` concern
-  - [ ] `calculate_daily_idle_hours` — soma `hours` de `IdlePeriod`s do `Current.user` com `work_date: Date.current`
-  - [ ] `calculate_monthly_idle_hours` — soma `hours` de `IdlePeriod`s do `Current.user` com `work_date: Date.current.all_month`
-  - [ ] Usar `.pluck(:hours).sum` (Ruby), não `.sum("hours")` (SQL), por consistência com heurística do projeto
+- [x] Adicionar métodos de cálculo em `DashboardCalculations` concern
+  - [x] `calculate_daily_idle_hours` — soma `hours` de `IdlePeriod`s do `Current.user` com `work_date: Date.current`
+  - [x] `calculate_monthly_idle_hours` — soma `hours` de `IdlePeriod`s do `Current.user` com `work_date: Date.current.all_month`
+  - [x] Usar `.pluck(:hours).sum` (Ruby), não `.sum("hours")` (SQL), por consistência com heurística do projeto
 
-- [ ] Adicionar `scoped_idle_periods` em `TenantScoped` concern
-  - [ ] `def scoped_idle_periods; Current.user.idle_periods; end`
+- [x] Adicionar `scoped_idle_periods` em `TenantScoped` concern
+  - [x] `def scoped_idle_periods; Current.user.idle_periods; end`
 
-- [ ] Atualizar `DashboardController#index`
-  - [ ] `@daily_idle_hours = calculate_daily_idle_hours`
-  - [ ] `@monthly_idle_hours = calculate_monthly_idle_hours`
+- [x] Atualizar `DashboardController#index`
+  - [x] `@daily_idle_hours = calculate_daily_idle_hours`
+  - [x] `@monthly_idle_hours = calculate_monthly_idle_hours`
 
-- [ ] Criar partials de KPI
-  - [ ] `app/views/dashboard/_daily_idle_hours.html.erb`
-  - [ ] `app/views/dashboard/_monthly_idle_hours.html.erb`
-  - [ ] Adicionar os dois cards na grid de KPIs do dashboard (`app/views/dashboard/index.html.erb`)
+- [x] Criar partials de KPI
+  - [x] `app/views/dashboard/_daily_idle_hours.html.erb`
+  - [x] `app/views/dashboard/_monthly_idle_hours.html.erb`
+  - [x] Adicionar os dois cards na grid de KPIs do dashboard (`app/views/dashboard/index.html.erb`)
 
-- [ ] Atualizar `DashboardBroadcastJob`
-  - [ ] Adicionar `daily_idle_hours` e `monthly_idle_hours` em `build_locals` e `zero_locals`
-  - [ ] Adicionar os `turbo_stream.replace` correspondentes no partial de broadcast (`dashboard/broadcast_streams`)
+- [x] Atualizar `DashboardBroadcastJob`
+  - [x] Adicionar `daily_idle_hours` e `monthly_idle_hours` em `build_locals` e `zero_locals`
+  - [x] Adicionar os `turbo_stream.replace` correspondentes no partial de broadcast (`dashboard/broadcast_streams`)
 
-- [ ] Conectar `IdlePeriodsController` (Story 13.2) ao broadcast
-  - [ ] `create`/`destroy` devem enfileirar `DashboardBroadcastJob.perform_later(Current.user.id)` (mesmo padrão de `TaskItemsController`) OU retornar os `turbo_stream.replace` inline dos dois KPIs, consistente com o padrão síncrono já usado em `TaskItemsController#create`
+- [x] Conectar `IdlePeriodsController` (Story 13.2) ao broadcast
+  - [x] `create`/`destroy` retornam os `turbo_stream.replace` inline dos dois KPIs, consistente com o padrão síncrono já usado em `TaskItemsController#create`
 
 ## Dev Notes
 
@@ -208,29 +208,49 @@ Specs completos são escopo da **Story 13.4**. Ao implementar, validar manualmen
 - [app/controllers/dashboard_controller.rb](/home/igor/rails_app/cronos-poc/app/controllers/dashboard_controller.rb) — onde adicionar os ivars
 
 **Previous Stories:**
-- [13-1-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-1-model-idleperiod-migration.md)
-- [13-2-idleperiodscontroller.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-2-idleperiodscontroller.md)
+- [001-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/001-model-idleperiod-migration.md)
+- [002-idleperiodscontroller.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/002-idleperiodscontroller.md)
 
 ### Definition of Done
 
-- [ ] `calculate_daily_idle_hours` e `calculate_monthly_idle_hours` implementados em `DashboardCalculations`
-- [ ] `scoped_idle_periods` adicionado em `TenantScoped`
-- [ ] Dashboard exibe os 2 novos KPIs corretamente (0 quando vazio)
-- [ ] `DashboardBroadcastJob` inclui os novos locals (build_locals e zero_locals)
-- [ ] Criar/remover `IdlePeriod` atualiza os KPIs via Turbo Stream sem reload
-- [ ] Nenhum KPI existente de horas trabalhadas foi alterado
-- [ ] Rubocop sem ofensas
+- [x] `calculate_daily_idle_hours` e `calculate_monthly_idle_hours` implementados em `DashboardCalculations`
+- [x] `scoped_idle_periods` adicionado em `TenantScoped`
+- [x] Dashboard exibe os 2 novos KPIs corretamente (0 quando vazio)
+- [x] `DashboardBroadcastJob` inclui os novos locals (build_locals e zero_locals)
+- [x] Criar/remover `IdlePeriod` atualiza os KPIs via Turbo Stream sem reload
+- [x] Nenhum KPI existente de horas trabalhadas foi alterado
+- [x] Rubocop sem ofensas
 
 ## Dev Agent Record
 
 ### Agent Model Used
-_A preencher pelo dev agent na implementação._
+Claude Sonnet 5 (Amelia — bmad-agent-dev)
 
 ### Debug Log References
-_A preencher pelo dev agent na implementação._
+Nenhum log de debug necessário — implementação direta seguindo Dev Notes da própria story.
 
 ### Completion Notes List
-_A preencher pelo dev agent na implementação._
+- Implementados `calculate_daily_idle_hours` e `calculate_monthly_idle_hours` em `DashboardCalculations`, usando `pluck(:hours).sum` (heurística do projeto, AC4).
+- Adicionado `scoped_idle_periods` em `TenantScoped`, seguindo o mesmo padrão de `scoped_task_items`.
+- `DashboardController#index` agora atribui `@daily_idle_hours` e `@monthly_idle_hours`.
+- Criados os partials `_daily_idle_hours.html.erb` e `_monthly_idle_hours.html.erb` (mesmo estilo visual dos KPIs existentes) e adicionados na grid de `dashboard/index.html.erb`.
+- `DashboardBroadcastJob#build_locals`/`#zero_locals` incluem os 2 novos locals; `_broadcast_streams.turbo_stream.erb` ganhou os 2 `turbo_stream.replace` correspondentes.
+- `IdlePeriodsController#create`/`#destroy` agora incluem `DashboardCalculations` e retornam os `turbo_stream.replace` inline dos 2 KPIs junto com a ação de fechar modal/remover item — resolve a nota deixada em aberto na Story 13.2, sem criar canal novo (DA-101 respeitado).
+- Nenhum cálculo de horas trabalhadas/entregues foi alterado (AC8) — apenas adições.
+- Specs adicionados: `dashboard_kpis_spec.rb` (AC1-3, renderização dos cards), `dashboard_broadcast_job_spec.rb` (locals novos), `idle_periods_controller_spec.rb` (turbo_stream replace dos 2 KPIs em create/destroy), `tenant_scoped_spec.rb` (scoped_idle_periods).
+- Suite completa: 1182 exemplos, 0 falhas, 100% cobertura (SimpleCov). Rubocop sem ofensas nos arquivos alterados.
 
 ### File List
-_A preencher pelo dev agent na implementação._
+- app/controllers/concerns/dashboard_calculations.rb (editado)
+- app/controllers/concerns/tenant_scoped.rb (editado)
+- app/controllers/dashboard_controller.rb (editado)
+- app/jobs/dashboard_broadcast_job.rb (editado)
+- app/controllers/idle_periods_controller.rb (editado)
+- app/views/dashboard/_daily_idle_hours.html.erb (novo)
+- app/views/dashboard/_monthly_idle_hours.html.erb (novo)
+- app/views/dashboard/index.html.erb (editado)
+- app/views/dashboard/_broadcast_streams.turbo_stream.erb (editado)
+- spec/requests/dashboard_kpis_spec.rb (editado)
+- spec/jobs/dashboard_broadcast_job_spec.rb (editado)
+- spec/controllers/idle_periods_controller_spec.rb (editado)
+- spec/controllers/concerns/tenant_scoped_spec.rb (editado)

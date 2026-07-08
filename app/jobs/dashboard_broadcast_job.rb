@@ -42,6 +42,8 @@ class DashboardBroadcastJob < ApplicationJob
       daily_value:        calculate_daily_value,
       daily_task_count:   calculate_daily_task_count,
       monthly_task_count: calculate_monthly_task_count,
+      daily_idle_hours:   calculate_daily_idle_hours,
+      monthly_idle_hours: calculate_monthly_idle_hours,
       tasks:              monthly_tasks
     }
   end
@@ -49,7 +51,9 @@ class DashboardBroadcastJob < ApplicationJob
   def zero_locals
     {
       daily_hours: 0, monthly_hours: 0, monthly_value: 0, daily_value: 0,
-      daily_task_count: 0, monthly_task_count: 0, tasks: Task.none
+      daily_task_count: 0, monthly_task_count: 0,
+      daily_idle_hours: 0, monthly_idle_hours: 0,
+      tasks: Task.none
     }
   end
 end

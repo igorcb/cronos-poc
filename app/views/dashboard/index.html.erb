@@ -29,6 +29,8 @@
       <%= render "dashboard/daily_task_count",   daily_task_count: @daily_task_count %>
       <%= render "dashboard/daily_hours",        daily_hours: @daily_hours %>
       <%= render "dashboard/daily_value",        daily_value: @daily_value %>
+      <%= render "dashboard/daily_idle_hours",   daily_idle_hours: @daily_idle_hours %>
+      <%= render "dashboard/monthly_idle_hours", monthly_idle_hours: @monthly_idle_hours %>
     </div>
   </section>
 
@@ -47,6 +49,13 @@
           <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
             <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+        <% end %>
+        <%= link_to new_idle_period_path, data: { turbo_frame: "modal" }, aria: { label: "Registrar período sem tarefa" } do %>
+          <div class="flex-shrink-0 bg-blue-900 rounded-md p-3 inline-flex hover:bg-blue-800 transition">
+            <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
         <% end %>

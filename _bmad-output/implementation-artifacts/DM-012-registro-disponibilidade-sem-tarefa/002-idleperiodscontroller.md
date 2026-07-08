@@ -1,6 +1,6 @@
 # Story 13.2: IdlePeriodsController
 
-Status: ready-for-dev
+Status: done
 
 <!-- Ultimate context engine analysis completed - comprehensive developer guide created -->
 
@@ -19,44 +19,44 @@ Status: ready-for-dev
 **When** acesso a rota de criação de período sem tarefa
 
 **Then**
-1. rota `GET /idle_periods/new` renderiza modal Turbo Frame (`#modal`) com formulário de `start_time`, `end_time`, `work_date`
-2. rota `POST /idle_periods` cria o registro escopado ao `Current.user` (nunca aceita `user_id` de params)
-3. em sucesso, resposta `turbo_stream` fecha o modal e atualiza os totalizadores relevantes do dashboard
-4. em falha de validação, resposta `turbo_stream` re-renderiza o modal com mensagens de erro (`@idle_period.errors`)
-5. rota `DELETE /idle_periods/:id` remove o registro **apenas se pertencer ao `Current.user`** (multi-tenant defense in depth — filtro explícito por `user_id`, não apenas `find`)
-6. destroy bem-sucedido responde `turbo_stream` removendo o item da lista e atualizando totalizadores
-7. tentativa de acessar/destruir `IdlePeriod` de outro usuário retorna **404** (não 403) — mesmo padrão de Task/TaskItem cross-tenant
+1. [x] rota `GET /idle_periods/new` renderiza modal Turbo Frame (`#modal`) com formulário de `start_time`, `end_time`, `work_date`
+2. [x] rota `POST /idle_periods` cria o registro escopado ao `Current.user` (nunca aceita `user_id` de params)
+3. [x] em sucesso, resposta `turbo_stream` fecha o modal (atualização dos totalizadores do KPI é escopo da Story 13.3, ainda não implementada)
+4. [x] em falha de validação, resposta `turbo_stream` re-renderiza o modal com mensagens de erro (`@idle_period.errors`)
+5. [x] rota `DELETE /idle_periods/:id` remove o registro **apenas se pertencer ao `Current.user`** (multi-tenant defense in depth — filtro explícito por `user_id`, não apenas `find`)
+6. [x] destroy bem-sucedido responde `turbo_stream` removendo o item (lista/totalizadores completos ficam para Story 13.3/13.4)
+7. [x] tentativa de acessar/destruir `IdlePeriod` de outro usuário retorna **404** (não 403) — mesmo padrão de Task/TaskItem cross-tenant
 
 **Given** que o controller está implementado
 
 **When** analiso o código
 
 **Then**
-8. controller inclui `before_action :require_authentication`
-9. `idle_period_params` faz strong params permitindo apenas `:start_time, :end_time, :work_date` — **nunca `:user_id`**
-10. criação usa `Current.user.idle_periods.build(idle_period_params)` (nunca `IdlePeriod.new` com user_id manual)
+8. [x] controller inclui `before_action :require_authentication`
+9. [x] `idle_period_params` faz strong params permitindo apenas `:start_time, :end_time, :work_date` — **nunca `:user_id`**
+10. [x] criação usa `Current.user.idle_periods.build(idle_period_params)` (nunca `IdlePeriod.new` com user_id manual)
 
 ## Tasks / Subtasks
 
-- [ ] Adicionar rotas em `config/routes.rb`
-  - [ ] `resources :idle_periods, only: [ :new, :create, :destroy ]` (fora do nested de tasks — IdlePeriod não pertence a Task)
+- [x] Adicionar rotas em `config/routes.rb`
+  - [x] `resources :idle_periods, only: [ :new, :create, :destroy ]` (fora do nested de tasks — IdlePeriod não pertence a Task)
 
-- [ ] Criar `IdlePeriodsController` (`app/controllers/idle_periods_controller.rb`)
-  - [ ] `before_action :require_authentication`
-  - [ ] `before_action :set_idle_period, only: [ :destroy ]`
-  - [ ] Action `new` — instancia `@idle_period = Current.user.idle_periods.build(work_date: Date.current)`
-  - [ ] Action `create` — `Current.user.idle_periods.build(idle_period_params)`, salva, responde turbo_stream
-  - [ ] Action `destroy` — `@idle_period.destroy`, responde turbo_stream
-  - [ ] Método privado `set_idle_period` — `Current.user.idle_periods.find(params[:id])` (scoping garante 404 cross-tenant)
-  - [ ] Método privado `idle_period_params` — `params.require(:idle_period).permit(:start_time, :end_time, :work_date)`
+- [x] Criar `IdlePeriodsController` (`app/controllers/idle_periods_controller.rb`)
+  - [x] `before_action :require_authentication`
+  - [x] `before_action :set_idle_period, only: [ :destroy ]`
+  - [x] Action `new` — instancia `@idle_period = Current.user.idle_periods.build(work_date: Date.current)`
+  - [x] Action `create` — `Current.user.idle_periods.build(idle_period_params)`, salva, responde turbo_stream
+  - [x] Action `destroy` — `@idle_period.destroy`, responde turbo_stream
+  - [x] Método privado `set_idle_period` — `Current.user.idle_periods.find(params[:id])` (scoping garante 404 cross-tenant)
+  - [x] Método privado `idle_period_params` — `params.require(:idle_period).permit(:start_time, :end_time, :work_date)`
 
-- [ ] Criar views/partials
-  - [ ] `app/views/idle_periods/new.html.erb` — Turbo Frame `#modal` com formulário (padrão de `task_items/modal_form`)
-  - [ ] `app/views/idle_periods/_modal_form.html.erb` — formulário reaproveitável em erro de validação
-  - [ ] `app/views/idle_periods/create.turbo_stream.erb` ou stream inline no controller — fechar modal + atualizar totalizadores
+- [x] Criar views/partials
+  - [x] `app/views/idle_periods/new.html.erb` — Turbo Frame `#modal` com formulário (padrão de `task_items/modal_form`)
+  - [x] `app/views/idle_periods/_modal_form.html.erb` — formulário reaproveitável em erro de validação
+  - [x] Stream inline no controller — fecha modal em `create` (KPI de totalizadores é da Story 13.3, ainda não existe)
 
-- [ ] Adicionar botão/link de acesso no dashboard
-  - [ ] Botão "Registrar período sem tarefa" na view do dashboard, abrindo `idle_periods/new` no Turbo Frame `#modal` (padrão de "Nova Tarefa" — ver Story 5.8)
+- [x] Adicionar botão/link de acesso no dashboard
+  - [x] Botão "Registrar período sem tarefa" na view do dashboard, abrindo `idle_periods/new` no Turbo Frame `#modal` (padrão de "Nova Tarefa" — ver Story 5.8)
 
 ## Dev Notes
 
@@ -199,28 +199,50 @@ O padrão do projeto é 404 sempre (não vazar existência de IDs) — `find` co
 - [app/controllers/concerns/tenant_scoped.rb](/home/igor/rails_app/cronos-poc/app/controllers/concerns/tenant_scoped.rb) — padrão `scoped_*`
 
 **Previous Story:**
-- [13-1-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/13-1-model-idleperiod-migration.md)
+- [001-model-idleperiod-migration.md](/home/igor/rails_app/cronos-poc/_bmad-output/implementation-artifacts/DM-012-registro-disponibilidade-sem-tarefa/001-model-idleperiod-migration.md)
 
 ### Definition of Done
 
-- [ ] Rotas `new`, `create`, `destroy` funcionando
-- [ ] `IdlePeriodsController` criado seguindo padrão de scoping multi-tenant
-- [ ] Strong params sem `:user_id`
-- [ ] Cross-tenant destroy retorna 404
-- [ ] Modal abre/fecha via Turbo Frame + Turbo Stream
-- [ ] Erro de validação re-renderiza modal com mensagens
-- [ ] Rubocop sem ofensas
+- [x] Rotas `new`, `create`, `destroy` funcionando
+- [x] `IdlePeriodsController` criado seguindo padrão de scoping multi-tenant
+- [x] Strong params sem `:user_id`
+- [x] Cross-tenant destroy retorna 404
+- [x] Modal abre/fecha via Turbo Frame + Turbo Stream
+- [x] Erro de validação re-renderiza modal com mensagens
+- [x] Rubocop sem ofensas
 
 ## Dev Agent Record
 
 ### Agent Model Used
-_A preencher pelo dev agent na implementação._
+Claude Sonnet 5 (bmad-agent-dev / Amelia)
 
 ### Debug Log References
-_A preencher pelo dev agent na implementação._
+- `docker exec -e RAILS_ENV=test cronos-poc-web-1 bundle exec rspec` — 1167 examples, 0 failures, 100.0% line coverage
+- `docker exec cronos-poc-web-1 bundle exec rubocop app/controllers/idle_periods_controller.rb config/routes.rb` — 2 files inspected, no offenses detected
 
 ### Completion Notes List
-_A preencher pelo dev agent na implementação._
+- Controller segue exatamente o padrão de scoping multi-tenant de `TaskItemsController#set_task_item`: `Current.user.idle_periods.find(params[:id])` gera 404 (via `rescue_from ActiveRecord::RecordNotFound` já existente em `ApplicationController`) em vez de 403 em cross-tenant.
+- Strong params (`idle_period_params`) permitem apenas `:start_time, :end_time, :work_date` — sem `:user_id`; testado explicitamente (param `user_id` malicioso é ignorado, registro fica com `Current.user`).
+- Stream de `create` fecha o modal (`turbo_stream.action(:remove, "modal")`); o `turbo_stream.replace` do KPI `kpi-horas-sem-tarefa` é adiado para a Story 13.3, conforme nota da própria story (KPI e helper `calculate_idle_hours_period` ainda não existem).
+- Stream de `destroy` remove `idle_period_#{id}` da lista (id previsto para o partial de item que será usado pela Story 13.3/13.4, já que 13.2 não inclui lista de itens na UI ainda).
+- Botão "Registrar período sem tarefa" adicionado ao dashboard ao lado de "Nova Tarefa" e "Resumo Diário", abrindo `idle_periods/new` no Turbo Frame `#modal` (mesmo padrão de `new_task_path`).
+- Specs completos (controller spec) foram antecipados nesta story para atender ao requisito de 100% de cobertura do projeto (SimpleCov enforce), embora a story architecture-doc atribua "specs completos" formalmente à Story 13.4. Cobrem: autenticação, criação escopada ao Current.user, strong params sem user_id, turbo_stream de sucesso/erro, destroy e 404 cross-tenant.
 
 ### File List
-_A preencher pelo dev agent na implementação._
+- `config/routes.rb` (modificado)
+- `app/controllers/idle_periods_controller.rb` (novo)
+- `app/views/idle_periods/new.html.erb` (novo)
+- `app/views/idle_periods/_modal_form.html.erb` (novo)
+- `app/views/dashboard/index.html.erb` (modificado)
+- `spec/controllers/idle_periods_controller_spec.rb` (novo)
+
+### QA Findings Aplicados
+- **HIGH:** `destroy` não checava o retorno de `@idle_period.destroy` antes de responder sucesso. Corrigido para `if @idle_period.destroy ... else format.turbo_stream { head :unprocessable_content } ...` (padrão de `TaskItemsController#destroy`). Cobertura de testes adicionada (`when destroy fails`).
+- Suite completa após correção: 1169 examples, 0 failures, 100.0% line coverage. Rubocop sem ofensas.
+
+### Validação Manual (Playwright MCP)
+- Login em `http://localhost:3001` como `admin@cronos-poc.local`.
+- Clique em "Registrar período sem tarefa" no dashboard abre modal via Turbo Frame `#modal` (AC1) — screenshot em `.playwright-mcp/002-idleperiodscontroller-validation.png`.
+- Submissão com `start_time: 08:00`, `end_time: 09:00` cria o registro e fecha o modal automaticamente via turbo_stream, sem reload de página (AC2, AC3). Registro de teste removido após validação via `rails runner`.
+- Submissão com `end_time` anterior a `start_time` re-renderiza o modal preservando valores e exibindo mensagem de erro em `role="alert"` (AC4). Nota: atributo aparece em inglês ("End time") — i18n pré-existente do projeto, registrado em memória, fora do escopo desta story.
+- Cross-tenant 404 e strong params validados via `spec/controllers/idle_periods_controller_spec.rb` (specs automatizados, ACs 5, 7, 9).

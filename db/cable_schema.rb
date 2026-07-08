@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_25_173854) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_08_112412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,6 +24,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_25_173854) do
     t.index ["active"], name: "index_companies_on_active"
     t.index ["user_id", "active"], name: "index_companies_on_user_id_and_active"
     t.index ["user_id"], name: "index_companies_on_user_id"
+  end
+
+  create_table "idle_periods", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.time "end_time", null: false
+    t.decimal "hours", precision: 10, scale: 2, null: false
+    t.time "start_time", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.date "work_date", null: false
+    t.index ["user_id", "work_date"], name: "index_idle_periods_on_user_id_and_work_date"
+    t.index ["user_id"], name: "index_idle_periods_on_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -114,6 +126,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_25_173854) do
   end
 
   add_foreign_key "companies", "users"
+  add_foreign_key "idle_periods", "users"
   add_foreign_key "projects", "companies"
   add_foreign_key "projects", "users"
   add_foreign_key "sessions", "users"
