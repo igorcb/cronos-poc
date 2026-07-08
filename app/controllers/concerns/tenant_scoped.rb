@@ -39,6 +39,11 @@ module TenantScoped
     Current.user.task_items
   end
 
+  def scoped_idle_periods
+    require_current_user!
+    Current.user.idle_periods
+  end
+
   def require_current_user!
     return if Current.user
 

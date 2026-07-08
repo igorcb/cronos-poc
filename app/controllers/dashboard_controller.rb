@@ -15,6 +15,8 @@ class DashboardController < ApplicationController
     @daily_task_count   = calculate_daily_task_count
     @monthly_task_count = calculate_monthly_task_count
     @daily_value        = calculate_daily_value
+    @daily_idle_hours   = calculate_daily_idle_hours
+    @monthly_idle_hours = calculate_monthly_idle_hours
 
     @monthly_delivered_count = calculate_monthly_delivered_count
     @monthly_delivered_hours = calculate_monthly_delivered_hours

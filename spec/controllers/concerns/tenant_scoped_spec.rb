@@ -7,7 +7,7 @@ RSpec.describe TenantScoped, type: :concern do
     Class.new do
       include TenantScoped
       # expor private para teste
-      public :scoped_companies, :scoped_projects, :scoped_tasks, :scoped_task_items
+      public :scoped_companies, :scoped_projects, :scoped_tasks, :scoped_task_items, :scoped_idle_periods
     end
   end
 
@@ -37,6 +37,10 @@ RSpec.describe TenantScoped, type: :concern do
     it "scoped_task_items raise MissingTenantError" do
       expect { instance.scoped_task_items }.to raise_error(TenantScoped::MissingTenantError)
     end
+
+    it "scoped_idle_periods raise MissingTenantError" do
+      expect { instance.scoped_idle_periods }.to raise_error(TenantScoped::MissingTenantError)
+    end
   end
 
   describe "com Current.user setado" do
@@ -48,6 +52,10 @@ RSpec.describe TenantScoped, type: :concern do
 
     it "scoped_companies retorna a relation do user" do
       expect(instance.scoped_companies.to_sql).to include("user_id\" = #{user.id}")
+    end
+
+    it "scoped_idle_periods retorna a relation do user" do
+      expect(instance.scoped_idle_periods.to_sql).to include("user_id\" = #{user.id}")
     end
   end
 end
