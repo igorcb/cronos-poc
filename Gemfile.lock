@@ -151,7 +151,7 @@ GEM
       activesupport (>= 6.1)
     hashie (5.1.0)
       logger
-    i18n (1.15.0)
+    i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     image_processing (2.0.2)
     io-console (0.8.2)
@@ -461,7 +461,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     version_gem (1.1.12)
-    view_component (4.10.0)
+    view_component (4.12.0)
       actionview (>= 7.1.0)
       activesupport (>= 7.1.0)
       concurrent-ruby (~> 1)
@@ -529,7 +529,7 @@ DEPENDENCIES
   thruster
   turbo-rails
   tzinfo-data
-  view_component (~> 4.9)
+  view_component (~> 4.12)
   web-console
 
 BUNDLED WITH
