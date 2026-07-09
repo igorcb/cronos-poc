@@ -43,7 +43,7 @@ story_location: _bmad-output/implementation-artifacts/mobile/DM-013-app-mobile
 
 development_status:
   epic-1: in-progress
-  1-1-inicializar-projeto-mobile: ready-for-dev
+  1-1-inicializar-projeto-mobile: done
   1-2-criar-api-de-autenticacao-no-backend: ready-for-dev
   1-3-tela-de-login-com-google-oauth-no-app: ready-for-dev
   1-4-persistir-sessao-entre-aberturas-do-app: ready-for-dev
